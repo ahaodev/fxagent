@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import type { RuntimeSnapshot } from "@pi-gui/session-driver/runtime-types";
-import type { AppLanguage, ModelSettingsScopeMode } from "../../../contracts/desktop-state";
+import type { LanguagePreference, ModelSettingsScopeMode } from "../../../contracts/desktop-state";
 import { useI18n, languageNames } from "../../i18n";
 import { SettingsSegmented, SettingsSwitch } from "./settings-controls";
 import { SettingsGroup, SettingsRow } from "./settings-utils";
 
 interface SettingsGeneralSectionProps {
   readonly runtime?: RuntimeSnapshot;
-  readonly language: AppLanguage;
-  readonly onSetLanguage: (language: AppLanguage) => void;
+  readonly languagePreference: LanguagePreference;
+  readonly onSetLanguage: (languagePreference: LanguagePreference) => void;
   readonly modelSettingsScopeMode: ModelSettingsScopeMode;
   readonly integratedTerminalShell: string;
   readonly onSetModelSettingsScopeMode: (mode: ModelSettingsScopeMode) => void;
@@ -18,7 +18,7 @@ interface SettingsGeneralSectionProps {
 
 export function SettingsGeneralSection({
   runtime,
-  language,
+  languagePreference,
   onSetLanguage,
   modelSettingsScopeMode,
   integratedTerminalShell,
@@ -49,10 +49,11 @@ export function SettingsGeneralSection({
           <SettingsSegmented
             label={t("settings.general.language.label")}
             options={[
+              { value: "system", label: t("settings.general.language.system") },
               { value: "en", label: languageNames.en },
               { value: "zh-CN", label: languageNames["zh-CN"] },
             ]}
-            value={language}
+            value={languagePreference}
             onChange={onSetLanguage}
           />
         </SettingsRow>

@@ -59,7 +59,7 @@ import {
   expectString,
   expectStringArray,
   expectTerminalSize,
-  expectAppLanguage,
+  expectLanguagePreference,
   expectThemeMode,
   expectThemePresetId,
   expectThreadGrouping,
@@ -305,7 +305,7 @@ export function registerDesktopIpc({
     return run(event, () => owners.state.setThemePresetId(presetId));
   });
   ipcMain.handle(desktopIpc.setLanguage, (event, rawLanguage: unknown) => {
-    const language = expectAppLanguage(rawLanguage);
+    const language = expectLanguagePreference(rawLanguage);
     return run(event, () => owners.state.setLanguage(language));
   });
   ipcMain.handle(desktopIpc.openExternal, (event, rawUrl: unknown) => {

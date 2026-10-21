@@ -1,4 +1,4 @@
-import { isAppLanguage, type AppLanguage } from "../../contracts/desktop-state";
+import { isAppLanguage, resolveLanguage, type AppLanguage } from "../../contracts/desktop-state";
 
 export const DEFAULT_LANGUAGE: AppLanguage = "en";
 
@@ -17,10 +17,16 @@ const STORAGE_KEY = "pi-gui:language";
 export function readLastLanguage(): AppLanguage {
   try {
     const stored = globalThis.localStorage?.getItem(STORAGE_KEY);
-    return isAppLanguage(stored) ? stored : DEFAULT_LANGUAGE;
+    return isAppLanguage(stored) ? stored : systemLanguage();
   } catch {
-    return DEFAULT_LANGUAGE;
+    return systemLanguage();
   }
+}
+
+/** The language the browser reports. Node (unit tests) also has a `navigator`, so require a window. */
+function systemLanguage(): AppLanguage {
+  const locale = typeof window === "undefined" ? undefined : window.navigator?.language;
+  return resolveLanguage("system", locale);
 }
 
 export function rememberLanguage(language: AppLanguage): void {

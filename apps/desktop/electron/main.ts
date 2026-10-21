@@ -1066,6 +1066,8 @@ app
       driverOptions,
       generateThreadTitleOverride: async (workspace, options) =>
         generateThreadTitleOverride?.(workspace, options),
+      // PI_APP_TEST_LOCALE pins the system language in tests; the real locale is never used there.
+      getSystemLocale: () => process.env.PI_APP_TEST_LOCALE || app.getLocale(),
     });
     windowOwner = new WindowOwner(store, {
       onActiveWindowChanged: (window) => {

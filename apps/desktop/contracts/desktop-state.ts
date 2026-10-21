@@ -54,6 +54,26 @@ export function isAppLanguage(value: unknown): value is AppLanguage {
   return typeof value === "string" && appLanguages.includes(value as AppLanguage);
 }
 
+/** What the user chose: follow the operating system's language, or pin one app language. */
+export const languagePreferences = ["system", ...appLanguages] as const;
+export type LanguagePreference = (typeof languagePreferences)[number];
+
+export function isLanguagePreference(value: unknown): value is LanguagePreference {
+  return typeof value === "string" && languagePreferences.includes(value as LanguagePreference);
+}
+
+/**
+ * The language the UI uses for a preference. Any Chinese locale maps to Simplified Chinese,
+ * the only Chinese UI; anything else falls back to English.
+ */
+export function resolveLanguage(
+  preference: LanguagePreference,
+  systemLocale: string | undefined,
+): AppLanguage {
+  if (preference !== "system") return preference;
+  return /^zh(?:[-_]|$)/i.test(systemLocale ?? "") ? "zh-CN" : "en";
+}
+
 export function isThemeMode(value: unknown): value is ThemeMode {
   return value === "system" || value === "light" || value === "dark";
 }
@@ -380,7 +400,9 @@ export interface DesktopAppState {
   readonly globalModelSettings: ModelSettingsSnapshot;
   readonly themeMode: ThemeMode;
   readonly themePresetId: ThemePresetId;
-  /** UI language for the renderer and native menus. */
+  /** The user's choice: follow the system, or pin a language. */
+  readonly languagePreference: LanguagePreference;
+  /** UI language for the renderer and native menus, resolved from the preference. */
   readonly language: AppLanguage;
   readonly sidebarCollapsed: boolean;
   readonly threadGrouping: ThreadGrouping;
@@ -440,6 +462,7 @@ export function createEmptyDesktopAppState(): DesktopAppState {
     },
     themeMode: "system",
     themePresetId: "default",
+    languagePreference: "system",
     language: "en",
     sidebarCollapsed: false,
     threadGrouping: "time",

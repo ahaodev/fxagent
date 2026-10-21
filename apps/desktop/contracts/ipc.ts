@@ -45,7 +45,7 @@ import type {
   ThemePresetId,
   ThreadGrouping,
   WorkspaceSessionTarget,
-  AppLanguage,
+  LanguagePreference,
   CreateScheduledTaskInput,
   UpdateScheduledTaskInput,
 } from "./desktop-state";
@@ -807,7 +807,7 @@ export interface PiDesktopApi {
   setIntegratedTerminalShell(shell: string): Promise<DesktopAppState>;
   setEnableTransparency(enabled: boolean): Promise<DesktopAppState>;
   setThemePresetId(presetId: ThemePresetId): Promise<DesktopAppState>;
-  setLanguage(language: AppLanguage): Promise<DesktopAppState>;
+  setLanguage(languagePreference: LanguagePreference): Promise<DesktopAppState>;
   ensureTerminalPanel(
     workspaceId: string,
     terminalScopeId: string,

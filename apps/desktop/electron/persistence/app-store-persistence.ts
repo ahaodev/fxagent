@@ -1,5 +1,5 @@
 import type {
-  AppLanguage,
+  LanguagePreference,
   AppView,
   ExtensionCommandCompatibilityRecord,
   ModelSettingsScopeMode,
@@ -13,7 +13,7 @@ import type {
   ThreadGrouping,
 } from "../../contracts/desktop-state";
 import {
-  isAppLanguage,
+  isLanguagePreference,
   isThemeMode,
   isThemePresetId,
   isThreadGrouping,
@@ -61,7 +61,7 @@ export interface PersistedUiState {
   readonly enableTransparency?: boolean;
   readonly themeMode?: ThemeMode;
   readonly themePresetId?: ThemePresetId;
-  readonly language?: AppLanguage;
+  readonly language?: LanguagePreference;
   readonly orchestrationChildren?: readonly OrchestrationChildThread[];
 }
 
@@ -140,7 +140,7 @@ export function decodePersistedUiState(parsed: unknown): LegacyPersistedUiState 
       typeof candidate.enableTransparency === "boolean" ? candidate.enableTransparency : undefined,
     themeMode: toThemeMode(candidate.themeMode),
     themePresetId: toThemePresetId(candidate.themePresetId),
-    language: isAppLanguage(candidate.language) ? candidate.language : undefined,
+    language: isLanguagePreference(candidate.language) ? candidate.language : undefined,
     orchestrationChildren: toPersistedOrchestrationChildren(candidate.orchestrationChildren),
     composerAttachmentsBySession: toObjectArrayRecord(candidate.composerAttachmentsBySession),
     transcripts: toObjectArrayRecord(candidate.transcripts),
@@ -291,7 +291,7 @@ function validateUiState(value: unknown): Record<string, unknown> {
   optional(root, "threadGrouping", isThreadGrouping);
   optional(root, "themeMode", isThemeMode);
   optional(root, "themePresetId", isThemePresetId);
-  optional(root, "language", isAppLanguage);
+  optional(root, "language", isLanguagePreference);
   optional(root, "modelSettingsScopeMode", (v) => v === "per-repo" || v === "app-global");
   if (root.notificationPreferences !== undefined) {
     const preferences =

@@ -59,14 +59,15 @@ import {
   type SessionExtensionNoticeRecord,
   type StartThreadInput,
   type StartupDiagnostic,
-  type AppLanguage,
+  type LanguagePreference,
   type ThemeMode,
   type ThemePresetId,
   type ThreadGrouping,
   type TranscriptMessage,
   type WorkspaceRecord,
   type WorkspaceSessionTarget,
-  isAppLanguage,
+  isLanguagePreference,
+  resolveLanguage,
   isThemeMode,
   isThemePresetId,
   type CreateScheduledTaskInput,
@@ -193,10 +194,13 @@ export interface DesktopAppStoreOptions {
     workspace: WorkspaceRef,
     options: GenerateThreadTitleOptions,
   ) => Promise<string | null | undefined>;
+  /** The OS language (BCP 47 tag). Only consulted while the language preference is "system". */
+  readonly getSystemLocale?: () => string | undefined;
 }
 
 export class DesktopAppStore {
   private state = createEmptyDesktopAppState();
+  private readonly getSystemLocale: () => string | undefined;
   private readonly listeners = new Set<StateListener>();
   /** Monotonic publish counter; emit() stamps every published state with it. */
   private publishRevision = 1;
@@ -288,6 +292,7 @@ export class DesktopAppStore {
   private readonly extensionFlagsByWorkspace = new Map<string, ExtensionFlagValues>();
 
   constructor(options: DesktopAppStoreOptions) {
+    this.getSystemLocale = options.getSystemLocale ?? (() => undefined);
     const catalogFilePath = join(options.userDataDir, "catalogs.json");
     this.catalogStore = new JsonCatalogStore({ catalogFilePath });
     const driverOptions: PiSdkDriverConfig = {
@@ -1437,17 +1442,18 @@ export class DesktopAppStore {
     return this.emit();
   }
 
-  async setLanguage(language: AppLanguage): Promise<DesktopAppState> {
+  async setLanguage(languagePreference: LanguagePreference): Promise<DesktopAppState> {
     await this.initialize();
-    if (!isAppLanguage(language)) {
-      throw new Error(`Unsupported language: ${String(language)}`);
+    if (!isLanguagePreference(languagePreference)) {
+      throw new Error(`Unsupported language: ${String(languagePreference)}`);
     }
-    if (this.state.language === language) {
+    if (this.state.languagePreference === languagePreference) {
       return structuredClone(this.state);
     }
     this.state = {
       ...this.state,
-      language,
+      languagePreference,
+      language: resolveLanguage(languagePreference, this.getSystemLocale()),
       lastError: undefined,
       revision: this.state.revision + 1,
     };
@@ -2248,7 +2254,11 @@ export class DesktopAppStore {
       workspaceOrder: persisted.workspaceOrder ?? [],
       themeMode: persisted.themeMode ?? this.state.themeMode,
       themePresetId: persisted.themePresetId ?? this.state.themePresetId,
-      language: persisted.language ?? this.state.language,
+      languagePreference: persisted.language ?? this.state.languagePreference,
+      language: resolveLanguage(
+        persisted.language ?? this.state.languagePreference,
+        this.getSystemLocale(),
+      ),
       sidebarCollapsed: persisted.sidebarCollapsed ?? this.state.sidebarCollapsed,
       threadGrouping: persisted.threadGrouping ?? "time",
       collapsedWorkspaceIds: persisted.collapsedWorkspaceIds ?? [],
@@ -4022,7 +4032,7 @@ export class DesktopAppStore {
         : undefined,
       themeMode: this.state.themeMode,
       themePresetId: this.state.themePresetId,
-      language: this.state.language,
+      language: this.state.languagePreference,
       sidebarCollapsed: this.state.sidebarCollapsed || undefined,
       threadGrouping: this.state.threadGrouping,
       collapsedWorkspaceIds:

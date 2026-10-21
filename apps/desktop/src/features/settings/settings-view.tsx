@@ -4,7 +4,7 @@ import type {
   RuntimeSnapshot,
 } from "@pi-gui/session-driver/runtime-types";
 import type {
-  AppLanguage,
+  LanguagePreference,
   ModelSettingsScopeMode,
   NotificationPreferences,
   ThemePresetId,
@@ -42,8 +42,8 @@ interface SettingsViewProps {
   readonly themeMode: "system" | "light" | "dark";
   readonly themePresetId: ThemePresetId;
   readonly enableTransparency: boolean;
-  readonly language: AppLanguage;
-  readonly onSetLanguage: (language: AppLanguage) => void;
+  readonly languagePreference: LanguagePreference;
+  readonly onSetLanguage: (languagePreference: LanguagePreference) => void;
   readonly onSetModelSettingsScopeMode: (mode: ModelSettingsScopeMode) => void;
   readonly onSetDefaultModel: (provider: string, modelId: string) => void;
   readonly onSetThinkingLevel: (
@@ -82,7 +82,7 @@ export function SettingsView({
   themeMode,
   themePresetId,
   enableTransparency,
-  language,
+  languagePreference,
   onSetLanguage,
   onSetModelSettingsScopeMode,
   onSetDefaultModel,
@@ -160,7 +160,7 @@ export function SettingsView({
           {section === "general" ? (
             <SettingsGeneralSection
               runtime={runtime}
-              language={language}
+              languagePreference={languagePreference}
               onSetLanguage={onSetLanguage}
               modelSettingsScopeMode={modelSettingsScopeMode}
               integratedTerminalShell={integratedTerminalShell}

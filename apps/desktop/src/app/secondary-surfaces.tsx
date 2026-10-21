@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import type { RuntimeSnapshot } from "@pi-gui/session-driver/runtime-types";
 import type {
-  AppLanguage,
+  LanguagePreference,
   AppView,
   DesktopAppState,
   WorkspaceRecord,
@@ -309,10 +309,12 @@ export function SecondarySurfaces({
     });
   };
 
-  const handleSetLanguage = (language: AppLanguage) => {
-    void updateSnapshot(setSnapshot, () => api.setLanguage(language)).catch((error: unknown) => {
-      console.error("[renderer] setLanguage failed", error);
-    });
+  const handleSetLanguage = (languagePreference: LanguagePreference) => {
+    void updateSnapshot(setSnapshot, () => api.setLanguage(languagePreference)).catch(
+      (error: unknown) => {
+        console.error("[renderer] setLanguage failed", error);
+      },
+    );
   };
 
   const handleSetThemePresetId = (presetId: DesktopAppState["themePresetId"]) => {
@@ -463,7 +465,7 @@ export function SecondarySurfaces({
           integratedTerminalShell={snapshot.integratedTerminalShell}
           themeMode={snapshot.themeMode}
           themePresetId={snapshot.themePresetId}
-          language={snapshot.language}
+          languagePreference={snapshot.languagePreference}
           enableTransparency={snapshot.enableTransparency}
           onSetLanguage={handleSetLanguage}
           onLoginProvider={handleLoginProvider}
