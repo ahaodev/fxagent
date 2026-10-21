@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { earlyModifierChords, getSidePanelTabCommand } from "../contracts/ipc";
-import App from "./app/App";
+import { AppRoot } from "./app/app-root";
 import { RendererErrorBoundary } from "./app/desktop-recovery";
 import { applyLastTheme } from "./ui/active-theme";
 import "./dev-reload-hook";
@@ -42,7 +42,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
         });
       }}
     >
-      <App />
+      <AppRoot />
     </RendererErrorBoundary>
   </React.StrictMode>,
 );

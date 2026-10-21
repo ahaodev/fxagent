@@ -10,7 +10,7 @@ import {
   nonCompletedBindingForSession,
   scheduledOriginsByMessageId,
 } from "../../contracts/scheduled-tasks";
-import { updateSnapshot, useDesktopAppState } from "./desktop-app-state";
+import { updateSnapshot, type DesktopAppSession } from "./desktop-app-state";
 import { DesktopStartupSurface, toStartupSurfaceState } from "./desktop-recovery";
 import { buildFileWorkbenchContexts } from "./file-workbench-contexts";
 import { canTogglePrimarySidebar } from "./app-shell-utils";
@@ -94,8 +94,7 @@ import { useComposerDraftSync } from "../features/conversation/hooks/use-compose
 import { useSessionComposer } from "../features/conversation/hooks/use-session-composer";
 import { useTranscriptAnnotations } from "../features/conversation/annotations/use-transcript-annotations";
 
-export default function App() {
-  const desktop = useDesktopAppState();
+export default function App({ desktop }: { readonly desktop: DesktopAppSession }) {
   const workbenchWidth = useWorkbenchWidth();
   const snapshot = desktop.snapshot;
   const setSnapshot = desktop.setSnapshot;

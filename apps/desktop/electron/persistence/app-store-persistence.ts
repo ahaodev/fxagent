@@ -1,4 +1,5 @@
 import type {
+  AppLanguage,
   AppView,
   ExtensionCommandCompatibilityRecord,
   ModelSettingsScopeMode,
@@ -11,7 +12,12 @@ import type {
   ThemePresetId,
   ThreadGrouping,
 } from "../../contracts/desktop-state";
-import { isThemeMode, isThemePresetId, isThreadGrouping } from "../../contracts/desktop-state";
+import {
+  isAppLanguage,
+  isThemeMode,
+  isThemePresetId,
+  isThreadGrouping,
+} from "../../contracts/desktop-state";
 import type { ExtensionFlagValues } from "@pi-gui/session-driver";
 import type { ModelSettingsSnapshot } from "@pi-gui/session-driver/runtime-types";
 import { readJsonWithBackup, writeFileAtomicQueued } from "./atomic-file-write";
@@ -55,6 +61,7 @@ export interface PersistedUiState {
   readonly enableTransparency?: boolean;
   readonly themeMode?: ThemeMode;
   readonly themePresetId?: ThemePresetId;
+  readonly language?: AppLanguage;
   readonly orchestrationChildren?: readonly OrchestrationChildThread[];
 }
 
@@ -133,6 +140,7 @@ export function decodePersistedUiState(parsed: unknown): LegacyPersistedUiState 
       typeof candidate.enableTransparency === "boolean" ? candidate.enableTransparency : undefined,
     themeMode: toThemeMode(candidate.themeMode),
     themePresetId: toThemePresetId(candidate.themePresetId),
+    language: isAppLanguage(candidate.language) ? candidate.language : undefined,
     orchestrationChildren: toPersistedOrchestrationChildren(candidate.orchestrationChildren),
     composerAttachmentsBySession: toObjectArrayRecord(candidate.composerAttachmentsBySession),
     transcripts: toObjectArrayRecord(candidate.transcripts),
@@ -227,6 +235,7 @@ function validateUiState(value: unknown): Record<string, unknown> {
       "enableTransparency",
       "themeMode",
       "themePresetId",
+      "language",
       "orchestrationChildren",
       "composerAttachmentsBySession",
       "transcripts",
@@ -282,6 +291,7 @@ function validateUiState(value: unknown): Record<string, unknown> {
   optional(root, "threadGrouping", isThreadGrouping);
   optional(root, "themeMode", isThemeMode);
   optional(root, "themePresetId", isThemePresetId);
+  optional(root, "language", isAppLanguage);
   optional(root, "modelSettingsScopeMode", (v) => v === "per-repo" || v === "app-global");
   if (root.notificationPreferences !== undefined) {
     const preferences =

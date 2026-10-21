@@ -52,6 +52,7 @@ import type {
 import type { HostUiResponse } from "@pi-gui/session-driver";
 import type { RuntimeSettingsSnapshot } from "@pi-gui/session-driver/runtime-types";
 import type {
+  AppLanguage,
   AppView,
   ComposerAttachment,
   CreateSessionInput,
@@ -431,6 +432,8 @@ contextBridge.exposeInMainWorld("piApp", {
     ipcRenderer.invoke(desktopIpc.setEnableTransparency, enabled) as Promise<DesktopAppState>,
   setThemePresetId: (presetId: ThemePresetId) =>
     ipcRenderer.invoke(desktopIpc.setThemePresetId, presetId) as Promise<DesktopAppState>,
+  setLanguage: (language: AppLanguage) =>
+    ipcRenderer.invoke(desktopIpc.setLanguage, language) as Promise<DesktopAppState>,
   ensureTerminalPanel: (
     workspaceId: string,
     terminalScopeId: string,

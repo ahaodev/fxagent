@@ -59,6 +59,7 @@ import {
   expectString,
   expectStringArray,
   expectTerminalSize,
+  expectAppLanguage,
   expectThemeMode,
   expectThemePresetId,
   expectThreadGrouping,
@@ -78,6 +79,7 @@ type StateOwner = Pick<
   | "setWorkspaceCollapsed"
   | "setThemeMode"
   | "setThemePresetId"
+  | "setLanguage"
 >;
 
 type WorkspaceOwner = Pick<
@@ -301,6 +303,10 @@ export function registerDesktopIpc({
   ipcMain.handle(desktopIpc.setThemePresetId, (event, rawPresetId: unknown) => {
     const presetId = expectThemePresetId(rawPresetId);
     return run(event, () => owners.state.setThemePresetId(presetId));
+  });
+  ipcMain.handle(desktopIpc.setLanguage, (event, rawLanguage: unknown) => {
+    const language = expectAppLanguage(rawLanguage);
+    return run(event, () => owners.state.setLanguage(language));
   });
   ipcMain.handle(desktopIpc.openExternal, (event, rawUrl: unknown) => {
     windows.windowForSender(event.sender);

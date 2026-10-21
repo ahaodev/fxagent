@@ -1,6 +1,11 @@
 import { useCallback, useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import type { RuntimeSnapshot } from "@pi-gui/session-driver/runtime-types";
-import type { AppView, DesktopAppState, WorkspaceRecord } from "../../contracts/desktop-state";
+import type {
+  AppLanguage,
+  AppView,
+  DesktopAppState,
+  WorkspaceRecord,
+} from "../../contracts/desktop-state";
 import { updateSnapshot } from "./desktop-app-state";
 import { getEffectiveModelRuntime } from "../features/settings/model-settings";
 import {
@@ -302,6 +307,12 @@ export function SecondarySurfaces({
     });
   };
 
+  const handleSetLanguage = (language: AppLanguage) => {
+    void updateSnapshot(setSnapshot, () => api.setLanguage(language)).catch((error: unknown) => {
+      console.error("[renderer] setLanguage failed", error);
+    });
+  };
+
   const handleSetThemePresetId = (presetId: DesktopAppState["themePresetId"]) => {
     void updateSnapshot(setSnapshot, () => api.setThemePresetId(presetId)).catch(
       (error: unknown) => {
@@ -450,7 +461,9 @@ export function SecondarySurfaces({
           integratedTerminalShell={snapshot.integratedTerminalShell}
           themeMode={snapshot.themeMode}
           themePresetId={snapshot.themePresetId}
+          language={snapshot.language}
           enableTransparency={snapshot.enableTransparency}
+          onSetLanguage={handleSetLanguage}
           onLoginProvider={handleLoginProvider}
           onSelectSection={onSelectSettingsSection}
           onLogoutProvider={handleLogoutProvider}

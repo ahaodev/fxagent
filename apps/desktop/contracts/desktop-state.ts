@@ -30,6 +30,8 @@ export type WorkspaceKind = "primary" | "worktree";
 export type WorktreeStatus = "ready" | "missing" | "error";
 export type NewThreadEnvironment = "local" | "worktree";
 export type ThemeMode = "system" | "light" | "dark";
+export const appLanguages = ["en", "zh-CN"] as const;
+export type AppLanguage = (typeof appLanguages)[number];
 export const themePresetIds = [
   "default",
   "catppuccin",
@@ -46,6 +48,10 @@ export type ThreadGrouping = "time" | "workspace";
 
 export function isThreadGrouping(value: unknown): value is ThreadGrouping {
   return value === "time" || value === "workspace";
+}
+
+export function isAppLanguage(value: unknown): value is AppLanguage {
+  return typeof value === "string" && appLanguages.includes(value as AppLanguage);
 }
 
 export function isThemeMode(value: unknown): value is ThemeMode {
@@ -374,6 +380,8 @@ export interface DesktopAppState {
   readonly globalModelSettings: ModelSettingsSnapshot;
   readonly themeMode: ThemeMode;
   readonly themePresetId: ThemePresetId;
+  /** UI language for the renderer and native menus. */
+  readonly language: AppLanguage;
   readonly sidebarCollapsed: boolean;
   readonly threadGrouping: ThreadGrouping;
   /** Folder groups the user collapsed in the sidebar, by workspace id. */
@@ -432,6 +440,7 @@ export function createEmptyDesktopAppState(): DesktopAppState {
     },
     themeMode: "system",
     themePresetId: "default",
+    language: "en",
     sidebarCollapsed: false,
     threadGrouping: "time",
     collapsedWorkspaceIds: [],

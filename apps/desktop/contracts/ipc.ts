@@ -45,6 +45,7 @@ import type {
   ThemePresetId,
   ThreadGrouping,
   WorkspaceSessionTarget,
+  AppLanguage,
   CreateScheduledTaskInput,
   UpdateScheduledTaskInput,
 } from "./desktop-state";
@@ -229,6 +230,7 @@ export const desktopIpc = {
   getResolvedTheme: "pi-gui:get-resolved-theme",
   setThemeMode: "pi-gui:set-theme-mode",
   setThemePresetId: "pi-gui:set-theme-preset-id",
+  setLanguage: "pi-gui:set-language",
   themeChanged: "pi-gui:theme-changed",
   windowFocused: "pi-gui:window-focused",
   ping: "app:ping",
@@ -805,6 +807,7 @@ export interface PiDesktopApi {
   setIntegratedTerminalShell(shell: string): Promise<DesktopAppState>;
   setEnableTransparency(enabled: boolean): Promise<DesktopAppState>;
   setThemePresetId(presetId: ThemePresetId): Promise<DesktopAppState>;
+  setLanguage(language: AppLanguage): Promise<DesktopAppState>;
   ensureTerminalPanel(
     workspaceId: string,
     terminalScopeId: string,

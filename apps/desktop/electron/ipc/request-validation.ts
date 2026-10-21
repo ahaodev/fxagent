@@ -7,6 +7,7 @@ import type { ExtensionActionRequest } from "../../contracts/extension-actions";
 import type { NavigateSessionTreeOptions } from "@pi-gui/session-driver/types";
 import type { RuntimeSettingsSnapshot } from "@pi-gui/session-driver/runtime-types";
 import {
+  isAppLanguage,
   isThemeMode,
   isThemePresetId,
   type AppView,
@@ -20,6 +21,7 @@ import {
   type SendChildThreadFollowUpInput,
   type SetChildSupervisionLoopInput,
   type StartThreadInput,
+  type AppLanguage,
   type ThemeMode,
   type ThemePresetId,
   type ThreadGrouping,
@@ -149,6 +151,13 @@ export function expectAppView(value: unknown, name = "view"): AppView {
 export function expectThreadGrouping(value: unknown, name = "grouping"): ThreadGrouping {
   if (!isThreadGrouping(value)) {
     throw new TypeError(`${name} must be time or workspace`);
+  }
+  return value;
+}
+
+export function expectAppLanguage(value: unknown, name = "language"): AppLanguage {
+  if (!isAppLanguage(value)) {
+    throw new TypeError(`${name} must be en or zh-CN`);
   }
   return value;
 }

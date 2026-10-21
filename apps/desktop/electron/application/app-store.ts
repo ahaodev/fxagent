@@ -59,12 +59,14 @@ import {
   type SessionExtensionNoticeRecord,
   type StartThreadInput,
   type StartupDiagnostic,
+  type AppLanguage,
   type ThemeMode,
   type ThemePresetId,
   type ThreadGrouping,
   type TranscriptMessage,
   type WorkspaceRecord,
   type WorkspaceSessionTarget,
+  isAppLanguage,
   isThemeMode,
   isThemePresetId,
   type CreateScheduledTaskInput,
@@ -1435,6 +1437,24 @@ export class DesktopAppStore {
     return this.emit();
   }
 
+  async setLanguage(language: AppLanguage): Promise<DesktopAppState> {
+    await this.initialize();
+    if (!isAppLanguage(language)) {
+      throw new Error(`Unsupported language: ${String(language)}`);
+    }
+    if (this.state.language === language) {
+      return structuredClone(this.state);
+    }
+    this.state = {
+      ...this.state,
+      language,
+      lastError: undefined,
+      revision: this.state.revision + 1,
+    };
+    await this.persistUiState();
+    return this.emit();
+  }
+
   async setThemePresetId(themePresetId: ThemePresetId): Promise<DesktopAppState> {
     await this.initialize();
     if (!isThemePresetId(themePresetId)) {
@@ -2228,6 +2248,7 @@ export class DesktopAppStore {
       workspaceOrder: persisted.workspaceOrder ?? [],
       themeMode: persisted.themeMode ?? this.state.themeMode,
       themePresetId: persisted.themePresetId ?? this.state.themePresetId,
+      language: persisted.language ?? this.state.language,
       sidebarCollapsed: persisted.sidebarCollapsed ?? this.state.sidebarCollapsed,
       threadGrouping: persisted.threadGrouping ?? "time",
       collapsedWorkspaceIds: persisted.collapsedWorkspaceIds ?? [],
@@ -4001,6 +4022,7 @@ export class DesktopAppStore {
         : undefined,
       themeMode: this.state.themeMode,
       themePresetId: this.state.themePresetId,
+      language: this.state.language,
       sidebarCollapsed: this.state.sidebarCollapsed || undefined,
       threadGrouping: this.state.threadGrouping,
       collapsedWorkspaceIds:

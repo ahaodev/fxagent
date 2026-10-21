@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import type { RuntimeSnapshot } from "@pi-gui/session-driver/runtime-types";
-import type { ModelSettingsScopeMode } from "../../../contracts/desktop-state";
+import type { AppLanguage, ModelSettingsScopeMode } from "../../../contracts/desktop-state";
+import { useI18n, languageNames } from "../../i18n";
 import { SettingsSegmented, SettingsSwitch } from "./settings-controls";
 import { SettingsGroup, SettingsRow } from "./settings-utils";
 
 interface SettingsGeneralSectionProps {
   readonly runtime?: RuntimeSnapshot;
+  readonly language: AppLanguage;
+  readonly onSetLanguage: (language: AppLanguage) => void;
   readonly modelSettingsScopeMode: ModelSettingsScopeMode;
   readonly integratedTerminalShell: string;
   readonly onSetModelSettingsScopeMode: (mode: ModelSettingsScopeMode) => void;
@@ -15,12 +18,15 @@ interface SettingsGeneralSectionProps {
 
 export function SettingsGeneralSection({
   runtime,
+  language,
+  onSetLanguage,
   modelSettingsScopeMode,
   integratedTerminalShell,
   onSetModelSettingsScopeMode,
   onSetIntegratedTerminalShell,
   onToggleSkillCommands,
 }: SettingsGeneralSectionProps) {
+  const { t } = useI18n();
   const [terminalShellDraft, setTerminalShellDraft] = useState(integratedTerminalShell);
 
   useEffect(() => {
@@ -35,6 +41,23 @@ export function SettingsGeneralSection({
 
   return (
     <>
+      <SettingsGroup title={t("settings.general.interfaceGroup")}>
+        <SettingsRow
+          title={t("settings.general.language.title")}
+          description={t("settings.general.language.description")}
+        >
+          <SettingsSegmented
+            label={t("settings.general.language.label")}
+            options={[
+              { value: "en", label: languageNames.en },
+              { value: "zh-CN", label: languageNames["zh-CN"] },
+            ]}
+            value={language}
+            onChange={onSetLanguage}
+          />
+        </SettingsRow>
+      </SettingsGroup>
+
       <SettingsGroup title="Agent">
         <SettingsRow
           title="Model settings scope"
