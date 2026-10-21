@@ -36,3 +36,5 @@ index.html
 
 # Local verification evidence (verify-pi-gui runs, proof workspaces)
 /.artifacts/
+
+.idea
