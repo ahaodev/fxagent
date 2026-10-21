@@ -3,11 +3,12 @@ import { appendFile, mkdir } from "node:fs/promises";
 import { dirname } from "node:path";
 import type { DesktopAppStore } from "../application/app-store";
 import type { NotificationPermissionService } from "./notification-permission";
-import type { DesktopAppState } from "../../contracts/desktop-state";
+import type { AppLanguage, DesktopAppState } from "../../contracts/desktop-state";
 import { sessionKey } from "@pi-gui/session-driver";
 import type { SessionDriverEvent, SessionRef } from "@pi-gui/session-driver";
 import { getSelectedSession } from "../../contracts/desktop-state";
 import { isSessionActivelyViewed } from "../conversation/session-visibility";
+import { nativeT, type NativeMessageKey } from "./native-messages";
 
 const MAX_COMPLETED_RUN_KEYS = 500;
 // An extension that throws on a frequent event repeats the same error notice; notify once per window.
@@ -150,7 +151,7 @@ export class NotificationManager {
       await this.showNotification(
         event.sessionRef,
         event.snapshot.title,
-        "Agent finished responding",
+        nativeT(this.nativeLanguage(), "native.notification.runCompleted"),
       );
       return;
     }
@@ -171,7 +172,7 @@ export class NotificationManager {
       await this.showNotification(
         event.sessionRef,
         this.titleForSession(event.sessionRef),
-        hostUiBody(event),
+        hostUiBody(event, this.nativeLanguage()),
       );
     }
   }
@@ -422,7 +423,15 @@ export class NotificationManager {
   }
 
   private titleForSession(sessionRef: SessionRef): string {
-    return this.sessionFromLatestState(sessionRef)?.title ?? "pi session";
+    return (
+      this.sessionFromLatestState(sessionRef)?.title ??
+      nativeT(this.nativeLanguage(), "native.notification.untitledSession")
+    );
+  }
+
+  /** Native text follows the latest store state; it is resolved when a notification is shown. */
+  private nativeLanguage(): AppLanguage {
+    return this.latestState?.language ?? "en";
   }
 }
 
@@ -437,9 +446,19 @@ function requiresAttention(event: Extract<SessionDriverEvent, { type: "hostUiReq
   );
 }
 
-function hostUiBody(event: Extract<SessionDriverEvent, { type: "hostUiRequest" }>): string {
+function hostUiBody(
+  event: Extract<SessionDriverEvent, { type: "hostUiRequest" }>,
+  language: AppLanguage,
+): string {
   if (event.request.kind === "notify") {
-    return `${event.request.level === "error" ? "Error" : "Warning"}: ${event.request.message}`;
+    const levelKey: NativeMessageKey =
+      event.request.level === "error"
+        ? "native.notification.levelError"
+        : "native.notification.levelWarning";
+    return nativeT(language, "native.notification.levelBody", {
+      level: nativeT(language, levelKey),
+      message: event.request.message,
+    });
   }
   if (
     event.request.kind === "confirm" ||
@@ -448,7 +467,7 @@ function hostUiBody(event: Extract<SessionDriverEvent, { type: "hostUiRequest" }
   ) {
     return event.request.title;
   }
-  return "Needs your input";
+  return nativeT(language, "native.notification.needsInput");
 }
 
 function sameSessionRef(left: SessionRef | undefined, right: SessionRef | undefined): boolean {

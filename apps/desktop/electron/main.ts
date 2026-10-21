@@ -54,9 +54,10 @@ import { NotificationManager } from "./platform/notification-manager";
 import { NotificationPermissionService } from "./platform/notification-permission";
 import { checkForUpdate, initUpdateChecker, openReleasesPage } from "./platform/update-checker";
 import { ThemeManager } from "./platform/theme-manager";
+import { nativeT } from "./platform/native-messages";
 import { windowBackgroundFor } from "../contracts/theme";
 import { TerminalService } from "./platform/terminal-service";
-import type { DesktopAppState, DesktopAppViewState } from "../contracts/desktop-state";
+import type { AppLanguage, DesktopAppState, DesktopAppViewState } from "../contracts/desktop-state";
 import {
   desktopCommands,
   desktopIpc,
@@ -340,6 +341,11 @@ function openExternalWebUrl(url: string): boolean {
   return true;
 }
 
+/** Language for native text (menu, dialogs, notifications); the store owns the persisted choice. */
+function nativeLanguage(): AppLanguage {
+  return store?.snapshot().language ?? "en";
+}
+
 /** MCP sign-in pages: any https URL, or http only on this machine (a local OAuth server). */
 function openMcpSignInUrl(url: string): void {
   const parsed = parseExternalWebUrl(url);
@@ -351,24 +357,31 @@ function openMcpSignInUrl(url: string): void {
     console.error(
       `Refusing to open an MCP sign-in URL${parsed ? ` on ${parsed.origin}` : " that is not http or https"}`,
     );
-    showMcpSignInUrl(url, "pi-gui opens only https links, or http links on this computer.");
+    showMcpSignInUrl(url, nativeT(nativeLanguage(), "native.dialog.mcpSignIn.reasonHttpsOnly"));
     return;
   }
   shell.openExternal(parsed.toString()).catch((error: unknown) => {
     console.error(`Failed to open an MCP sign-in URL on ${parsed.origin}`, error);
-    showMcpSignInUrl(parsed.toString(), "pi-gui could not open your browser.");
+    showMcpSignInUrl(
+      parsed.toString(),
+      nativeT(nativeLanguage(), "native.dialog.mcpSignIn.reasonBrowserFailed"),
+    );
   });
 }
 
 /** When the browser cannot be opened, the link is shown so the person can copy it. */
 function showMcpSignInUrl(url: string, reason: string): void {
+  const language = nativeLanguage();
   const window = mainWindow && canPublishToWindow(mainWindow) ? mainWindow : undefined;
   const options: MessageBoxOptions = {
     type: "warning",
     title: "pi-gui",
-    message: "Open this MCP sign-in link yourself",
-    detail: `${reason} Check the link before you open it:\n\n${url}`,
-    buttons: ["Copy link", "Close"],
+    message: nativeT(language, "native.dialog.mcpSignIn.message"),
+    detail: nativeT(language, "native.dialog.mcpSignIn.detail", { reason, url }),
+    buttons: [
+      nativeT(language, "native.dialog.mcpSignIn.copyLink"),
+      nativeT(language, "native.common.close"),
+    ],
     defaultId: 0,
     cancelId: 1,
   };
@@ -718,14 +731,15 @@ async function pickWorkspacePathViaDialog(
   parentWindow?: BrowserWindow | null,
 ): Promise<string | undefined> {
   const window = resolveDialogWindow(parentWindow);
+  const title = nativeT(nativeLanguage(), "native.dialog.openWorkspace.title");
   const result = window
     ? await dialog.showOpenDialog(window, {
         properties: ["openDirectory"],
-        title: "Open workspace folder",
+        title,
       })
     : await dialog.showOpenDialog({
         properties: ["openDirectory"],
-        title: "Open workspace folder",
+        title,
       });
   if (result.canceled || result.filePaths.length === 0) {
     return undefined;
@@ -761,12 +775,13 @@ async function pickWorkspaceViaDialog(
 }
 
 async function runManualUpdateCheck(): Promise<void> {
+  const language = nativeLanguage();
   const window = mainWindow && canPublishToWindow(mainWindow) ? mainWindow : undefined;
   const showDialog = (options: MessageBoxOptions) =>
     window ? dialog.showMessageBox(window, options) : dialog.showMessageBox(options);
 
   try {
-    const result = await checkForUpdate();
+    const result = await checkForUpdate(language);
 
     if (result.status === "update-available") {
       // The manual menu path always confirms with a dialog — a notification may
@@ -774,9 +789,16 @@ async function runManualUpdateCheck(): Promise<void> {
       const choice = await showDialog({
         type: "info",
         title: "pi-gui",
-        message: `Version ${result.latestVersion} is available.`,
-        detail: `You have ${result.currentVersion}.`,
-        buttons: ["Download", "Later"],
+        message: nativeT(language, "native.dialog.update.availableMessage", {
+          version: result.latestVersion,
+        }),
+        detail: nativeT(language, "native.dialog.update.availableDetail", {
+          version: result.currentVersion,
+        }),
+        buttons: [
+          nativeT(language, "native.dialog.update.download"),
+          nativeT(language, "native.dialog.update.later"),
+        ],
         defaultId: 0,
         cancelId: 1,
       });
@@ -790,8 +812,10 @@ async function runManualUpdateCheck(): Promise<void> {
       await showDialog({
         type: "info",
         title: "pi-gui",
-        message: `You're up to date on version ${result.currentVersion}.`,
-        buttons: ["OK"],
+        message: nativeT(language, "native.dialog.update.upToDate", {
+          version: result.currentVersion,
+        }),
+        buttons: [nativeT(language, "native.common.ok")],
       });
       return;
     }
@@ -799,23 +823,23 @@ async function runManualUpdateCheck(): Promise<void> {
     await showDialog({
       type: "warning",
       title: "pi-gui",
-      message: "Could not check for updates right now.",
+      message: nativeT(language, "native.dialog.update.checkFailed"),
       detail: result.message,
-      buttons: ["OK"],
+      buttons: [nativeT(language, "native.common.ok")],
     });
   } catch (error) {
     console.error("pi-gui: manual update check failed:", error);
     await showDialog({
       type: "warning",
       title: "pi-gui",
-      message: "Could not check for updates right now.",
+      message: nativeT(language, "native.dialog.update.checkFailed"),
       detail: error instanceof Error ? error.message : String(error),
-      buttons: ["OK"],
+      buttons: [nativeT(language, "native.common.ok")],
     }).catch(() => undefined);
   }
 }
 
-function installApplicationMenu(): void {
+function installApplicationMenu(language: AppLanguage): void {
   if (process.platform !== "darwin") {
     return;
   }
@@ -828,7 +852,7 @@ function installApplicationMenu(): void {
         { type: "separator" },
         {
           id: CHECK_FOR_UPDATES_MENU_ITEM_ID,
-          label: "Check for Updates…",
+          label: nativeT(language, "native.menu.app.checkForUpdates"),
           click: () => {
             void runManualUpdateCheck().catch((error: unknown) => {
               console.error("[main] runManualUpdateCheck failed", error);
@@ -846,10 +870,10 @@ function installApplicationMenu(): void {
       ],
     },
     {
-      label: "File",
+      label: nativeT(language, "native.menu.file.title"),
       submenu: [
         {
-          label: "New Thread",
+          label: nativeT(language, "native.menu.file.newThread"),
           accelerator: "CommandOrControl+N",
           click: () => {
             const window = BrowserWindow.getFocusedWindow() ?? mainWindow;
@@ -858,7 +882,7 @@ function installApplicationMenu(): void {
         },
         {
           id: NEW_WINDOW_MENU_ITEM_ID,
-          label: "New Window",
+          label: nativeT(language, "native.menu.file.newWindow"),
           accelerator: "CommandOrControl+Shift+N",
           click: () => {
             createAppWindow(windowOwner.foregroundView());
@@ -867,7 +891,7 @@ function installApplicationMenu(): void {
         { type: "separator" },
         {
           id: OPEN_FOLDER_MENU_ITEM_ID,
-          label: "Open Folder…",
+          label: nativeT(language, "native.menu.file.openFolder"),
           accelerator: "Command+O",
           click: () => {
             void pickWorkspaceViaDialog(mainWindow).catch((error: unknown) => {
@@ -881,16 +905,16 @@ function installApplicationMenu(): void {
     },
     { role: "editMenu" },
     {
-      label: "View",
+      label: nativeT(language, "native.menu.view.title"),
       submenu: [
         // Cmd+R toggles Review and Shift+Cmd+R renames the thread, so neither
         // reload has a shortcut.
         {
-          label: "Reload",
+          label: nativeT(language, "native.menu.view.reload"),
           click: () => BrowserWindow.getFocusedWindow()?.webContents.reload(),
         },
         {
-          label: "Force Reload",
+          label: nativeT(language, "native.menu.view.forceReload"),
           click: () => BrowserWindow.getFocusedWindow()?.webContents.reloadIgnoringCache(),
         },
         { role: "toggleDevTools" },
@@ -1055,11 +1079,17 @@ app
     integratedTerminalShell = (await store.getState()).integratedTerminalShell;
     nativeTheme.on("updated", refreshWindowBackgrounds);
     let windowBackgroundPresetId = store.snapshot().themePresetId;
+    let applicationMenuLanguage = store.snapshot().language;
     stopPruningTerminals = store.subscribe((state) => {
       integratedTerminalShell = state.integratedTerminalShell;
       if (state.themePresetId !== windowBackgroundPresetId) {
         windowBackgroundPresetId = state.themePresetId;
         refreshWindowBackgrounds();
+      }
+      // Only the language change rebuilds the menu; other state churn must not.
+      if (state.language !== applicationMenuLanguage) {
+        applicationMenuLanguage = state.language;
+        installApplicationMenu(state.language);
       }
       const workspacePaths = state.workspaces.map((workspace) => workspace.path);
       const workspacePathSignature = workspacePaths.join("\0");
@@ -1068,7 +1098,7 @@ app
         terminalService?.retainWorkspacePaths(workspacePaths);
       }
     });
-    installApplicationMenu();
+    installApplicationMenu(applicationMenuLanguage);
     if (process.env.PI_APP_TEST_MODE) {
       Object.assign(globalThis, {
         __PI_APP_TEST_HOOKS: {
@@ -1133,7 +1163,7 @@ app
     );
     stopNotifications = notificationManager.start();
     if (!isDev) {
-      stopUpdateChecker = initUpdateChecker();
+      stopUpdateChecker = initUpdateChecker(nativeLanguage);
     }
 
     registerDesktopIpc({
@@ -1171,7 +1201,7 @@ app
         openExternal: openExternalLink,
         pickWorkspace: (window) => pickWorkspaceViaDialog(window),
         createLoginCallbacks: (window) => createRuntimeLoginCallbacks(window),
-        probeCustomProviderModels,
+        probeCustomProviderModels: (input) => probeCustomProviderModels(input, nativeLanguage()),
         notificationPermission: () => notificationPermissionService,
         terminal: getTerminalService,
         optionalTerminal: () => terminalService,
@@ -1201,14 +1231,15 @@ app
         },
         pickComposerAttachments: async (window, existing = []) => {
           const parent = resolveDialogWindow(window);
+          const title = nativeT(nativeLanguage(), "native.dialog.attachFiles.title");
           const result = parent
             ? await dialog.showOpenDialog(parent, {
                 properties: ["openFile", "multiSelections"],
-                title: "Attach files",
+                title,
               })
             : await dialog.showOpenDialog({
                 properties: ["openFile", "multiSelections"],
-                title: "Attach files",
+                title,
               });
           if (result.canceled || result.filePaths.length === 0) {
             return undefined;
@@ -1502,7 +1533,7 @@ async function promptForText(
   });
 
   try {
-    await modal.loadURL(promptDataUrl(message, placeholder));
+    await modal.loadURL(promptDataUrl(message, placeholder, nativeLanguage()));
     modal.show();
     modal.focus();
 
@@ -1539,7 +1570,7 @@ async function promptForText(
   }
 }
 
-function promptDataUrl(message: string, placeholder: string): string {
+function promptDataUrl(message: string, placeholder: string, language: AppLanguage): string {
   const html = `<!doctype html><html><head><meta charset="utf-8" />
 <style>
   :root { color-scheme: light dark; }
@@ -1560,8 +1591,8 @@ function promptDataUrl(message: string, placeholder: string): string {
   <div class="msg">${escapeHtml(message)}</div>
   <input id="pi-prompt-input" type="text" placeholder="${escapeHtml(placeholder)}" autofocus />
   <div class="row">
-    <button id="pi-prompt-cancel" type="button">Cancel</button>
-    <button id="pi-prompt-ok" type="button">OK</button>
+    <button id="pi-prompt-cancel" type="button">${escapeHtml(nativeT(language, "native.common.cancel"))}</button>
+    <button id="pi-prompt-ok" type="button">${escapeHtml(nativeT(language, "native.common.ok"))}</button>
   </div>
   <script>
     (function () {
@@ -1603,10 +1634,11 @@ function escapeHtml(value: string): string {
 
 async function probeCustomProviderModels(
   input: CustomProviderProbeInput,
+  language: AppLanguage,
 ): Promise<CustomProviderProbeResult> {
   const baseUrl = input.baseUrl?.trim();
   if (!baseUrl || !isValidHttpBaseUrl(baseUrl)) {
-    return { ok: false, error: "Base URL must start with http:// or https://" };
+    return { ok: false, error: nativeT(language, "native.probe.invalidBaseUrl") };
   }
   const target = `${baseUrl.replace(/\/+$/, "")}/models`;
   const apiKey = input.apiKey?.trim();
@@ -1617,12 +1649,19 @@ async function probeCustomProviderModels(
       signal: AbortSignal.timeout(5000),
     });
     if (!response.ok) {
-      return { ok: false, error: `${response.status} ${response.statusText} from ${target}` };
+      return {
+        ok: false,
+        error: nativeT(language, "native.probe.httpStatus", {
+          status: response.status,
+          statusText: response.statusText,
+          target,
+        }),
+      };
     }
     const payload = (await response.json()) as unknown;
     const data = (payload as { data?: unknown }).data;
     if (!Array.isArray(data)) {
-      return { ok: false, error: `Response from ${target} is missing a "data" array` };
+      return { ok: false, error: nativeT(language, "native.probe.missingData", { target }) };
     }
     const models = data
       .map((entry) => {
@@ -1638,13 +1677,13 @@ async function probeCustomProviderModels(
       .filter((id): id is string => Boolean(id && id.length > 0));
     return { ok: true, models };
   } catch (error) {
-    return { ok: false, error: describeProbeError(error, target) };
+    return { ok: false, error: describeProbeError(error, target, language) };
   }
 }
 
-function describeProbeError(error: unknown, target: string): string {
+function describeProbeError(error: unknown, target: string, language: AppLanguage): string {
   if (error instanceof Error && error.name === "TimeoutError") {
-    return `Timed out after 5s contacting ${target}`;
+    return nativeT(language, "native.probe.timeout", { target });
   }
   if (error instanceof Error) {
     return error.message;

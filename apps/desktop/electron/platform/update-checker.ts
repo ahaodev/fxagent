@@ -1,4 +1,6 @@
 import { app, net, Notification, shell } from "electron";
+import type { AppLanguage } from "../../contracts/desktop-state";
+import { nativeT } from "./native-messages";
 
 // /releases/latest skips drafts and prereleases, so stable installs are only
 // told about stable releases.
@@ -32,13 +34,17 @@ export function showUpdateNotification(
   currentVersion: string,
   latestVersion: string,
   releaseUrl: string,
+  language: AppLanguage,
 ): void {
   if (!Notification.isSupported()) {
     return;
   }
   const notification = new Notification({
-    title: "pi-gui Release Available",
-    body: `Version ${latestVersion} is available (you have ${currentVersion}). Click to view the release.`,
+    title: nativeT(language, "native.notification.updateAvailableTitle"),
+    body: nativeT(language, "native.notification.updateAvailableBody", {
+      latestVersion,
+      currentVersion,
+    }),
   });
   notification.on("click", () => {
     void openReleasesPage(releaseUrl).catch((error: unknown) => {
@@ -53,7 +59,7 @@ export function showUpdateNotification(
  * never shows UI. Callers decide how to surface the result (auto path shows a
  * deduped notification, the manual menu path shows a dialog).
  */
-export async function checkForUpdate(): Promise<UpdateCheckResult> {
+export async function checkForUpdate(language: AppLanguage): Promise<UpdateCheckResult> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
   let res: Response;
@@ -65,22 +71,22 @@ export async function checkForUpdate(): Promise<UpdateCheckResult> {
   } catch (error) {
     const message =
       error instanceof Error && error.name === "AbortError"
-        ? "The update check timed out."
+        ? nativeT(language, "native.updateCheck.timedOut")
         : error instanceof Error
           ? error.message
-          : "The update check could not reach GitHub.";
+          : nativeT(language, "native.updateCheck.unreachable");
     return { status: "error", message };
   } finally {
     clearTimeout(timeout);
   }
 
   if (res.status === 404) {
-    return { status: "error", message: "No stable pi-gui release has been published yet." };
+    return { status: "error", message: nativeT(language, "native.updateCheck.noRelease") };
   }
   if (!res.ok) {
     return {
       status: "error",
-      message: `GitHub Releases returned ${res.status}.`,
+      message: nativeT(language, "native.updateCheck.httpStatus", { status: res.status }),
     };
   }
 
@@ -88,13 +94,13 @@ export async function checkForUpdate(): Promise<UpdateCheckResult> {
   try {
     release = (await res.json()) as GitHubRelease;
   } catch {
-    return { status: "error", message: "GitHub Releases returned an unreadable response." };
+    return { status: "error", message: nativeT(language, "native.updateCheck.unreadable") };
   }
 
   if (!release?.tag_name) {
     return {
       status: "error",
-      message: "GitHub Releases did not return any published versions.",
+      message: nativeT(language, "native.updateCheck.noVersions"),
     };
   }
 
@@ -119,19 +125,24 @@ export async function checkForUpdate(): Promise<UpdateCheckResult> {
   };
 }
 
-export function initUpdateChecker(): () => void {
+export function initUpdateChecker(getLanguage: () => AppLanguage): () => void {
   // Dedupe notifications per version so a still-unactioned update doesn't
   // re-notify on every 4-hour poll.
   let lastNotifiedVersion: string | undefined;
   const runAutoCheck = async () => {
-    const result = await checkForUpdate();
+    const result = await checkForUpdate(getLanguage());
     if (result.status === "error") {
       console.warn("Update check failed:", result.message);
       return;
     }
     if (result.status === "update-available" && result.latestVersion !== lastNotifiedVersion) {
       lastNotifiedVersion = result.latestVersion;
-      showUpdateNotification(result.currentVersion, result.latestVersion, result.releaseUrl);
+      showUpdateNotification(
+        result.currentVersion,
+        result.latestVersion,
+        result.releaseUrl,
+        getLanguage(),
+      );
     }
   };
 
