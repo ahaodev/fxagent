@@ -1,4 +1,5 @@
 import { ChatIcon, CloseIcon } from "../../../ui/icons";
+import { useI18n } from "../../../i18n";
 import type { TranscriptAnnotation } from "./annotation-prompt";
 
 /** "N annotations" above the composer; hovering or focusing it lists each quote and comment. */
@@ -9,8 +10,12 @@ export function AnnotationChip({
   readonly annotations: readonly TranscriptAnnotation[];
   readonly onRemove: (id: string) => void;
 }) {
+  const { t } = useI18n();
   if (annotations.length === 0) return null;
-  const label = `${annotations.length} annotation${annotations.length === 1 ? "" : "s"}`;
+  const label =
+    annotations.length === 1
+      ? t("composer.annotations.chipCountOne")
+      : t("composer.annotations.chipCountMany", { count: annotations.length });
   return (
     <div className="annotation-chip" data-testid="annotation-chip">
       <button className="annotation-chip__button" type="button">
@@ -29,7 +34,7 @@ export function AnnotationChip({
                 ) : null}
               </div>
               <button
-                aria-label={`Remove annotation ${index + 1}`}
+                aria-label={t("composer.annotations.removeNumbered", { number: index + 1 })}
                 className="annotation-chip__remove"
                 type="button"
                 onClick={() => onRemove(annotation.id)}

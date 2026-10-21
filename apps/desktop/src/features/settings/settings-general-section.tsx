@@ -58,40 +58,40 @@ export function SettingsGeneralSection({
         </SettingsRow>
       </SettingsGroup>
 
-      <SettingsGroup title="Agent">
+      <SettingsGroup title={t("settings.general.agentGroup")}>
         <SettingsRow
-          title="Model settings scope"
-          description="Apply the default model and enabled models everywhere, or set them per repo."
+          title={t("settings.general.modelScope.title")}
+          description={t("settings.general.modelScope.description")}
         >
           <SettingsSegmented
-            label="Model settings scope"
+            label={t("settings.general.modelScope.title")}
             options={[
-              { value: "app-global", label: "App global" },
-              { value: "per-repo", label: "Per repo" },
+              { value: "app-global", label: t("settings.general.modelScope.appGlobal") },
+              { value: "per-repo", label: t("settings.general.modelScope.perRepo") },
             ]}
             value={modelSettingsScopeMode}
             onChange={onSetModelSettingsScopeMode}
           />
         </SettingsRow>
         <SettingsRow
-          title="Skill slash commands"
-          description="Offer each skill as a slash command in the composer."
+          title={t("settings.general.skillCommands.title")}
+          description={t("settings.general.skillCommands.description")}
         >
           <SettingsSwitch
             checked={runtime?.settings.enableSkillCommands ?? true}
-            label="Enable skill slash commands"
+            label={t("settings.general.skillCommands.label")}
             onChange={onToggleSkillCommands}
           />
         </SettingsRow>
       </SettingsGroup>
 
-      <SettingsGroup title="Terminal">
+      <SettingsGroup title={t("settings.general.terminalGroup")}>
         <SettingsRow
-          title="Shell"
-          description="The shell the integrated terminal starts. Leave blank to use your login shell."
+          title={t("settings.general.shell.title")}
+          description={t("settings.general.shell.description")}
         >
           <input
-            aria-label="Shell of integrated terminal"
+            aria-label={t("settings.general.shell.label")}
             className="settings-text-input"
             placeholder="/bin/zsh"
             spellCheck={false}

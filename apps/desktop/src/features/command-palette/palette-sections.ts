@@ -1,3 +1,4 @@
+import { t } from "../../i18n";
 import type { PaletteFilter, PaletteItem, PaletteSection } from "./command-palette";
 import { rankByFuzzy, type RankedMatch } from "./fuzzy-match";
 
@@ -6,12 +7,15 @@ export type PaletteCandidate = Omit<PaletteItem, "titleMatches" | "detailMatches
 
 export type CommandFilter = "all" | "chats" | "workspaces" | "actions";
 
-export const COMMAND_FILTERS: readonly PaletteFilter<CommandFilter>[] = [
-  { id: "all", label: "All" },
-  { id: "chats", label: "Chats" },
-  { id: "workspaces", label: "Workspaces" },
-  { id: "actions", label: "Actions" },
-];
+/** Built per render so the labels follow the current language. */
+export function commandFilters(): readonly PaletteFilter<CommandFilter>[] {
+  return [
+    { id: "all", label: t("commandPalette.label.all") },
+    { id: "chats", label: t("commandPalette.label.chats") },
+    { id: "workspaces", label: t("commandPalette.label.workspaces") },
+    { id: "actions", label: t("commandPalette.label.actions") },
+  ];
+}
 
 const RECENT_CHAT_COUNT = 5;
 const ALL_FILTER_LIMITS = { chats: 8, workspaces: 5, actions: 8 } as const;
@@ -53,24 +57,36 @@ export function buildCommandSections(input: {
   if (query.trim() === "") {
     switch (filter) {
       case "chats":
-        return [{ id: "chats", label: "Chats", items: chats.slice(0, SINGLE_FILTER_LIMIT) }];
+        return [
+          {
+            id: "chats",
+            label: t("commandPalette.label.chats"),
+            items: chats.slice(0, SINGLE_FILTER_LIMIT),
+          },
+        ];
       case "workspaces":
-        return [{ id: "workspaces", label: "Workspaces", items: workspaces }];
+        return [
+          { id: "workspaces", label: t("commandPalette.label.workspaces"), items: workspaces },
+        ];
       case "actions":
-        return [{ id: "actions", label: "Actions", items: actions }];
+        return [{ id: "actions", label: t("commandPalette.label.actions"), items: actions }];
       case "all":
         return [
-          { id: "recents", label: "Recents", items: chats.slice(0, RECENT_CHAT_COUNT) },
-          { id: "actions", label: "Actions", items: actions },
+          {
+            id: "recents",
+            label: t("commandPalette.label.recents"),
+            items: chats.slice(0, RECENT_CHAT_COUNT),
+          },
+          { id: "actions", label: t("commandPalette.label.actions"), items: actions },
         ];
     }
   }
 
   const single = filter !== "all";
   const kinds = [
-    { id: "chats", label: "Chats", candidates: chats },
-    { id: "workspaces", label: "Workspaces", candidates: workspaces },
-    { id: "actions", label: "Actions", candidates: actions },
+    { id: "chats", label: t("commandPalette.label.chats"), candidates: chats },
+    { id: "workspaces", label: t("commandPalette.label.workspaces"), candidates: workspaces },
+    { id: "actions", label: t("commandPalette.label.actions"), candidates: actions },
   ] as const;
   return kinds
     .filter((kind) => !single || kind.id === filter)
@@ -110,7 +126,7 @@ export function buildFileSections(input: {
     return [
       {
         id: "open-files",
-        label: "Open files",
+        label: t("commandPalette.label.openFiles"),
         items: [...openTabs].reverse().map(toCandidate),
       },
     ];
@@ -126,7 +142,7 @@ export function buildFileSections(input: {
       detailMatches: match.positions.filter((position) => position < directory.length),
     };
   });
-  return [{ id: "files", label: "Files", items }];
+  return [{ id: "files", label: t("commandPalette.label.files"), items }];
 }
 
 export function buildListSection(input: {

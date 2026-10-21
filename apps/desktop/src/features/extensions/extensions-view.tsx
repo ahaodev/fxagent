@@ -3,19 +3,27 @@ import type {
   ExtensionCommandCompatibilityRecord,
   WorkspaceRecord,
 } from "../../../contracts/desktop-state";
+import { t, useI18n, type MessageKey } from "../../i18n";
 import { ExtensionIcon } from "../../ui/icons";
 import { SettingsGroup, SettingsRow } from "../settings/settings-utils";
 import {
+  extensionGroupKey,
+  extensionGroupKeyLabel,
   extensionGroupLabel,
   isPiAddonExtension,
   isPiGuiBuiltinExtension,
-  PI_ADDONS_LABEL,
-  PI_GUI_TOOLS_LABEL,
+  type ExtensionGroupKey,
 } from "./extension-display";
 import { displayPath, ResourceDetail } from "./resource-detail";
 import { ResourceEmptyState, ResourceList, type ResourceListGroup } from "./resource-list";
 
-const GROUP_ORDER = ["Workspace", "User", "This session", PI_ADDONS_LABEL, PI_GUI_TOOLS_LABEL];
+const GROUP_ORDER: readonly ExtensionGroupKey[] = [
+  "project",
+  "user",
+  "temporary",
+  "pi-addons",
+  "pi-gui-tools",
+];
 
 interface ExtensionsTabProps {
   readonly workspace: WorkspaceRecord;
@@ -39,16 +47,15 @@ export function ExtensionsTab({
   onToggleExtension,
   onOpenExtensionFolder,
 }: ExtensionsTabProps) {
+  const { t } = useI18n();
   // The list stays mounted under an open detail so expanded groups, scroll and focus survive.
   const list =
     extensions.length === 0 ? (
       <ResourceEmptyState
-        title={searching ? "No extensions match" : "No extensions yet"}
-        body={
-          searching
-            ? "Try another name, command or tool."
-            : "Extensions are discovered in this workspace and your user extension folders. Refresh after adding one."
+        title={
+          searching ? t("extensions.list.emptyTitleSearching") : t("extensions.list.emptyTitle")
         }
+        body={searching ? t("extensions.list.emptyBodySearching") : t("extensions.list.emptyBody")}
       />
     ) : (
       <ResourceList
@@ -87,6 +94,7 @@ function ExtensionDetail({
 }: Omit<ExtensionsTabProps, "extensions" | "searching" | "selected"> & {
   readonly selected: RuntimeExtensionRecord;
 }) {
+  const { t } = useI18n();
   const hasFolder = isFolderExtension(selected);
   const compatibilityRecords = commandCompatibility
     .filter((record) => record.extensionPath === selected.path)
@@ -100,11 +108,11 @@ function ExtensionDetail({
             type="button"
             onClick={() => onOpenExtensionFolder(selected.path)}
           >
-            Open folder
+            {t("extensions.detail.openFolder")}
           </button>
         ) : null
       }
-      backLabel="All extensions"
+      backLabel={t("extensions.list.back")}
       enabled={selected.enabled}
       icon={<ExtensionIcon />}
       subtitle={selected.sourceInfo.source}
@@ -121,34 +129,40 @@ function ExtensionDetail({
       ) : null}
       <SettingsGroup>
         <SettingsRow
-          title="Source"
+          title={t("extensions.detail.source")}
           description={
             isPiAddonExtension(selected)
-              ? "Ships with pi; this switch also applies to pi in the terminal"
+              ? t("extensions.detail.sourceBuiltin")
               : selected.sourceInfo.origin === "package"
-                ? "Installed as a package"
-                : "Loaded from a file"
+                ? t("extensions.detail.sourcePackage")
+                : t("extensions.detail.sourceFile")
           }
         >
           <span className="settings-row__value">{extensionGroupLabel(selected)}</span>
         </SettingsRow>
         {isPiGuiBuiltinExtension(selected) || isPiAddonExtension(selected) ? null : (
-          <SettingsRow title="Location">
+          <SettingsRow title={t("extensions.detail.location")}>
             <code className="resource-detail__code" title={selected.path}>
               {displayPath(selected.path, workspace.path)}
             </code>
           </SettingsRow>
         )}
       </SettingsGroup>
-      <ExtensionContributionSection title="Tools" items={selected.tools.map((tool) => tool.name)} />
+      <ExtensionContributionSection
+        title={t("extensions.detail.tools")}
+        items={selected.tools.map((tool) => tool.name)}
+      />
       {selected.commands.length > 0 ? (
         <ExtensionCompatibilitySection
           commands={selected.commands}
           compatibilityRecords={compatibilityRecords}
         />
       ) : null}
-      <ExtensionContributionSection title="Flags" items={selected.flags} />
-      <ExtensionContributionSection title="Shortcuts" items={selected.shortcuts} />
+      <ExtensionContributionSection title={t("extensions.detail.flags")} items={selected.flags} />
+      <ExtensionContributionSection
+        title={t("extensions.detail.shortcuts")}
+        items={selected.shortcuts}
+      />
       <ExtensionDiagnostics diagnostics={selected.diagnostics} />
     </ResourceDetail>
   );
@@ -158,10 +172,10 @@ function groupExtensions(
   extensions: readonly RuntimeExtensionRecord[],
   onToggleExtension: (path: string, enabled: boolean) => void,
 ): readonly ResourceListGroup[] {
-  return GROUP_ORDER.map((label) => ({
-    label,
+  return GROUP_ORDER.map((key) => ({
+    label: extensionGroupKeyLabel(key),
     items: extensions
-      .filter((extension) => extensionGroupLabel(extension) === label)
+      .filter((extension) => extensionGroupKey(extension) === key)
       .map((extension) => ({
         id: extension.path,
         title: extension.displayName,
@@ -178,15 +192,20 @@ function groupExtensions(
 function describeExtension(extension: RuntimeExtensionRecord): string {
   if (extension.description) return extension.description;
   const parts = [
-    countLabel(extension.tools.length, "tool"),
-    countLabel(extension.commands.length, "command"),
-    countLabel(extension.diagnostics.length, "issue"),
+    countLabel(extension.tools.length, "extensions.list.tools", "extensions.list.toolsOne"),
+    countLabel(
+      extension.commands.length,
+      "extensions.list.commands",
+      "extensions.list.commandsOne",
+    ),
+    countLabel(extension.diagnostics.length, "extensions.list.issues", "extensions.list.issuesOne"),
   ].filter(Boolean);
   return parts.length > 0 ? parts.join(" · ") : extension.sourceInfo.source;
 }
 
-function countLabel(count: number, noun: string): string {
-  return count === 0 ? "" : `${count} ${noun}${count === 1 ? "" : "s"}`;
+function countLabel(count: number, many: MessageKey, one: MessageKey): string {
+  if (count === 0) return "";
+  return t(count === 1 ? one : many, { count });
 }
 
 function isFolderExtension(extension: RuntimeExtensionRecord): boolean {
@@ -230,9 +249,10 @@ function ExtensionDiagnostics({
 }: {
   readonly diagnostics: RuntimeExtensionRecord["diagnostics"];
 }) {
+  const { t } = useI18n();
   if (diagnostics.length === 0) return null;
   return (
-    <SettingsGroup title="Diagnostics">
+    <SettingsGroup title={t("extensions.detail.diagnostics")}>
       {diagnostics.map((diagnostic, index) => (
         <div
           className={`activity-item activity-item--${diagnostic.type === "error" ? "error" : "info"}`}
@@ -253,6 +273,7 @@ function ExtensionCompatibilitySection({
   readonly commands: readonly string[];
   readonly compatibilityRecords: readonly ExtensionCommandCompatibilityRecord[];
 }) {
+  const { t } = useI18n();
   const supported = compatibilityRecords.filter((record) => record.status === "supported");
   const terminalOnly = compatibilityRecords.filter((record) => record.status === "terminal-only");
   const unknown = commands.filter((commandName) =>
@@ -264,13 +285,13 @@ function ExtensionCompatibilitySection({
 
   return (
     <SettingsGroup
-      title="Commands"
-      description="Whether each command works in the app is learned the first time it runs here."
+      title={t("extensions.detail.commands")}
+      description={t("extensions.detail.commandsDescription")}
     >
       <div className="resource-detail__tokens">
         {supported.map((record) => (
           <code className="resource-detail__token" key={`supported:${record.commandName}`}>
-            {record.commandName} · GUI-compatible
+            {t("extensions.commands.guiCompatible", { command: record.commandName })}
           </code>
         ))}
         {terminalOnly.map((record) => (
@@ -278,12 +299,12 @@ function ExtensionCompatibilitySection({
             className="resource-detail__token resource-detail__token--warning"
             key={`terminal:${record.commandName}`}
           >
-            {record.commandName} · Terminal-only
+            {t("extensions.commands.terminalOnly", { command: record.commandName })}
           </code>
         ))}
         {unknown.map((commandName) => (
           <code className="resource-detail__token" key={`unknown:${commandName}`}>
-            {commandName} · Unknown
+            {t("extensions.commands.unknown", { command: commandName })}
           </code>
         ))}
       </div>

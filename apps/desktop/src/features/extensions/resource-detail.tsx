@@ -1,4 +1,5 @@
 import { useEffect, useRef, type ReactNode } from "react";
+import { useI18n } from "../../i18n";
 import { SettingsSwitch } from "../settings/settings-controls";
 
 /** Drill-in page for one skill or extension, in the style of Codex's Hooks detail. */
@@ -25,6 +26,7 @@ export function ResourceDetail({
   readonly children: ReactNode;
 }) {
   const backButtonRef = useRef<HTMLButtonElement>(null);
+  const { t } = useI18n();
   useEffect(() => {
     // The row that opened this page is gone, so keyboard focus starts here instead of the body.
     backButtonRef.current?.focus();
@@ -62,7 +64,7 @@ export function ResourceDetail({
           <SettingsSwitch
             checked={enabled}
             disabled={!onToggle}
-            label="Enabled"
+            label={t("extensions.detail.enabled")}
             onChange={(next) => onToggle?.(next)}
           />
         </div>

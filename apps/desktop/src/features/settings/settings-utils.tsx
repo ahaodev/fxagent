@@ -3,22 +3,24 @@ import type {
   RuntimeSettingsSnapshot,
   RuntimeSnapshot,
 } from "@pi-gui/session-driver/runtime-types";
+import { t, type MessageKey } from "../../i18n";
 
-export const THINKING_LEVELS: NonNullable<RuntimeSettingsSnapshot["defaultThinkingLevel"]>[] = [
-  "low",
-  "medium",
-  "high",
-  "xhigh",
-  "max",
-];
+type ThinkingLevel = NonNullable<RuntimeSettingsSnapshot["defaultThinkingLevel"]>;
 
-export function labelForThinking(
-  level: NonNullable<RuntimeSettingsSnapshot["defaultThinkingLevel"]>,
-): string {
-  if (level === "xhigh") {
-    return "Extra High";
-  }
-  return level.charAt(0).toUpperCase() + level.slice(1);
+export const THINKING_LEVELS: ThinkingLevel[] = ["low", "medium", "high", "xhigh", "max"];
+
+const THINKING_LEVEL_KEYS: Record<ThinkingLevel, MessageKey> = {
+  off: "settings.utils.thinking.off",
+  minimal: "settings.utils.thinking.minimal",
+  low: "settings.utils.thinking.low",
+  medium: "settings.utils.thinking.medium",
+  high: "settings.utils.thinking.high",
+  xhigh: "settings.utils.thinking.xhigh",
+  max: "settings.utils.thinking.max",
+};
+
+export function labelForThinking(level: ThinkingLevel): string {
+  return t(THINKING_LEVEL_KEYS[level]);
 }
 
 export function filterProviders(
@@ -139,21 +141,27 @@ export function ProviderRow({
 function describeProviderStatus(provider: RuntimeSnapshot["providers"][number]): string {
   switch (provider.authSource) {
     case "oauth":
-      return "OAuth · connected";
+      return t("settings.utils.provider.oauthConnected");
     case "auth_file":
-      return "API key · connected";
+      return t("settings.utils.provider.apiKeyConnected");
     case "env":
-      return "Environment variable · connected";
+      return t("settings.utils.provider.envConnected");
     case "external":
-      return provider.hasAuth ? "Configured externally · connected" : "Configure externally";
+      return provider.hasAuth
+        ? t("settings.utils.provider.externalConnected")
+        : t("settings.utils.provider.configureExternally");
     default:
       if (provider.oauthSupported) {
-        return provider.apiKeySetupSupported ? "OAuth or API key" : "OAuth";
+        return provider.apiKeySetupSupported
+          ? t("settings.utils.provider.oauthOrApiKey")
+          : t("settings.utils.provider.oauth");
       }
       if (provider.apiKeySetupSupported) {
-        return "API key";
+        return t("settings.utils.provider.apiKey");
       }
-      return provider.authType === "api_key" ? "API key" : "Built in";
+      return provider.authType === "api_key"
+        ? t("settings.utils.provider.apiKey")
+        : t("settings.utils.provider.builtIn");
   }
 }
 
@@ -171,12 +179,22 @@ function resolveProviderActions(
   onConfigureApiKey: (provider: RuntimeSnapshot["providers"][number]) => void,
 ): readonly ProviderAction[] {
   if (provider.authSource === "oauth") {
-    return [{ disabled: false, label: "Logout", onClick: () => onLogoutProvider(provider.id) }];
+    return [
+      {
+        disabled: false,
+        label: t("settings.utils.provider.logout"),
+        onClick: () => onLogoutProvider(provider.id),
+      },
+    ];
   }
 
   const actions: ProviderAction[] = [];
   if (provider.oauthSupported && provider.authSource === "none") {
-    actions.push({ disabled: false, label: "Login", onClick: () => onLoginProvider(provider.id) });
+    actions.push({
+      disabled: false,
+      label: t("settings.utils.provider.login"),
+      onClick: () => onLoginProvider(provider.id),
+    });
   }
   if (
     provider.apiKeySetupSupported &&
@@ -184,7 +202,10 @@ function resolveProviderActions(
   ) {
     actions.push({
       disabled: false,
-      label: provider.authSource === "auth_file" ? "Manage" : "Set API key",
+      label:
+        provider.authSource === "auth_file"
+          ? t("settings.utils.provider.manage")
+          : t("settings.utils.provider.setApiKey"),
       onClick: () => onConfigureApiKey(provider),
     });
   }
@@ -192,5 +213,5 @@ function resolveProviderActions(
     return actions;
   }
 
-  return [{ disabled: true, label: "Configure externally" }];
+  return [{ disabled: true, label: t("settings.utils.provider.configureExternally") }];
 }

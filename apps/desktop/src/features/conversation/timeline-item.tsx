@@ -37,6 +37,7 @@ import {
   TerminalIcon,
 } from "../../ui/icons";
 import { extensionToLanguage } from "../../ui/syntax-highlight";
+import { t, useI18n } from "../../i18n";
 
 export function TimelineItem({
   item,
@@ -141,6 +142,7 @@ function TimelineMessage({
   readonly annotationMarkers?: readonly AnnotationMarker[];
   readonly onOpenAnnotation?: OpenAnnotation;
 }) {
+  const { t } = useI18n();
   const articleRef = useRef<HTMLElement | null>(null);
   const annotated = useMemo(
     () => (item.role === "user" ? parseAnnotatedPrompt(item.text) : null),
@@ -163,7 +165,7 @@ function TimelineMessage({
         <div className="timeline-item__user-stack">
           {scheduledOrigin ? (
             <div className="timeline-item__scheduled-origin" data-testid="sent-by-scheduled-task">
-              Sent by scheduled task
+              {t("conversation.timelineItem.sentByScheduledTask")}
             </div>
           ) : null}
           <div className="timeline-item__bubble">
@@ -174,7 +176,10 @@ function TimelineMessage({
                     <ImageAttachmentThumb
                       className="timeline-item__attachment timeline-item__attachment--image"
                       key={`${item.id}:${index}`}
-                      name={attachment.name ?? `Attachment ${index + 1}`}
+                      name={
+                        attachment.name ??
+                        t("conversation.timelineItem.attachmentFallbackName", { index: index + 1 })
+                      }
                       src={`data:${attachment.mimeType};base64,${attachment.data}`}
                     />
                   ) : (
@@ -205,7 +210,9 @@ function TimelineMessage({
     return (
       <article className="timeline-item timeline-item--summary-card">
         <div className="timeline-item__summary-eyebrow">
-          {item.role === "branchSummary" ? "Branch summary" : "Compaction summary"}
+          {item.role === "branchSummary"
+            ? t("conversation.timelineItem.branchSummary")
+            : t("conversation.timelineItem.compactionSummary")}
         </div>
         <MessageMarkdown text={item.text} />
       </article>
@@ -230,16 +237,18 @@ function TimelineMessage({
             className="timeline-item__action"
             title={
               onForkFromMessage
-                ? "Fork conversation from this point"
-                : "Fork is available when the run finishes"
+                ? t("conversation.timelineItem.forkTitle")
+                : t("conversation.timelineItem.forkUnavailable")
             }
-            aria-label="Fork conversation from this point"
+            aria-label={t("conversation.timelineItem.forkTitle")}
             data-testid="fork-from-message"
             disabled={!onForkFromMessage}
             onClick={() => onForkFromMessage?.(sourceMessageIndex, item.text)}
           >
             <ForkIcon />
-            <span className="timeline-item__action-label">Fork</span>
+            <span className="timeline-item__action-label">
+              {t("conversation.timelineItem.fork")}
+            </span>
           </button>
         </div>
       ) : null}
@@ -269,6 +278,7 @@ function TimelineToolCallItem({
   readonly onToggle?: (callId: string) => void;
   readonly onViewFileInDiff?: (path: string) => void;
 }) {
+  const { t } = useI18n();
   const hasContent = item.input !== undefined || item.output !== undefined;
   // An extension's tool shows the label it registered instead of a guess from its name.
   const extensionLabel = useExtensionToolLabel(item.toolName);
@@ -326,7 +336,7 @@ function TimelineToolCallItem({
         </button>
         {filePath && onViewFileInDiff ? (
           <button
-            aria-label={`View ${filePath} in changes`}
+            aria-label={t("conversation.timelineItem.viewInChanges", { path: filePath })}
             className="icon-button timeline-tool__view-in-diff"
             data-testid="timeline-tool-view-in-diff"
             type="button"
@@ -346,7 +356,10 @@ function TimelineToolCallItem({
             <ImageAttachmentThumb
               className="timeline-tool__image"
               key={`${item.callId}:${index}`}
-              name={`${item.toolName} image ${index + 1}`}
+              name={t("conversation.timelineItem.toolImageName", {
+                toolName: item.toolName,
+                index: index + 1,
+              })}
               src={toolOutputImageSrc(image)}
             />
           ))}
@@ -371,7 +384,7 @@ function TimelineToolCallItem({
                   className="icon-button timeline-tool__copy"
                   type="button"
                   onClick={handleCopy}
-                  aria-label="Copy"
+                  aria-label={t("conversation.timelineItem.copy")}
                 >
                   <CopyIcon />
                 </button>
@@ -385,7 +398,7 @@ function TimelineToolCallItem({
                   className="icon-button timeline-tool__copy"
                   type="button"
                   onClick={handleCopy}
-                  aria-label="Copy"
+                  aria-label={t("conversation.timelineItem.copy")}
                 >
                   <CopyIcon />
                 </button>
@@ -423,7 +436,7 @@ function buildCompactLabel(
   if (isWriteTool(item.toolName)) {
     const filename = extractFilename(item.input);
     if (filename) {
-      return `Edited ${shortenPath(filename)}`;
+      return t("conversation.timelineItem.editedFile", { path: shortenPath(filename) });
     }
   }
   return item.label;
@@ -474,15 +487,20 @@ function formatToolContent(input: unknown, output: unknown): string {
 }
 
 function statusLabel(status: "running" | "success" | "error") {
-  if (status === "running") return "running";
-  if (status === "success") return "done";
-  return "failed";
+  if (status === "running") return t("conversation.timelineItem.statusRunning");
+  if (status === "success") return t("conversation.timelineItem.statusDone");
+  return t("conversation.timelineItem.statusFailed");
 }
 
 function TimelineTurnMarkerItem({ item }: { readonly item: TimelineTurnMarker }) {
+  const { t } = useI18n();
   return (
     <div className="timeline-turn-marker" data-testid="timeline-turn-marker">
-      <span className="timeline-turn-marker__label">{`Worked for ${formatWorkedDuration(item.durationMs)}`}</span>
+      <span className="timeline-turn-marker__label">
+        {t("conversation.timelineItem.workedFor", {
+          duration: formatWorkedDuration(item.durationMs),
+        })}
+      </span>
     </div>
   );
 }
@@ -490,16 +508,20 @@ function TimelineTurnMarkerItem({ item }: { readonly item: TimelineTurnMarker })
 function formatWorkedDuration(durationMs: number): string {
   const totalSeconds = Math.max(1, Math.round(durationMs / 1000));
   if (totalSeconds < 60) {
-    return `${totalSeconds}s`;
+    return t("conversation.timelineItem.durationSeconds", { seconds: totalSeconds });
   }
   const minutes = Math.floor(totalSeconds / 60);
   const seconds = totalSeconds % 60;
   if (minutes < 60) {
-    return seconds > 0 ? `${minutes}m ${seconds}s` : `${minutes}m`;
+    return seconds > 0
+      ? t("conversation.timelineItem.durationMinutesSeconds", { minutes, seconds })
+      : t("conversation.timelineItem.durationMinutes", { minutes });
   }
   const hours = Math.floor(minutes / 60);
   const remMinutes = minutes % 60;
-  return remMinutes > 0 ? `${hours}h ${remMinutes}m` : `${hours}h`;
+  return remMinutes > 0
+    ? t("conversation.timelineItem.durationHoursMinutes", { hours, minutes: remMinutes })
+    : t("conversation.timelineItem.durationHours", { hours });
 }
 
 function TimelineSummaryItem({ item }: { readonly item: TimelineSummary }) {

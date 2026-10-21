@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { ReviewFileEntry, ReviewFileStatus } from "../../../contracts/review";
+import { useI18n, type MessageKey } from "../../i18n";
 import { ChevronDownIcon, ChevronRightIcon, MinusIcon, PlusIcon, SearchIcon } from "../../ui/icons";
 import { buildFileTree, filterWorkspaceFiles, type FileTreeNode } from "./file-tree";
 
@@ -28,6 +29,7 @@ export function ReviewFileTree({
   onToggleReviewed,
   onStage,
 }: ReviewFileTreeProps) {
+  const { t } = useI18n();
   const [query, setQuery] = useState("");
   const [collapsed, setCollapsed] = useState<ReadonlySet<string>>(new Set());
   const listRef = useRef<HTMLDivElement | null>(null);
@@ -107,8 +109,8 @@ export function ReviewFileTree({
               <button
                 className="icon-button review-tree__stage"
                 type="button"
-                aria-label="Unstage"
-                title="Unstage file"
+                aria-label={t("workbench.reviewTree.unstage")}
+                title={t("workbench.reviewTree.unstageFile")}
                 disabled={busy || stale || file.conflicted}
                 onClick={() => onStage(file, "unstage")}
               >
@@ -119,8 +121,8 @@ export function ReviewFileTree({
               <button
                 className="icon-button review-tree__stage"
                 type="button"
-                aria-label="Stage"
-                title="Stage file"
+                aria-label={t("workbench.reviewTree.stage")}
+                title={t("workbench.reviewTree.stageFile")}
                 disabled={busy || stale || file.conflicted}
                 onClick={() => onStage(file, "stage")}
               >
@@ -130,7 +132,7 @@ export function ReviewFileTree({
           </span>
         ) : null}
         <input
-          aria-label={`Mark ${file.path} reviewed`}
+          aria-label={t("workbench.reviewTree.markReviewed", { path: file.path })}
           className="diff-panel__reviewed-checkbox"
           data-testid={`diff-panel-reviewed-${file.path}`}
           type="checkbox"
@@ -140,7 +142,9 @@ export function ReviewFileTree({
         />
         <span
           className={`review-tree__status review-tree__status--${file.conflicted ? "conflicted" : file.status}`}
-          title={file.conflicted ? "Conflicted" : file.status}
+          title={
+            file.conflicted ? t("workbench.reviewTree.conflicted") : t(STATUS_KEYS[file.status])
+          }
         >
           {statusLetter(file.conflicted ? "conflicted" : file.status)}
         </span>
@@ -149,26 +153,29 @@ export function ReviewFileTree({
   };
 
   return (
-    <section className="review-tree" aria-label="Changed files">
+    <section className="review-tree" aria-label={t("workbench.reviewTree.label")}>
       <div className="review-tree__header">
         <label className="review-tree__filter">
           <SearchIcon />
           <input
-            aria-label="Filter changed files"
-            placeholder="Filter files…"
+            aria-label={t("workbench.reviewTree.filterChanged")}
+            placeholder={t("workbench.reviewTree.filterPlaceholder")}
             value={query}
             onChange={(event) => setQuery(event.target.value)}
           />
         </label>
         <span className="review-tree__counter" data-testid="diff-panel-counter">
-          Reviewed {reviewedCount} of {files.length}
+          {t("workbench.reviewTree.reviewedCount", {
+            reviewed: reviewedCount,
+            total: files.length,
+          })}
         </span>
       </div>
       <div className="review-tree__list diff-panel__file-list" ref={listRef}>
         {tree.length ? (
           tree.map((node) => renderNode(node, 0))
         ) : (
-          <div className="diff-panel__empty">No files match.</div>
+          <div className="diff-panel__empty">{t("workbench.reviewTree.noMatches")}</div>
         )}
       </div>
     </section>
@@ -187,6 +194,18 @@ export function reviewTreeOrder(files: readonly ReviewFileEntry[]): readonly str
   walk(buildFileTree(files.map((file) => file.path)));
   return order;
 }
+
+/** The status word in the tree's tooltip; the letter badge itself stays Git's letter. */
+const STATUS_KEYS = {
+  added: "workbench.reviewTree.status.added",
+  copied: "workbench.reviewTree.status.copied",
+  deleted: "workbench.reviewTree.status.deleted",
+  modified: "workbench.reviewTree.status.modified",
+  renamed: "workbench.reviewTree.status.renamed",
+  untracked: "workbench.reviewTree.status.untracked",
+  conflicted: "workbench.reviewTree.conflicted",
+  typechanged: "workbench.reviewTree.status.typechanged",
+} as const satisfies Record<ReviewFileStatus, MessageKey>;
 
 function statusLetter(status: ReviewFileStatus): string {
   switch (status) {

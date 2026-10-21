@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { t } from "../i18n";
 import { HighlightedLine } from "./highlighted-line";
 import { MAX_HIGHLIGHTED_LINES } from "./syntax-highlight";
 
@@ -48,6 +49,7 @@ export function InlineDiff({
 }
 
 function parseDiff(diff: string, unmodifiedGaps: boolean): DiffLine[] {
+  // Runs during render, so `t` reads the language currently shown.
   const lines = diff.split("\n");
   // A patch ends with a newline; that final empty piece is not a blank context line.
   if (lines.at(-1) === "") lines.pop();
@@ -77,7 +79,10 @@ function parseDiff(diff: string, unmodifiedGaps: boolean): DiffLine[] {
       if (skipped > 0)
         result.push({
           type: "unmodified",
-          content: `${skipped} unmodified ${skipped === 1 ? "line" : "lines"}`,
+          content:
+            skipped === 1
+              ? t("app.diff.unmodifiedLine", { count: skipped })
+              : t("app.diff.unmodifiedLines", { count: skipped }),
         });
       if (deletesOnly) lineNumber += 1;
       nextUnshown = lineNumber;

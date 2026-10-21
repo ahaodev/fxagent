@@ -14,6 +14,7 @@ import type {
   CustomProviderConfig,
   DesktopNotificationPermissionStatus,
 } from "../../../contracts/ipc";
+import { useI18n } from "../../i18n";
 import { SettingsAppearanceSection } from "./settings-appearance-section";
 import { SettingsGeneralSection } from "./settings-general-section";
 import { type McpSettingsActions, SettingsMcpSection } from "./settings-mcp-section";
@@ -103,13 +104,14 @@ export function SettingsView({
   onSetEnableTransparency,
   mcpActions,
 }: SettingsViewProps) {
+  const { t } = useI18n();
   const definition = settingsSectionDefinition(section);
   const header = (
     <header className="view-header">
       <div>
         <h1 className="view-header__title">{definition.title}</h1>
         <p className="view-header__body">
-          {definition.description(workspace?.name ?? "this workspace")}
+          {definition.description(workspace?.name ?? t("settings.view.thisWorkspace"))}
         </p>
       </div>
       {headerAccessory ? <div className="view-header__actions">{headerAccessory}</div> : null}
@@ -124,9 +126,11 @@ export function SettingsView({
           <div className="settings-group">
             <div className="settings-row">
               <div className="settings-row__label">
-                <div className="settings-row__title">Select a workspace</div>
+                <div className="settings-row__title">
+                  {t("settings.view.selectWorkspace.title")}
+                </div>
                 <div className="settings-row__description">
-                  Providers and models are set per workspace. Choose one, or open a folder first.
+                  {t("settings.view.selectWorkspace.description")}
                 </div>
               </div>
             </div>

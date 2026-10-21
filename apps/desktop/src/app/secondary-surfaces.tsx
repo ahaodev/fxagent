@@ -21,6 +21,7 @@ import {
 } from "../features/settings/settings-sections";
 import { SettingsSelect } from "../features/settings/settings-controls";
 import type { McpSettingsActions } from "../features/settings/settings-mcp-section";
+import { useI18n } from "../i18n";
 import { SecondarySurface } from "./secondary-surface";
 
 interface SecondarySurfacesProps {
@@ -61,6 +62,7 @@ export function SecondarySurfaces({
   onSelectView,
   onTrySkill,
 }: SecondarySurfacesProps) {
+  const { t } = useI18n();
   const [notificationPermissionStatus, setNotificationPermissionStatus] =
     useState<DesktopNotificationPermissionStatus>("unknown");
   const [notificationPermissionPending, setNotificationPermissionPending] = useState(false);
@@ -198,7 +200,7 @@ export function SecondarySurfaces({
     apiKey: string,
   ): Promise<string | undefined> => {
     if (!settingsWorkspace) {
-      return "Select a workspace first.";
+      return t("app.secondarySurfaces.selectWorkspaceFirst");
     }
     const state = await updateSnapshot(setSnapshot, () =>
       api.setProviderApiKey(settingsWorkspace.id, providerId, apiKey),
@@ -208,7 +210,7 @@ export function SecondarySurfaces({
 
   const handleRemoveProviderApiKey = async (providerId: string): Promise<string | undefined> => {
     if (!settingsWorkspace) {
-      return "Select a workspace first.";
+      return t("app.secondarySurfaces.selectWorkspaceFirst");
     }
     const state = await updateSnapshot(setSnapshot, () =>
       api.logoutProvider(settingsWorkspace.id, providerId),
@@ -220,7 +222,7 @@ export function SecondarySurfaces({
     config: CustomProviderConfig,
   ): Promise<string | undefined> => {
     if (!settingsWorkspace) {
-      return "Select a workspace first.";
+      return t("app.secondarySurfaces.selectWorkspaceFirst");
     }
     const state = await updateSnapshot(setSnapshot, () =>
       api.setCustomProvider(settingsWorkspace.id, config),
@@ -230,7 +232,7 @@ export function SecondarySurfaces({
 
   const handleDeleteCustomProvider = async (providerId: string): Promise<string | undefined> => {
     if (!settingsWorkspace) {
-      return "Select a workspace first.";
+      return t("app.secondarySurfaces.selectWorkspaceFirst");
     }
     const state = await updateSnapshot(setSnapshot, () =>
       api.deleteCustomProvider(settingsWorkspace.id, providerId),
@@ -242,7 +244,7 @@ export function SecondarySurfaces({
     update: (workspaceId: string) => Promise<DesktopAppState>,
   ): Promise<string | undefined> => {
     if (!settingsWorkspace) {
-      return "Select a workspace first.";
+      return t("app.secondarySurfaces.selectWorkspaceFirst");
     }
     const state = await updateSnapshot(setSnapshot, () => update(settingsWorkspace.id));
     return state.lastError;
@@ -380,7 +382,7 @@ export function SecondarySurfaces({
   ) =>
     rootWorkspaceOptions.length > 0 ? (
       <SettingsSelect
-        label="Workspace"
+        label={t("app.secondarySurfaces.workspaceLabel")}
         options={rootWorkspaceOptions.map((workspace) => ({
           value: workspace.id,
           label: workspace.name,
@@ -406,7 +408,7 @@ export function SecondarySurfaces({
         if (customizeTab) onSelectView("settings");
       }}
       testId={customizeTab ? `${customizeTab}-surface` : "settings-surface"}
-      title="Settings"
+      title={t("app.secondarySurfaces.settingsTitle")}
     >
       {customizeTab ? (
         <CustomizePage

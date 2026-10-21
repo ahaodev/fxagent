@@ -3,6 +3,7 @@ import {
   CUSTOM_PROVIDER_ID_PATTERN,
   isValidHttpBaseUrl,
 } from "@pi-gui/pi-sdk-driver/custom-provider-types";
+import { t, useI18n } from "../../i18n";
 import { trapDialogFocus } from "../../ui/dialog-focus";
 import type { CustomProviderConfig, CustomProviderModelConfig } from "../../../contracts/ipc";
 import { SettingsGroup } from "./settings-utils";
@@ -21,6 +22,7 @@ export function SettingsCustomEndpointsSection({
   onSaveCustomProvider,
   onDeleteCustomProvider,
 }: SettingsCustomEndpointsSectionProps) {
+  const { t } = useI18n();
   const [entries, setEntries] = useState<readonly CustomProviderConfig[]>([]);
   const [loadError, setLoadError] = useState<string | undefined>();
   const [dialog, setDialog] = useState<DialogMode>({ kind: "closed" });
@@ -78,8 +80,8 @@ export function SettingsCustomEndpointsSection({
   return (
     <>
       <SettingsGroup
-        title="Custom endpoints"
-        description="Add OpenAI-compatible endpoints (Ollama, vLLM, or your own server). Stored in ~/.pi/agent/models.json."
+        title={t("settings.customEndpoints.title")}
+        description={t("settings.customEndpoints.description")}
       >
         {loadError ? (
           <div className="settings-row">
@@ -88,7 +90,7 @@ export function SettingsCustomEndpointsSection({
         ) : null}
         {entries.length === 0 ? (
           <div className="settings-row">
-            <span className="settings-row__description">No custom endpoints yet.</span>
+            <span className="settings-row__description">{t("settings.customEndpoints.empty")}</span>
           </div>
         ) : (
           entries.map((entry) => (
@@ -96,8 +98,10 @@ export function SettingsCustomEndpointsSection({
               <div className="settings-row__label">
                 <div className="settings-row__title">{entry.providerId}</div>
                 <div className="settings-row__description">
-                  {entry.baseUrl} · {entry.models.length} model
-                  {entry.models.length === 1 ? "" : "s"}
+                  {entry.baseUrl} · {entry.models.length}{" "}
+                  {entry.models.length === 1
+                    ? t("settings.customEndpoints.model.one")
+                    : t("settings.customEndpoints.model.other")}
                 </div>
               </div>
               <div className="settings-row__control">
@@ -106,7 +110,7 @@ export function SettingsCustomEndpointsSection({
                   type="button"
                   onClick={() => setDialog({ kind: "edit", original: entry })}
                 >
-                  Edit
+                  {t("settings.customEndpoints.edit")}
                 </button>
                 <button
                   className="button button--secondary"
@@ -117,7 +121,7 @@ export function SettingsCustomEndpointsSection({
                     })
                   }
                 >
-                  Remove
+                  {t("settings.customEndpoints.remove")}
                 </button>
               </div>
             </div>
@@ -125,14 +129,14 @@ export function SettingsCustomEndpointsSection({
         )}
         <div className="settings-row">
           <div className="settings-row__label">
-            <div className="settings-row__title">Add endpoint</div>
+            <div className="settings-row__title">{t("settings.customEndpoints.add")}</div>
             <div className="settings-row__description">
-              Register a local or custom OpenAI-compatible server.
+              {t("settings.customEndpoints.addDescription")}
             </div>
           </div>
           <div className="settings-row__control">
             <button className="button" type="button" onClick={() => setDialog({ kind: "create" })}>
-              Add endpoint
+              {t("settings.customEndpoints.add")}
             </button>
           </div>
         </div>
@@ -157,12 +161,24 @@ interface CustomEndpointDialogProps {
   readonly onSave: (config: CustomProviderConfig) => Promise<string | undefined>;
 }
 
+/** Renders a translated hint, turning each `code` span into an inline <code> element. */
+function InlineCode({ text }: { readonly text: string }) {
+  return (
+    <>
+      {text
+        .split("`")
+        .map((part, index) => (index % 2 === 1 ? <code key={index}>{part}</code> : part))}
+    </>
+  );
+}
+
 function CustomEndpointDialog({
   mode,
   existingProviderIds,
   onClose,
   onSave,
 }: CustomEndpointDialogProps) {
+  const { t, language } = useI18n();
   const titleId = useId();
   const initial = mode.kind === "edit" ? mode.original : undefined;
   const [providerId, setProviderId] = useState(initial?.providerId ?? "");
@@ -185,7 +201,7 @@ function CustomEndpointDialog({
 
   const idValidationError = useMemo(
     () => validateProviderId(providerId, existingProviderIds, initial?.providerId),
-    [providerId, existingProviderIds, initial?.providerId],
+    [providerId, existingProviderIds, initial?.providerId, language],
   );
 
   useEffect(() => {
@@ -203,11 +219,11 @@ function CustomEndpointDialog({
   const handleProbe = async () => {
     const api = window.piApp;
     if (!api) {
-      setProbeError("Desktop bridge is not available.");
+      setProbeError(t("settings.customEndpoints.dialog.bridgeUnavailable"));
       return;
     }
     if (!isValidHttpBaseUrl(baseUrl)) {
-      setProbeError("Base URL must start with http:// or https://");
+      setProbeError(t("settings.customEndpoints.dialog.baseUrl.invalid"));
       return;
     }
     restoreProbeFocusRef.current = document.activeElement === probeButtonRef.current;
@@ -253,11 +269,11 @@ function CustomEndpointDialog({
       return;
     }
     if (!isValidHttpBaseUrl(baseUrl)) {
-      setFormError("Base URL must start with http:// or https://");
+      setFormError(t("settings.customEndpoints.dialog.baseUrl.invalid"));
       return;
     }
     if (models.length === 0) {
-      setFormError("Select at least one model.");
+      setFormError(t("settings.customEndpoints.dialog.models.noneSelected"));
       return;
     }
     setSavePending(true);
@@ -301,17 +317,17 @@ function CustomEndpointDialog({
           data-testid="custom-endpoint-dialog-content"
         >
           <div className="extension-dialog__title" id={titleId}>
-            {isEdit ? "Edit custom endpoint" : "Add custom endpoint"}
+            {isEdit
+              ? t("settings.customEndpoints.dialog.editTitle")
+              : t("settings.customEndpoints.dialog.addTitle")}
           </div>
           <p className="extension-dialog__body">
-            Configure an OpenAI-compatible server. The endpoint and API key are stored in plaintext
-            at
-            <code> ~/.pi/agent/models.json</code>.
+            <InlineCode text={t("settings.customEndpoints.dialog.description")} />
           </p>
           <label className="settings-field">
-            <span>Provider ID</span>
+            <span>{t("settings.customEndpoints.dialog.providerId.label")}</span>
             <input
-              aria-label="Provider ID"
+              aria-label={t("settings.customEndpoints.dialog.providerId.label")}
               autoFocus={!isEdit}
               className="settings-search"
               disabled={isEdit || savePending}
@@ -325,14 +341,14 @@ function CustomEndpointDialog({
               </span>
             ) : (
               <span className="settings-row__description">
-                Lowercase letters, digits, and dashes. Cannot be changed later.
+                {t("settings.customEndpoints.dialog.providerId.hint")}
               </span>
             )}
           </label>
           <label className="settings-field">
-            <span>Base URL</span>
+            <span>{t("settings.customEndpoints.dialog.baseUrl.label")}</span>
             <input
-              aria-label="Base URL"
+              aria-label={t("settings.customEndpoints.dialog.baseUrl.label")}
               className="settings-search"
               disabled={savePending}
               placeholder="http://localhost:11434/v1"
@@ -340,31 +356,28 @@ function CustomEndpointDialog({
               onChange={(event) => setBaseUrl(event.target.value)}
             />
             <span className="settings-row__description">
-              Include the <code>/v1</code> suffix. Ollama: <code>http://localhost:11434/v1</code>.
-              vLLM: <code>http://localhost:8000/v1</code>.
+              <InlineCode text={t("settings.customEndpoints.dialog.baseUrl.hint")} />
             </span>
           </label>
           <label className="settings-field">
-            <span>API key</span>
+            <span>{t("settings.customEndpoints.dialog.apiKey.label")}</span>
             <input
-              aria-label="API key"
+              aria-label={t("settings.customEndpoints.dialog.apiKey.label")}
               className="settings-search"
               disabled={savePending}
-              placeholder="vLLM: pass through; Ollama: leave blank"
+              placeholder={t("settings.customEndpoints.dialog.apiKey.placeholder")}
               type="password"
               value={apiKey}
               onChange={(event) => setApiKey(event.target.value)}
             />
             <span className="settings-row__description">
-              Required by the storage format. For vLLM started with <code>--api-key</code>, enter
-              that key. For Ollama or other servers without auth, leave blank and a placeholder is
-              saved.
+              <InlineCode text={t("settings.customEndpoints.dialog.apiKey.hint")} />
             </span>
           </label>
 
           <div className="settings-field">
             <div className="settings-field__header">
-              <span>Models</span>
+              <span>{t("settings.customEndpoints.dialog.models.title")}</span>
               <button
                 className="button button--secondary"
                 disabled={probePending || savePending}
@@ -377,7 +390,9 @@ function CustomEndpointDialog({
                   })
                 }
               >
-                {probePending ? "Detecting…" : "Detect models"}
+                {probePending
+                  ? t("settings.customEndpoints.dialog.models.detecting")
+                  : t("settings.customEndpoints.dialog.models.detect")}
               </button>
             </div>
             {probeError ? (
@@ -391,8 +406,7 @@ function CustomEndpointDialog({
               disabled={savePending}
             />
             <p className="settings-row__description">
-              Tool calling is required. Smaller models (&lt; 7B) often do not emit OpenAI-style
-              function calls cleanly.
+              {t("settings.customEndpoints.dialog.models.toolHint")}
             </p>
           </div>
         </div>
@@ -408,7 +422,7 @@ function CustomEndpointDialog({
               type="button"
               onClick={onClose}
             >
-              Cancel
+              {t("common.cancel")}
             </button>
             <button
               className="button"
@@ -423,7 +437,9 @@ function CustomEndpointDialog({
                 })
               }
             >
-              {isEdit ? "Save changes" : "Add endpoint"}
+              {isEdit
+                ? t("settings.customEndpoints.dialog.saveChanges")
+                : t("settings.customEndpoints.add")}
             </button>
           </div>
         </div>
@@ -447,6 +463,7 @@ function ModelChecklist({
   onManualAdd,
   disabled,
 }: ModelChecklistProps) {
+  const { t } = useI18n();
   const [manualDraft, setManualDraft] = useState("");
   const selectedIds = useMemo(() => new Set(selected.map((model) => model.id)), [selected]);
   const knownIds = useMemo(
@@ -462,9 +479,7 @@ function ModelChecklist({
   return (
     <div className="settings-disclosure__body">
       {knownIds.size === 0 ? (
-        <p className="settings-row__description">
-          Click &ldquo;Detect models&rdquo; or type a model ID below to add one manually.
-        </p>
+        <p className="settings-row__description">{t("settings.customEndpoints.checklist.empty")}</p>
       ) : (
         <ul className="settings-list custom-endpoint-model-list">
           {[...knownIds]
@@ -473,7 +488,7 @@ function ModelChecklist({
               <li key={id} className="settings-row">
                 <label className="custom-endpoint-model-list__item">
                   <input
-                    aria-label={`Enable ${id}`}
+                    aria-label={t("settings.customEndpoints.checklist.enable", { model: id })}
                     type="checkbox"
                     checked={selectedIds.has(id)}
                     disabled={disabled}
@@ -487,10 +502,10 @@ function ModelChecklist({
       )}
       <div className="settings-row">
         <input
-          aria-label="Add model ID manually"
+          aria-label={t("settings.customEndpoints.checklist.addManual")}
           className="settings-search"
           disabled={disabled}
-          placeholder="Add model ID manually"
+          placeholder={t("settings.customEndpoints.checklist.addManual")}
           value={manualDraft}
           onChange={(event) => setManualDraft(event.target.value)}
           onKeyDown={(event) => {
@@ -506,7 +521,7 @@ function ModelChecklist({
           type="button"
           onClick={submitManual}
         >
-          Add
+          {t("settings.customEndpoints.checklist.add")}
         </button>
       </div>
     </div>
@@ -520,13 +535,13 @@ function validateProviderId(
 ): string | undefined {
   const trimmed = candidate.trim();
   if (!trimmed) {
-    return "Provider ID is required.";
+    return t("settings.customEndpoints.dialog.providerId.required");
   }
   if (!CUSTOM_PROVIDER_ID_PATTERN.test(trimmed)) {
-    return "Use lowercase letters, digits, and dashes (max 64 chars).";
+    return t("settings.customEndpoints.dialog.providerId.invalid");
   }
   if (trimmed !== editing && existing.includes(trimmed)) {
-    return `Provider ID "${trimmed}" is already in use.`;
+    return t("settings.customEndpoints.dialog.providerId.inUse", { id: trimmed });
   }
   return undefined;
 }

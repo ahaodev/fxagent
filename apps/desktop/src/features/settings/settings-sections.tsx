@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { t } from "../../i18n";
 import {
   BellIcon,
   ExtensionIcon,
@@ -22,69 +23,102 @@ export interface SettingsSectionDefinition {
   readonly needsWorkspace: boolean;
 }
 
-/** Nav order: grouped the way Codex groups its settings, one entry per page. */
+/*
+ * Nav order: grouped the way Codex groups its settings, one entry per page.
+ * Titles and groups are getters so the nav reads them with the language of the current render;
+ * the nav is not a hook component, so it gets a plain string.
+ */
 export const SETTINGS_SECTIONS = [
   {
     id: "general",
-    title: "General",
-    group: "App",
+    get title() {
+      return t("settings.nav.general.title");
+    },
+    get group() {
+      return t("settings.nav.group.app");
+    },
     icon: <SettingsIcon />,
     keywords: ["model settings scope", "per repo", "skill slash commands", "terminal", "shell"],
-    description: () => "App and runtime defaults.",
+    description: () => t("settings.nav.general.description"),
     needsWorkspace: false,
   },
   {
     id: "appearance",
-    title: "Appearance",
-    group: "App",
+    get title() {
+      return t("settings.nav.appearance.title");
+    },
+    get group() {
+      return t("settings.nav.group.app");
+    },
     icon: <SunIcon />,
     keywords: ["theme", "light", "dark", "system", "preset", "colors", "transparency"],
-    description: () => "Choose light, dark or system mode and a color preset.",
+    description: () => t("settings.nav.appearance.description"),
     needsWorkspace: false,
   },
   {
     id: "notifications",
-    title: "Notifications",
-    group: "App",
+    get title() {
+      return t("settings.nav.notifications.title");
+    },
+    get group() {
+      return t("settings.nav.group.app");
+    },
     icon: <BellIcon />,
     keywords: ["alerts", "background", "completion", "failures", "approval", "macos"],
-    description: () => "Choose which background events alert you.",
+    description: () => t("settings.nav.notifications.description"),
     needsWorkspace: false,
   },
   {
     id: "shortcuts",
-    title: "Keyboard shortcuts",
-    group: "App",
+    get title() {
+      return t("settings.nav.shortcuts.title");
+    },
+    get group() {
+      return t("settings.nav.group.app");
+    },
     icon: <KeyboardIcon />,
     keywords: ["keys", "hotkeys", "keybindings"],
-    description: () => "Shortcuts available across the app.",
+    description: () => t("settings.nav.shortcuts.description"),
     needsWorkspace: false,
   },
   {
     id: "providers",
-    title: "Providers",
-    group: "Agent",
+    get title() {
+      return t("settings.nav.providers.title");
+    },
+    get group() {
+      return t("settings.nav.group.agent");
+    },
     icon: <PlugIcon />,
     keywords: ["login", "logout", "oauth", "api key", "auth", "custom endpoint"],
-    description: (workspaceName) => `Connect providers and manage auth for ${workspaceName}.`,
+    description: (workspaceName) =>
+      t("settings.nav.providers.description", { workspace: workspaceName }),
     needsWorkspace: true,
   },
   {
     id: "models",
-    title: "Models",
-    group: "Agent",
+    get title() {
+      return t("settings.nav.models.title");
+    },
+    get group() {
+      return t("settings.nav.group.agent");
+    },
     icon: <ModelIcon />,
     keywords: ["default model", "reasoning", "thinking", "enabled models"],
-    description: () => "Choose the default model and which models appear in pickers.",
+    description: () => t("settings.nav.models.description"),
     needsWorkspace: true,
   },
   {
     id: "mcp",
-    title: "MCP servers",
-    group: "Agent",
+    get title() {
+      return t("settings.nav.mcp.title");
+    },
+    get group() {
+      return t("settings.nav.group.agent");
+    },
     icon: <ExtensionIcon />,
     keywords: ["mcp", "mcp.json", "model context protocol", "servers", "code mode", "codemode"],
-    description: () => "Add, remove and switch the MCP servers pi connects in each thread.",
+    description: () => t("settings.nav.mcp.description"),
     needsWorkspace: true,
   },
 ] as const satisfies readonly SettingsSectionDefinition[];
@@ -98,8 +132,12 @@ export const SETTINGS_NAV_ITEMS = [
   ...SETTINGS_SECTIONS,
   {
     id: CUSTOMIZE_SECTION_ID,
-    title: "Skills and extensions",
-    group: "Customize",
+    get title() {
+      return t("settings.nav.customize.title");
+    },
+    get group() {
+      return t("settings.nav.group.customize");
+    },
     icon: <SkillIcon />,
     keywords: ["skills", "extensions", "plugins", "slash commands", "tools"],
   },

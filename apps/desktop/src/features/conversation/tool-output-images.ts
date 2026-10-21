@@ -1,3 +1,5 @@
+import { t } from "../../i18n";
+
 /**
  * Images a tool returned in its result content, such as the read tool on a screenshot or a code
  * mode script calling `image()` with `models.generateImages()`. pi keeps them as
@@ -46,7 +48,9 @@ export function stringifyToolValue(value: unknown): string {
       isImageBlock(nested)
         ? {
             ...nested,
-            data: `[${typeof nested.mimeType === "string" ? nested.mimeType : "image"} image]`,
+            data: t("conversation.toolOutput.imagePlaceholder", {
+              mimeType: typeof nested.mimeType === "string" ? nested.mimeType : "image",
+            }),
           }
         : nested,
     2,

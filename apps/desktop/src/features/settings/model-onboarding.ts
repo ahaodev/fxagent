@@ -1,4 +1,5 @@
 import type { RuntimeSnapshot } from "@pi-gui/session-driver/runtime-types";
+import { t } from "../../i18n";
 import { buildModelOptions } from "../conversation/composer-commands";
 
 export type ModelOnboardingSettingsSection = "models" | "providers";
@@ -48,26 +49,24 @@ export function deriveModelOnboardingState(
     return {
       hasSelectableModels: false,
       requiresModelSelection: true,
-      unselectedModelLabel: "No models available",
-      emptyModelTitle: "No models available",
+      unselectedModelLabel: t("settings.onboarding.noModels.title"),
+      emptyModelTitle: t("settings.onboarding.noModels.title"),
       emptyModelDescription:
         connectedProviderCount > 0
-          ? "Open Settings > Models to enable models."
-          : "Open Settings > Providers to connect a provider and make models available.",
+          ? t("settings.onboarding.noModels.descriptionWithProviders")
+          : t("settings.onboarding.noModels.descriptionWithoutProviders"),
       notice:
         connectedProviderCount > 0
           ? {
-              title: "No models available",
-              description:
-                "All available models are currently disabled. Open Settings > Models to enable models.",
-              actionLabel: "Open Settings > Models",
+              title: t("settings.onboarding.noModels.title"),
+              description: t("settings.onboarding.noModels.noticeDescriptionDisabled"),
+              actionLabel: t("settings.onboarding.openModelsSettings"),
               actionSection: "models",
             }
           : {
-              title: "No models available",
-              description:
-                "Connect a provider in Settings > Providers before choosing a model or setting a default.",
-              actionLabel: "Open Settings > Providers",
+              title: t("settings.onboarding.noModels.title"),
+              description: t("settings.onboarding.noModels.noticeDescriptionWithoutProviders"),
+              actionLabel: t("settings.onboarding.openProvidersSettings"),
               actionSection: "providers",
             },
     };
@@ -77,15 +76,15 @@ export function deriveModelOnboardingState(
     return {
       hasSelectableModels: true,
       requiresModelSelection: true,
-      unselectedModelLabel: "Pick a model",
-      emptyModelTitle: "No models available",
-      emptyModelDescription: "Pick a model.",
+      unselectedModelLabel: t("settings.onboarding.pickModel"),
+      emptyModelTitle: t("settings.onboarding.noModels.title"),
+      emptyModelDescription: t("settings.onboarding.emptyModelDescription"),
       notice: {
-        title: "Selected model unavailable",
+        title: t("settings.onboarding.selectedUnavailable.title"),
         description: hasDefaultModel
-          ? "The model selected for this thread is no longer available. Choose another model, then open Settings > Models to update the default."
-          : "The model selected for this thread is no longer available. Choose another model, then open Settings > Models to choose the app default.",
-        actionLabel: "Open Settings > Models",
+          ? t("settings.onboarding.selectedUnavailable.descriptionWithDefault")
+          : t("settings.onboarding.selectedUnavailable.descriptionWithoutDefault"),
+        actionLabel: t("settings.onboarding.openModelsSettings"),
         actionSection: "models",
       },
     };
@@ -95,15 +94,15 @@ export function deriveModelOnboardingState(
     return {
       hasSelectableModels: true,
       requiresModelSelection: !currentSelectionUsable,
-      unselectedModelLabel: "Pick a model",
-      emptyModelTitle: "No default model set",
-      emptyModelDescription: "Pick a model.",
+      unselectedModelLabel: t("settings.onboarding.pickModel"),
+      emptyModelTitle: t("settings.onboarding.noDefault.title"),
+      emptyModelDescription: t("settings.onboarding.emptyModelDescription"),
       notice: currentSelectionUsable
         ? undefined
         : {
-            title: "No default model set",
-            description: "Set a default model in Settings > Models.",
-            actionLabel: "Open Settings > Models",
+            title: t("settings.onboarding.noDefault.title"),
+            description: t("settings.onboarding.noDefault.description"),
+            actionLabel: t("settings.onboarding.openModelsSettings"),
             actionSection: "models",
           },
     };
@@ -114,15 +113,17 @@ export function deriveModelOnboardingState(
     return {
       hasSelectableModels: true,
       requiresModelSelection: !currentSelectionUsable,
-      unselectedModelLabel: "Pick a model",
-      emptyModelTitle: "Default model unavailable",
-      emptyModelDescription: "Pick a model.",
+      unselectedModelLabel: t("settings.onboarding.pickModel"),
+      emptyModelTitle: t("settings.onboarding.defaultUnavailable.title"),
+      emptyModelDescription: t("settings.onboarding.emptyModelDescription"),
       notice: {
-        title: "Default model unavailable",
+        title: t("settings.onboarding.defaultUnavailable.title"),
         description: currentSelectionUsable
-          ? `Your saved default (${defaultLabel}) is no longer available. Open Settings > Models to update it.`
-          : `Your saved default (${defaultLabel}) is no longer available. Choose a model for this thread, then open Settings > Models to update it.`,
-        actionLabel: "Open Settings > Models",
+          ? t("settings.onboarding.defaultUnavailable.description", { model: defaultLabel })
+          : t("settings.onboarding.defaultUnavailable.descriptionChooseModel", {
+              model: defaultLabel,
+            }),
+        actionLabel: t("settings.onboarding.openModelsSettings"),
         actionSection: "models",
       },
     };
@@ -131,9 +132,9 @@ export function deriveModelOnboardingState(
   return {
     hasSelectableModels: true,
     requiresModelSelection: false,
-    unselectedModelLabel: "Pick a model",
-    emptyModelTitle: "No models available",
-    emptyModelDescription: "Pick a model.",
+    unselectedModelLabel: t("settings.onboarding.pickModel"),
+    emptyModelTitle: t("settings.onboarding.noModels.title"),
+    emptyModelDescription: t("settings.onboarding.emptyModelDescription"),
   };
 }
 

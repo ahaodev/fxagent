@@ -1,11 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { RuntimeSnapshot } from "@pi-gui/session-driver/runtime-types";
-import {
-  buildModelOptions,
-  MODEL_OPTIONS_EMPTY_TITLE,
-  THINKING_OPTIONS,
-  type ComposerModelOption,
-} from "./composer-commands";
+import { buildModelOptions, thinkingOptions, type ComposerModelOption } from "./composer-commands";
+import { useI18n } from "../../i18n";
 
 interface ModelSelectorProps {
   readonly runtime: RuntimeSnapshot | undefined;
@@ -32,12 +28,13 @@ export function ModelSelector({
   disabled,
   dropdownPlacement = "above",
   showEmptyModelControl = false,
-  unselectedModelLabel = "Choose model",
-  emptyModelLabel = "Choose model",
-  emptyModelTitle = MODEL_OPTIONS_EMPTY_TITLE,
+  unselectedModelLabel,
+  emptyModelLabel,
+  emptyModelTitle,
   onSetModel,
   onSetThinking,
 }: ModelSelectorProps) {
+  const { t } = useI18n();
   const [open, setOpen] = useState<OpenDropdown>("none");
   const [modelFilter, setModelFilter] = useState("");
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -62,8 +59,8 @@ export function ModelSelector({
     provider && modelId
       ? `${provider}:${modelId}`
       : hasAvailableModelOptions
-        ? unselectedModelLabel
-        : emptyModelLabel;
+        ? (unselectedModelLabel ?? t("composer.modelSelector.chooseModel"))
+        : (emptyModelLabel ?? t("composer.modelSelector.chooseModel"));
   const noMatchingModels =
     hasAvailableModelOptions && modelFilter.trim().length > 0 && groupedModels.length === 0;
 
@@ -117,7 +114,7 @@ export function ModelSelector({
               <div className="model-selector__filter">
                 <input
                   className="model-selector__filter-input"
-                  placeholder="Filter models..."
+                  placeholder={t("composer.modelSelector.filterPlaceholder")}
                   value={modelFilter}
                   onChange={(e) => setModelFilter(e.target.value)}
                   autoFocus
@@ -142,7 +139,9 @@ export function ModelSelector({
                       >
                         <span className="model-selector__item-label">{option.label}</span>
                         {isActive ? (
-                          <span className="model-selector__item-meta">active</span>
+                          <span className="model-selector__item-meta">
+                            {t("composer.modelSelector.active")}
+                          </span>
                         ) : null}
                       </button>
                     );
@@ -152,10 +151,14 @@ export function ModelSelector({
               {groupedModels.length === 0 ? (
                 <>
                   <div className="model-selector__group-title">
-                    {noMatchingModels ? "No matching models" : emptyModelTitle}
+                    {noMatchingModels
+                      ? t("composer.modelSelector.noMatchingModels")
+                      : (emptyModelTitle ?? t("composer.modelSelector.noModelsAvailable"))}
                   </div>
                   {noMatchingModels ? (
-                    <div className="model-selector__empty">Try a different filter.</div>
+                    <div className="model-selector__empty">
+                      {t("composer.modelSelector.tryDifferentFilter")}
+                    </div>
                   ) : null}
                 </>
               ) : null}
@@ -178,8 +181,10 @@ export function ModelSelector({
               className={`model-selector__dropdown ${dropdownPlacement === "below" ? "model-selector__dropdown--below" : ""}`}
               onWheel={(event) => event.stopPropagation()}
             >
-              <div className="model-selector__group-title">Thinking Level</div>
-              {THINKING_OPTIONS.map((option) => {
+              <div className="model-selector__group-title">
+                {t("composer.modelSelector.thinkingLevel")}
+              </div>
+              {thinkingOptions().map((option) => {
                 const isActive = option.value === thinkingLevel;
                 return (
                   <button

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import { useI18n } from "../../i18n";
 import {
   ChevronDownIcon,
   ChevronRightIcon,
@@ -27,6 +28,7 @@ export function FileExplorer({
   onRefresh,
 }: FileExplorerProps) {
   const [filter, setFilter] = useState("");
+  const { t } = useI18n();
   const [expanded, setExpanded] = useState<ReadonlySet<string>>(() => new Set());
   const filterActive = filter.trim().length > 0;
   const visibleFiles = useMemo(
@@ -55,27 +57,31 @@ export function FileExplorer({
   const emptyCopy = error
     ? error
     : files === null
-      ? "Loading files..."
+      ? t("workbench.fileExplorer.loading")
       : files.length === 0
-        ? "No indexed files"
+        ? t("workbench.fileExplorer.noIndexedFiles")
         : visibleFiles.length === 0
-          ? "No matching files"
+          ? t("workbench.fileExplorer.noMatchingFiles")
           : null;
 
   return (
-    <section className="file-explorer" data-testid="file-explorer" aria-label="File explorer">
+    <section
+      className="file-explorer"
+      data-testid="file-explorer"
+      aria-label={t("workbench.fileExplorer.label")}
+    >
       <div className="file-explorer__toolbar">
         <input
-          aria-label="Filter files"
+          aria-label={t("workbench.fileExplorer.filterLabel")}
           className="file-explorer__filter"
           data-testid="file-workbench-filter"
           onChange={(event) => setFilter(event.target.value)}
-          placeholder="Filter files…"
+          placeholder={t("workbench.fileExplorer.filterPlaceholder")}
           type="search"
           value={filter}
         />
         <button
-          aria-label="Refresh"
+          aria-label={t("workbench.fileExplorer.refresh")}
           className="icon-button"
           disabled={loading}
           onClick={onRefresh}

@@ -7,6 +7,7 @@ import {
   type KeyboardEvent as ReactKeyboardEvent,
   type ReactNode,
 } from "react";
+import { useI18n } from "../../i18n";
 import { SearchIcon } from "../../ui/icons";
 
 export interface PaletteItem {
@@ -63,6 +64,7 @@ export function CommandPalette<F extends string>({
   onBack,
   onClose,
 }: CommandPaletteProps<F>) {
+  const { t } = useI18n();
   const listId = useId();
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -202,7 +204,7 @@ export function CommandPalette<F extends string>({
             onChange={(event) => onQueryChange(event.target.value)}
           />
           <button
-            aria-label="Close"
+            aria-label={t("common.close")}
             className="command-palette__close"
             type="button"
             onClick={onClose}
@@ -212,7 +214,11 @@ export function CommandPalette<F extends string>({
         </div>
 
         {filters && filters.length > 0 ? (
-          <div aria-label="Filters" className="command-palette__filters" role="tablist">
+          <div
+            aria-label={t("commandPalette.filtersLabel")}
+            className="command-palette__filters"
+            role="tablist"
+          >
             {filters.map((filter) => (
               <button
                 key={filter.id}
@@ -295,23 +301,23 @@ export function CommandPalette<F extends string>({
         <div className="command-palette__footer" aria-hidden="true">
           <span>
             <kbd>↑</kbd>
-            <kbd>↓</kbd> Navigate
+            <kbd>↓</kbd> {t("commandPalette.footer.navigate")}
           </span>
           <span>
-            <kbd>↵</kbd> Open
+            <kbd>↵</kbd> {t("commandPalette.footer.open")}
           </span>
           {filters && filters.length > 0 ? (
             <span>
-              <kbd>Tab</kbd> Filters
+              <kbd>Tab</kbd> {t("commandPalette.footer.filters")}
             </span>
           ) : null}
           {onBack ? (
             <span>
-              <kbd>⌫</kbd> Back
+              <kbd>⌫</kbd> {t("commandPalette.footer.back")}
             </span>
           ) : null}
           <span>
-            <kbd>Esc</kbd> Close
+            <kbd>Esc</kbd> {t("common.close")}
           </span>
         </div>
       </div>

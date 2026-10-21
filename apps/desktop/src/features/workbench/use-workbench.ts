@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState, type SetStateAction } from "r
 import type { SessionRef } from "@pi-gui/session-driver/types";
 import type { PiDesktopApi } from "../../../contracts/ipc";
 import type { TaskWorkbenchTemplate, ToolRef } from "../../../contracts/workbench";
+import { t } from "../../i18n";
 import type { FileWorkbenchTabs } from "./file-workbench-state";
 import {
   activeWorkbenchTool,
@@ -27,7 +28,8 @@ interface UseWorkbenchOptions {
 }
 
 let saveSequence = 0;
-const SAVE_ERROR = "Couldn't save tool tabs. They are kept in this window.";
+/** The banner renders message text, so a later success clears it by matching that same text. */
+const SAVE_ERROR_KEY = "workbench.error.saveFailed" as const;
 
 function targetKey(target: SessionRef): string {
   return JSON.stringify([target.workspaceId, target.sessionId]);
@@ -82,14 +84,14 @@ export function useWorkbench({ api, target }: UseWorkbenchOptions) {
       // window's next gesture until after a newer gesture made in another window.
       void desktopApi.saveTaskWorkbenchTemplate({ target: ref, template, sequence }).then(
         () => {
-          if (entry.latestSave === sequence && entry.error === SAVE_ERROR) {
+          if (entry.latestSave === sequence && entry.error === t(SAVE_ERROR_KEY)) {
             entry.error = "";
             publish();
           }
         },
         () => {
           if (entry.latestSave === sequence) {
-            entry.error = SAVE_ERROR;
+            entry.error = t(SAVE_ERROR_KEY);
             publish();
           }
         },
@@ -124,7 +126,7 @@ export function useWorkbench({ api, target }: UseWorkbenchOptions) {
         },
         () => {
           entry.restore = "failed";
-          entry.error = "Couldn't restore saved tool tabs. Your current tabs are still available.";
+          entry.error = t("workbench.error.restoreFailed");
           pendingRestores.current.delete(key);
           publish();
         },

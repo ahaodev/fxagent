@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import type { ExtensionFlagValues } from "@pi-gui/session-driver";
 import type { RuntimeExtensionFlag, RuntimeSnapshot } from "@pi-gui/session-driver/runtime-types";
 import { SettingsSwitch } from "../settings/settings-controls";
+import { useI18n } from "../../i18n";
 
 interface FlagGroup {
   readonly title: string;
@@ -21,10 +22,6 @@ function setFlagEntries(values: ExtensionFlagValues | undefined): [string, true 
   );
 }
 
-function flagsBadgeLabel(count: number): string {
-  return count > 0 ? `Flags · ${count}` : "Flags";
-}
-
 /**
  * Flags the workspace's extensions registered, set for the thread about to start,
  * like typing `pi --name value`. Pi reads them once, when the thread's session loads.
@@ -38,6 +35,7 @@ export function ExtensionFlagsSelector({
   readonly values: ExtensionFlagValues;
   readonly onSetFlag: (name: string, value: boolean | string) => void;
 }) {
+  const { t } = useI18n();
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLSpanElement | null>(null);
   const groups = flagGroups(runtime);
@@ -61,6 +59,10 @@ export function ExtensionFlagsSelector({
   if (groups.length === 0) return null;
   const registered = new Set(groups.flatMap((group) => group.flags.map((flag) => flag.name)));
   const setCount = setFlagEntries(values).filter(([name]) => registered.has(name)).length;
+  const badgeLabel =
+    setCount > 0
+      ? t("threads.extensionFlags.badgeWithCount", { count: setCount })
+      : t("threads.extensionFlags.badge");
 
   return (
     <span className="model-selector" ref={containerRef}>
@@ -72,7 +74,7 @@ export function ExtensionFlagsSelector({
           data-testid="extension-flags-badge"
           onClick={() => setOpen(!open)}
         >
-          {flagsBadgeLabel(setCount)}
+          {badgeLabel}
         </button>
         {open ? (
           <div
@@ -106,7 +108,11 @@ export function ExtensionFlagsSelector({
                           type="text"
                           className="extension-flags__input"
                           aria-label={`--${flag.name}`}
-                          placeholder={typeof flag.default === "string" ? flag.default : "value"}
+                          placeholder={
+                            typeof flag.default === "string"
+                              ? flag.default
+                              : t("threads.extensionFlags.valuePlaceholder")
+                          }
                           spellCheck={false}
                           value={typeof value === "string" ? value : ""}
                           onChange={(event) => onSetFlag(flag.name, event.target.value)}
@@ -130,6 +136,7 @@ export function ExtensionFlagsBadge({
 }: {
   readonly values: ExtensionFlagValues | undefined;
 }) {
+  const { t } = useI18n();
   const entries = setFlagEntries(values);
   if (entries.length === 0) return null;
   const summary = entries
@@ -139,9 +146,9 @@ export function ExtensionFlagsBadge({
     <span
       className="model-selector__badge extension-flags__badge--readonly"
       data-testid="extension-flags-session-badge"
-      title={`Started with:\n${summary}`}
+      title={`${t("threads.extensionFlags.startedWith")}\n${summary}`}
     >
-      {flagsBadgeLabel(entries.length)}
+      {t("threads.extensionFlags.badgeWithCount", { count: entries.length })}
     </span>
   );
 }

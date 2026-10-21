@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import type { SessionRecord } from "../../../contracts/desktop-state";
 import { formatShortcut } from "../../../contracts/ipc";
+import { t } from "../../i18n";
 import {
   ArchiveIcon,
   CheckIcon,
@@ -69,7 +70,7 @@ export function buildThreadActions(
   const actions: ThreadAction[] = [
     {
       id: "rename-thread",
-      title: "Rename thread",
+      title: t("threads.actions.renameThread"),
       icon: <PencilIcon />,
       hint: renameThreadShortcut(handlers.platform),
       run: () => handlers.startRename(subject),
@@ -78,7 +79,7 @@ export function buildThreadActions(
   if (archived) {
     actions.push({
       id: "restore-thread",
-      title: "Restore thread",
+      title: t("threads.actions.restoreThread"),
       icon: <RestoreIcon />,
       run: () => handlers.restore(subject),
     });
@@ -86,13 +87,13 @@ export function buildThreadActions(
     actions.push(
       {
         id: "pin-thread",
-        title: pinned ? "Unpin thread" : "Pin thread",
+        title: pinned ? t("threads.actions.unpinThread") : t("threads.actions.pinThread"),
         icon: <PinIcon filled={pinned} />,
         run: () => handlers.setPinned(subject, !pinned),
       },
       {
         id: "archive-thread",
-        title: "Archive thread",
+        title: t("threads.actions.archiveThread"),
         icon: <ArchiveIcon />,
         hint: archiveThreadShortcut(handlers.platform),
         run: () => handlers.archive(subject),
@@ -102,7 +103,7 @@ export function buildThreadActions(
   if (session.hasUnseenUpdate) {
     actions.push({
       id: "mark-read",
-      title: "Mark as read",
+      title: t("threads.actions.markAsRead"),
       icon: <CheckIcon />,
       run: () => handlers.markRead(subject),
     });
@@ -110,13 +111,15 @@ export function buildThreadActions(
   actions.push(
     {
       id: "scheduled-task",
-      title: handlers.hasScheduledTask(subject) ? "Edit scheduled task…" : "Add scheduled task…",
+      title: handlers.hasScheduledTask(subject)
+        ? t("threads.actions.editScheduledTask")
+        : t("threads.actions.addScheduledTask"),
       icon: <ClockIcon />,
       run: () => handlers.openScheduledTask(subject),
     },
     {
       id: "copy-session-id",
-      title: "Copy session ID",
+      title: t("threads.actions.copySessionId"),
       icon: <CopyIcon />,
       run: () => handlers.copySessionId(subject),
     },

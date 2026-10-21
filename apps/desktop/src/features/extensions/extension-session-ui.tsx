@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
 import type { HostUiResponse } from "@pi-gui/session-driver";
+import { t, useI18n } from "../../i18n";
 import { trapDialogFocus } from "../../ui/dialog-focus";
 import { focusComposerAfter } from "./focus-composer";
 import { ChevronDownIcon, ChevronRightIcon, CloseIcon } from "../../ui/icons";
@@ -10,7 +11,6 @@ import type {
 
 const ANSI_ESCAPE_PATTERN = /\u001B\[[0-?]*[ -/]*[@-~]/g;
 const DOCK_SEGMENT_SEPARATOR = "--------------------";
-const GENERIC_ACTIVE_LABEL = "Extension UI active";
 
 interface ExtensionDockBlock {
   readonly key: string;
@@ -101,6 +101,7 @@ export function ExtensionDock({
   readonly onToggle: () => void;
   readonly onDismiss?: () => void;
 }) {
+  const { t } = useI18n();
   return (
     <div
       className={`extension-dock ${expanded ? "extension-dock--expanded" : ""}`}
@@ -125,10 +126,10 @@ export function ExtensionDock({
         </button>
         {onDismiss ? (
           <button
-            aria-label="Hide extension status"
+            aria-label={t("extensions.dock.hideStatus")}
             className="extension-dock__dismiss icon-button"
             data-testid="extension-dock-dismiss"
-            title="Hide until the extension changes it"
+            title={t("extensions.dock.hideUntilChange")}
             type="button"
             onClick={(event) => focusComposerAfter(event.currentTarget, onDismiss)}
           >
@@ -157,6 +158,7 @@ export function ExtensionDialog({
   readonly onRespond: (response: HostUiResponse) => void;
 }) {
   const [draft, setDraft] = useState("");
+  const { t } = useI18n();
   const titleId = useId();
   const bodyId = useId();
   const dialogRef = useRef<HTMLDivElement | null>(null);
@@ -254,7 +256,7 @@ export function ExtensionDialog({
           <input
             autoFocus
             className="skills-search"
-            placeholder={dialog.placeholder ?? "Enter a value"}
+            placeholder={dialog.placeholder ?? t("extensions.dialog.enterValue")}
             value={draft}
             onChange={(event) => setDraft(event.target.value)}
           />
@@ -277,7 +279,7 @@ export function ExtensionDialog({
             type="button"
             onClick={respondWithCancel}
           >
-            Cancel
+            {t("common.cancel")}
           </button>
           {dialog.kind === "confirm" ? (
             <button
@@ -286,7 +288,7 @@ export function ExtensionDialog({
               type="button"
               onClick={respondWithSubmit}
             >
-              Confirm
+              {t("extensions.dialog.confirm")}
             </button>
           ) : null}
           {dialog.kind === "input" || dialog.kind === "editor" ? (
@@ -296,7 +298,7 @@ export function ExtensionDialog({
               type="button"
               onClick={respondWithSubmit}
             >
-              Submit
+              {t("extensions.dialog.submit")}
             </button>
           ) : null}
         </div>
@@ -336,7 +338,7 @@ function resolveDockSummaryText(
     }
   }
 
-  return GENERIC_ACTIVE_LABEL;
+  return t("extensions.dock.active");
 }
 
 function buildDockBodyText(

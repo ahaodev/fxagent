@@ -10,6 +10,7 @@ import {
 import type { RuntimeExtensionRecord, RuntimeSnapshot } from "@pi-gui/session-driver/runtime-types";
 import { extensionSourceSummary } from "../../extensions/extension-display";
 import type { PiDesktopApi } from "../../../../contracts/ipc";
+import { t } from "../../../i18n";
 import { nextMenuIndex } from "./use-slash-menu";
 
 export type MentionOption =
@@ -317,9 +318,9 @@ function describeExtension(extension: RuntimeExtensionRecord): string {
 
   const contributionParts = [
     extension.commands.length > 0
-      ? pluralizeContribution(extension.commands.length, "command")
+      ? describeContribution(extension.commands.length, "command")
       : undefined,
-    extension.tools.length > 0 ? pluralizeContribution(extension.tools.length, "tool") : undefined,
+    extension.tools.length > 0 ? describeContribution(extension.tools.length, "tool") : undefined,
   ].filter(Boolean);
   if (contributionParts.length > 0) {
     return contributionParts.join(" · ");
@@ -377,6 +378,11 @@ function normalizeMentionText(value: string): string {
     .replace(/\s+/g, "-");
 }
 
-function pluralizeContribution(count: number, label: string): string {
-  return `${count} ${label}${count === 1 ? "" : "s"}`;
+function describeContribution(count: number, kind: "command" | "tool"): string {
+  if (kind === "command") {
+    return count === 1
+      ? t("composer.mention.oneCommand")
+      : t("composer.mention.commandCount", { count });
+  }
+  return count === 1 ? t("composer.mention.oneTool") : t("composer.mention.toolCount", { count });
 }

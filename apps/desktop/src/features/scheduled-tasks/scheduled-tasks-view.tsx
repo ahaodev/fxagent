@@ -10,6 +10,7 @@ import {
 } from "../../../contracts/scheduled-tasks";
 import type { PiDesktopApi } from "../../../contracts/ipc";
 import type { Dispatch, SetStateAction } from "react";
+import { useI18n, type MessageKey } from "../../i18n";
 import type { ScheduledEditorState } from "./scheduled-task-editor";
 
 interface ScheduledTasksViewProps {
@@ -25,11 +26,11 @@ interface ScheduledTasksViewProps {
   readonly onOpenEditor: (editor: ScheduledEditorState) => void;
 }
 
-const FILTERS: readonly { readonly id: ScheduledTaskFilter; readonly label: string }[] = [
-  { id: "all", label: "All" },
-  { id: "active", label: "Active" },
-  { id: "paused", label: "Paused" },
-  { id: "completed", label: "Completed" },
+const FILTERS: readonly { readonly id: ScheduledTaskFilter; readonly labelKey: MessageKey }[] = [
+  { id: "all", labelKey: "scheduled.view.filter.all" },
+  { id: "active", labelKey: "scheduled.view.filter.active" },
+  { id: "paused", labelKey: "scheduled.view.filter.paused" },
+  { id: "completed", labelKey: "scheduled.view.filter.completed" },
 ];
 
 export function ScheduledTasksView({
@@ -41,6 +42,7 @@ export function ScheduledTasksView({
   onCreateWithPi,
   onOpenEditor,
 }: ScheduledTasksViewProps) {
+  const { t } = useI18n();
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<ScheduledTaskFilter>("all");
   const [createOpen, setCreateOpen] = useState(false);
@@ -51,10 +53,8 @@ export function ScheduledTasksView({
     <section className="canvas scheduled-tasks-view" data-testid="scheduled-tasks-view">
       <header className="view-header">
         <div>
-          <h1 className="view-header__title">Scheduled tasks</h1>
-          <p className="view-header__body">
-            Ask pi to schedule tasks, set reminders, or monitor for updates.
-          </p>
+          <h1 className="view-header__title">{t("scheduled.view.title")}</h1>
+          <p className="view-header__body">{t("scheduled.view.description")}</p>
         </div>
         <div className="view-header__actions">
           <div className="scheduled-create">
@@ -66,7 +66,7 @@ export function ScheduledTasksView({
               aria-expanded={createOpen}
               onClick={() => setCreateOpen((open) => !open)}
             >
-              Create
+              {t("scheduled.view.create")}
             </button>
             {createOpen ? (
               <div className="workspace-menu scheduled-create__menu" role="menu">
@@ -79,7 +79,7 @@ export function ScheduledTasksView({
                     onCreateWithPi();
                   }}
                 >
-                  Create with pi
+                  {t("scheduled.view.createWithPi")}
                 </button>
                 <button
                   className="workspace-menu__item"
@@ -90,7 +90,7 @@ export function ScheduledTasksView({
                     onOpenEditor({ mode: "create" });
                   }}
                 >
-                  Set up manually
+                  {t("scheduled.view.setUpManually")}
                 </button>
               </div>
             ) : null}
@@ -100,10 +100,10 @@ export function ScheduledTasksView({
 
       <div className="scheduled-toolbar">
         <input
-          aria-label="Search scheduled tasks"
+          aria-label={t("scheduled.view.searchLabel")}
           className="skills-search"
           data-testid="scheduled-task-search"
-          placeholder="Search"
+          placeholder={t("scheduled.view.searchPlaceholder")}
           value={query}
           onChange={(event) => setQuery(event.target.value)}
         />
@@ -118,7 +118,7 @@ export function ScheduledTasksView({
               aria-selected={filter === entry.id}
               onClick={() => setFilter(entry.id)}
             >
-              {entry.label}
+              {t(entry.labelKey)}
             </button>
           ))}
         </div>
@@ -128,11 +128,15 @@ export function ScheduledTasksView({
 
       {visible.length === 0 ? (
         <div className="empty-panel" data-testid="scheduled-tasks-empty">
-          <h2>{filter === "active" ? "No active scheduled tasks" : "No scheduled tasks"}</h2>
+          <h2>
+            {filter === "active"
+              ? t("scheduled.view.emptyActiveTitle")
+              : t("scheduled.view.emptyTitle")}
+          </h2>
           <p>
             {filter === "active"
-              ? "Scheduled tasks run on this device while pi-gui is open. They do not run in the cloud or after you quit."
-              : "Create a task manually or ask pi to set one up."}
+              ? t("scheduled.view.emptyActiveBody")
+              : t("scheduled.view.emptyBody")}
           </p>
         </div>
       ) : (
@@ -156,7 +160,7 @@ export function ScheduledTasksView({
                 <button
                   className="icon-button"
                   type="button"
-                  aria-label={`Actions for ${task.title}`}
+                  aria-label={t("scheduled.view.taskActions", { title: task.title })}
                   aria-haspopup="menu"
                   aria-expanded={menuTaskId === task.id}
                   onClick={(event) => {
@@ -181,7 +185,7 @@ export function ScheduledTasksView({
                           });
                         }}
                       >
-                        Resume
+                        {t("scheduled.view.resume")}
                       </button>
                     ) : task.status !== "completed" ? (
                       <button
@@ -196,7 +200,7 @@ export function ScheduledTasksView({
                           });
                         }}
                       >
-                        Pause
+                        {t("scheduled.view.pause")}
                       </button>
                     ) : null}
                     <button
@@ -207,7 +211,7 @@ export function ScheduledTasksView({
                         onOpenEditor({ mode: "edit", taskId: task.id });
                       }}
                     >
-                      Edit
+                      {t("scheduled.view.edit")}
                     </button>
                     <button
                       className="workspace-menu__item workspace-menu__item--danger"
@@ -221,7 +225,7 @@ export function ScheduledTasksView({
                         });
                       }}
                     >
-                      Delete
+                      {t("common.delete")}
                     </button>
                   </div>
                 ) : null}

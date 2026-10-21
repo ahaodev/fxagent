@@ -58,9 +58,10 @@ import {
   type PiDesktopApi,
 } from "../../../contracts/ipc";
 import { formatRelativeTime } from "../../lib/string-utils";
+import { useI18n, type MessageKey } from "../../i18n";
 import { PaneResizeHandle, type PaneWidthBounds } from "../../ui/pane-resize-handle";
 import { usePersistedPaneWidth } from "../../ui/use-persisted-pane-width";
-import { sessionLastInteractedAt } from "../../../contracts/thread-recency";
+import { sessionLastInteractedAt, type RecencyBucketId } from "../../../contracts/thread-recency";
 import type { WorkspaceMenuState } from "./hooks/use-workspace-menu";
 import type { ThreadMenuState } from "./hooks/use-thread-actions";
 import { archiveThreadShortcut, ThreadActionsMenu } from "./thread-actions";
@@ -131,6 +132,13 @@ const ThreadShortcutContext = createContext<ReadonlyMap<string, ThreadShortcutBa
   undefined,
 );
 
+const RECENCY_SECTION_LABEL_KEYS: Record<RecencyBucketId, MessageKey> = {
+  today: "threads.recency.today",
+  "last-7-days": "threads.recency.last7Days",
+  "last-30-days": "threads.recency.last30Days",
+  older: "threads.recency.older",
+};
+
 export function Sidebar(props: SidebarProps) {
   const {
     activeView,
@@ -157,6 +165,7 @@ export function Sidebar(props: SidebarProps) {
     onUnarchiveSession,
     threadShortcutOrderRef,
   } = props;
+  const { t } = useI18n();
 
   const [sidebarWidth, setSidebarWidth] = usePersistedPaneWidth(
     "pi-gui.sidebar-width",
@@ -396,7 +405,7 @@ export function Sidebar(props: SidebarProps) {
     <aside className="sidebar" id="primary-sidebar" style={sidebarWidthStyle}>
       <PaneResizeHandle
         className="sidebar__resize-handle"
-        label="Sidebar width"
+        label={t("threads.sidebar.resizeHandle")}
         controls="primary-sidebar"
         edge="right"
         bounds={sidebarWidthBounds}
@@ -411,7 +420,7 @@ export function Sidebar(props: SidebarProps) {
           onClick={() => onNewThread()}
         >
           <PlusIcon />
-          <span>New thread</span>
+          <span>{t("threads.nav.newThread")}</span>
         </button>
 
         <div className="sidebar__nav">
@@ -421,7 +430,7 @@ export function Sidebar(props: SidebarProps) {
             onClick={() => onSetActiveView("threads")}
           >
             <FolderIcon />
-            <span>Threads</span>
+            <span>{t("threads.nav.threads")}</span>
           </button>
           <button
             className={`sidebar__nav-item ${activeView === "scheduled" ? "sidebar__nav-item--active" : ""}`}
@@ -430,7 +439,7 @@ export function Sidebar(props: SidebarProps) {
             onClick={() => onSetActiveView("scheduled")}
           >
             <ClockIcon />
-            <span>Scheduled</span>
+            <span>{t("threads.nav.scheduled")}</span>
           </button>
           <button
             className="sidebar__nav-item"
@@ -440,7 +449,7 @@ export function Sidebar(props: SidebarProps) {
             }
           >
             <SkillIcon />
-            <span>Skills</span>
+            <span>{t("threads.nav.skills")}</span>
           </button>
           <button
             className="sidebar__nav-item"
@@ -450,7 +459,7 @@ export function Sidebar(props: SidebarProps) {
             }
           >
             <ExtensionIcon />
-            <span>Extensions</span>
+            <span>{t("threads.nav.extensions")}</span>
           </button>
           <button
             className="sidebar__nav-item"
@@ -460,14 +469,14 @@ export function Sidebar(props: SidebarProps) {
             }
           >
             <SettingsIcon />
-            <span>Settings</span>
+            <span>{t("threads.nav.settings")}</span>
           </button>
         </div>
       </div>
 
       <div className="sidebar__section">
         <div className="section__head">
-          <span>Threads</span>
+          <span>{t("threads.sidebar.threadsSection")}</span>
           <div className="section__tools">
             <ThreadGroupingControl
               grouping={threadGrouping}
@@ -480,7 +489,7 @@ export function Sidebar(props: SidebarProps) {
               }}
             />
             <button
-              aria-label="Open folder"
+              aria-label={t("threads.sidebar.openFolder")}
               className="icon-button"
               type="button"
               onClick={() => {
@@ -498,8 +507,8 @@ export function Sidebar(props: SidebarProps) {
 
         {visibleWorkspaces.length === 0 ? (
           <div className="empty-state" data-testid="empty-state">
-            <h2>No folders yet</h2>
-            <p>Open a project folder to start building a workspace and session list.</p>
+            <h2>{t("threads.sidebar.emptyTitle")}</h2>
+            <p>{t("threads.sidebar.emptyBody")}</p>
             <button
               className="button button--primary"
               type="button"
@@ -511,7 +520,7 @@ export function Sidebar(props: SidebarProps) {
                 );
               }}
             >
-              Open first folder
+              {t("threads.sidebar.emptyAction")}
             </button>
           </div>
         ) : (
@@ -755,6 +764,7 @@ function WorkspaceFolderContent(
     onSetSessionPinned,
     dragHandleProps,
   } = props;
+  const { t } = useI18n();
   // Folder grouping lists threads under each folder, so the row folds them
   // like Codex; with no threads to fold, the row just selects the folder.
   const toggleCollapsed = threads?.length ? onToggleCollapsed : undefined;
@@ -800,9 +810,9 @@ function WorkspaceFolderContent(
         <span className="workspace-row__actions">
           {onNewThread ? (
             <button
-              aria-label={`New thread in ${workspace.name}`}
+              aria-label={t("threads.sidebar.workspace.newThread", { workspace: workspace.name })}
               className="icon-button workspace-row__action-button"
-              title="New thread"
+              title={t("threads.sidebar.workspace.newThreadTitle")}
               type="button"
               onClick={() => {
                 // The new thread lands in this folder, so open it to keep the row in view.
@@ -820,7 +830,7 @@ function WorkspaceFolderContent(
             ref={wsMenu.workspaceMenuId === workspace.id ? wsMenu.workspaceMenuWrapRef : undefined}
           >
             <button
-              aria-label={`Workspace actions for ${workspace.name}`}
+              aria-label={t("threads.sidebar.workspace.actions", { workspace: workspace.name })}
               aria-haspopup="menu"
               className="icon-button workspace-row__menu-button"
               aria-expanded={wsMenu.workspaceMenuId === workspace.id}
@@ -846,7 +856,7 @@ function WorkspaceFolderContent(
                     })
                   }
                 >
-                  Open folder
+                  {t("threads.workspaceMenu.openFolder")}
                 </button>
                 {linkedWorktree ? (
                   <button
@@ -861,7 +871,7 @@ function WorkspaceFolderContent(
                       )
                     }
                   >
-                    Remove worktree
+                    {t("threads.workspaceMenu.removeWorktree")}
                   </button>
                 ) : (
                   <button
@@ -873,7 +883,7 @@ function WorkspaceFolderContent(
                       )
                     }
                   >
-                    Create permanent worktree
+                    {t("threads.workspaceMenu.createWorktree")}
                   </button>
                 )}
                 <button
@@ -883,7 +893,7 @@ function WorkspaceFolderContent(
                     wsMenu.runWorkspaceMenuAction(event, () => wsMenu.startRename(workspace))
                   }
                 >
-                  Edit name
+                  {t("threads.workspaceMenu.editName")}
                 </button>
                 <button
                   className="workspace-menu__item workspace-menu__item--danger"
@@ -892,7 +902,7 @@ function WorkspaceFolderContent(
                     wsMenu.runWorkspaceMenuAction(event, () => wsMenu.removeWorkspace(workspace))
                   }
                 >
-                  Remove
+                  {t("threads.workspaceMenu.remove")}
                 </button>
               </div>
             ) : null}
@@ -909,7 +919,7 @@ function WorkspaceFolderContent(
           }}
         >
           <input
-            aria-label={`Rename ${workspace.name}`}
+            aria-label={t("threads.sidebar.workspace.rename", { workspace: workspace.name })}
             className="workspace-rename__input"
             ref={wsMenu.workspaceRenameInputRef}
             value={wsMenu.workspaceRenameDraft}
@@ -929,13 +939,13 @@ function WorkspaceFolderContent(
               type="button"
               onClick={wsMenu.cancelRename}
             >
-              Cancel
+              {t("threads.rename.cancel")}
             </button>
             <button
               className="workspace-rename__button workspace-rename__button--primary"
               type="submit"
             >
-              Save
+              {t("threads.rename.save")}
             </button>
           </div>
         </form>
@@ -993,14 +1003,16 @@ function RecencyThreadSectionView({
     pinned: boolean,
   ) => void;
 }) {
+  const { t } = useI18n();
+  const label = t(RECENCY_SECTION_LABEL_KEYS[section.bucket]);
   const history = threadHistoryPreview(section.threads, historyExpanded);
   return (
     <section
       className="recency-thread-group"
-      aria-label={section.label}
+      aria-label={label}
       data-recency-bucket={section.bucket}
     >
-      <div className="recency-thread-group__head">{section.label}</div>
+      <div className="recency-thread-group__head">{label}</div>
       <div className="session-list session-list--history">
         {history.visible.map((thread) => (
           <HistoryThreadRow
@@ -1017,11 +1029,7 @@ function RecencyThreadSectionView({
         ))}
       </div>
       {history.overflow ? (
-        <HistoryToggle
-          expanded={historyExpanded}
-          label={section.label}
-          onToggle={onToggleHistory}
-        />
+        <HistoryToggle expanded={historyExpanded} label={label} onToggle={onToggleHistory} />
       ) : null}
     </section>
   );
@@ -1088,11 +1096,16 @@ function HistoryToggle({
   readonly label: string;
   readonly onToggle: () => void;
 }) {
-  const text = expanded ? "Show less" : "Show more";
+  const { t } = useI18n();
+  const text = expanded ? t("threads.history.showLess") : t("threads.history.showMore");
   return (
     <button
       aria-expanded={expanded}
-      aria-label={`${text} ${label}`}
+      aria-label={
+        expanded
+          ? t("threads.history.showLessFor", { name: label })
+          : t("threads.history.showMoreFor", { name: label })
+      }
       className="thread-history-toggle"
       type="button"
       onClick={onToggle}
@@ -1111,6 +1124,7 @@ function ThreadGroupingControl({
 }) {
   const [open, setOpen] = useState(false);
   const [submenuOpen, setSubmenuOpen] = useState(false);
+  const { t } = useI18n();
   const [menuStyle, setMenuStyle] = useState<CSSProperties>({});
   const [submenuStyle, setSubmenuStyle] = useState<CSSProperties>({});
   const wrapRef = useRef<HTMLSpanElement | null>(null);
@@ -1220,7 +1234,7 @@ function ThreadGroupingControl({
         ref={buttonRef}
         aria-expanded={open}
         aria-haspopup="menu"
-        aria-label="Customize Sidebar"
+        aria-label={t("threads.grouping.customizeSidebar")}
         className="icon-button"
         type="button"
         onClick={() => {
@@ -1235,14 +1249,14 @@ function ThreadGroupingControl({
       </button>
       {open ? null : (
         <span className="shortcut-tooltip" role="tooltip">
-          Customize Sidebar
+          {t("threads.grouping.customizeSidebar")}
         </span>
       )}
       {open
         ? createPortal(
             <div ref={menuRef}>
               <div
-                aria-label="Customize Sidebar"
+                aria-label={t("threads.grouping.customizeSidebar")}
                 className="workspace-menu thread-grouping__menu"
                 role="menu"
                 style={menuStyle}
@@ -1260,14 +1274,14 @@ function ThreadGroupingControl({
                   onMouseEnter={keepSubmenu}
                   onMouseLeave={closeSubmenuSoon}
                 >
-                  <span>Grouping</span>
+                  <span>{t("threads.grouping.title")}</span>
                   <ChevronRightIcon />
                 </button>
               </div>
               {submenuOpen ? (
                 <div
                   ref={submenuRef}
-                  aria-label="Grouping"
+                  aria-label={t("threads.grouping.title")}
                   className="workspace-menu thread-grouping__submenu"
                   role="menu"
                   style={submenuStyle}
@@ -1276,8 +1290,8 @@ function ThreadGroupingControl({
                 >
                   {(
                     [
-                      ["time", "Time"],
-                      ["workspace", "Workspace"],
+                      ["time", t("threads.grouping.time")],
+                      ["workspace", t("threads.grouping.workspace")],
                     ] as const
                   ).map(([value, label]) => (
                     <button
@@ -1333,6 +1347,7 @@ function ArchivedThreadsSection({
     pinned: boolean,
   ) => void;
 }) {
+  const { t } = useI18n();
   return (
     <div className="archived-thread-group">
       <button
@@ -1347,7 +1362,7 @@ function ArchivedThreadsSection({
         >
           <ChevronDownIcon />
         </span>
-        <span>Archived</span>
+        <span>{t("threads.sidebar.archived")}</span>
         <span className="archived-thread-group__count">{archivedThreads.length}</span>
       </button>
       {open ? (
@@ -1415,11 +1430,12 @@ function PinnedThreadsSection({
     pinned: boolean,
   ) => void;
 }) {
+  const { t } = useI18n();
   return (
-    <section className="pinned-thread-group" aria-label="Pinned threads">
+    <section className="pinned-thread-group" aria-label={t("threads.sidebar.pinnedThreads")}>
       <div className="pinned-thread-group__head">
         <PinIcon filled />
-        <span>Pinned</span>
+        <span>{t("threads.sidebar.pinned")}</span>
       </div>
       <SortableContext items={[...sortableIds]} strategy={verticalListSortingStrategy}>
         <div className="session-list session-list--pinned">
@@ -1553,9 +1569,12 @@ const ThreadSessionRow = forwardRef<HTMLDivElement, ThreadSessionRowProps>(
     },
     ref,
   ) {
+    const { t } = useI18n();
     const indicatorVariant = sessionIndicatorVariant(thread);
     const pinned = Boolean(thread.session.pinnedAt);
-    const actionContext = showContext ? ` in ${thread.contextLabel}` : "";
+    const actionContext = showContext
+      ? t("threads.sessionRow.actionContext", { context: thread.contextLabel })
+      : "";
     const shortcut = useContext(ThreadShortcutContext)?.get(sessionThreadKey(thread));
     const shortcutBadge = overlay ? undefined : shortcut;
     const menuOpen =
@@ -1627,7 +1646,11 @@ const ThreadSessionRow = forwardRef<HTMLDivElement, ThreadSessionRowProps>(
           </button>
           <span className="session-row__trailing">
             {thread.environment.kind === "worktree" ? (
-              <span className="session-row__workspace-icon" aria-hidden="true" title="Worktree">
+              <span
+                className="session-row__workspace-icon"
+                aria-hidden="true"
+                title={t("threads.sessionRow.worktree")}
+              >
                 <WorktreeIcon />
               </span>
             ) : null}
@@ -1643,7 +1666,7 @@ const ThreadSessionRow = forwardRef<HTMLDivElement, ThreadSessionRowProps>(
             <span className="session-row__action-cluster">
               {!archived ? (
                 <button
-                  aria-label={`${pinned ? "Unpin" : "Pin"} ${thread.session.title}${actionContext}`}
+                  aria-label={`${pinned ? t("threads.sessionRow.unpin") : t("threads.sessionRow.pin")} ${thread.session.title}${actionContext}`}
                   aria-pressed={pinned}
                   className="icon-button session-row__action session-row__pin-action"
                   type="button"
@@ -1657,7 +1680,7 @@ const ThreadSessionRow = forwardRef<HTMLDivElement, ThreadSessionRowProps>(
               ) : null}
               <span className="shortcut-tooltip-wrap session-row__tooltip-wrap">
                 <button
-                  aria-label={`${archived ? "Restore" : "Archive"} ${thread.session.title}${actionContext}`}
+                  aria-label={`${archived ? t("threads.sessionRow.restore") : t("threads.sessionRow.archive")} ${thread.session.title}${actionContext}`}
                   className="icon-button session-row__action"
                   type="button"
                   onClick={(event) => {
@@ -1669,7 +1692,11 @@ const ThreadSessionRow = forwardRef<HTMLDivElement, ThreadSessionRowProps>(
                 </button>
                 {threadMenu && !overlay && !menuOpen ? (
                   <span className="shortcut-tooltip session-row__tooltip" role="tooltip">
-                    <span>{archived ? "Restore thread" : "Archive thread"}</span>
+                    <span>
+                      {archived
+                        ? t("threads.sessionRow.restoreThread")
+                        : t("threads.sessionRow.archiveThread")}
+                    </span>
                     {archived ? null : <kbd>{archiveThreadShortcut(threadMenu.platform)}</kbd>}
                   </span>
                 ) : null}
@@ -1695,7 +1722,7 @@ const ThreadSessionRow = forwardRef<HTMLDivElement, ThreadSessionRowProps>(
             }}
           >
             <input
-              aria-label={`Rename thread ${thread.session.title}`}
+              aria-label={t("threads.sessionRow.renameThread", { title: thread.session.title })}
               className="workspace-rename__input"
               // Mounts when a rename starts, including after the sidebar or a
               // collapsed group opens to reveal the row.
@@ -1716,13 +1743,13 @@ const ThreadSessionRow = forwardRef<HTMLDivElement, ThreadSessionRowProps>(
                 type="button"
                 onClick={threadMenu.cancelRename}
               >
-                Cancel
+                {t("threads.rename.cancel")}
               </button>
               <button
                 className="workspace-rename__button workspace-rename__button--primary"
                 type="submit"
               >
-                Save
+                {t("threads.rename.save")}
               </button>
             </div>
           </form>

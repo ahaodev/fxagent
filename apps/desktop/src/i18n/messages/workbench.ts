@@ -1,3 +1,266 @@
-export const enMessages = {} as const;
+export const enMessages = {
+  // Built-in tools: tab labels and the tool chooser copy.
+  "workbench.builtinTool.files.label": "Files",
+  "workbench.builtinTool.files.description": "Browse files in this checkout",
+  "workbench.builtinTool.changes.label": "Review",
+  "workbench.builtinTool.changes.description": "Review uncommitted, branch or turn changes",
+  "workbench.builtinTool.terminal.label": "Terminal",
+  "workbench.builtinTool.terminal.description": "Run commands in this task's checkout",
 
-export const zhMessages: Record<keyof typeof enMessages, string> = {};
+  // Side panel chrome.
+  "workbench.shell.sideWorkspaceLabel": "Side workspace",
+  "workbench.shell.toolsLabel": "Workspace tools",
+  "workbench.shell.closeTab": "Close {name} tab",
+  "workbench.shell.addTab": "Add tab",
+  "workbench.shell.togglePanel": "Toggle side panel",
+  "workbench.shell.hidePanel": "Hide side panel",
+  "workbench.shell.retryRestore": "Retry restoring tabs",
+  "workbench.shell.savedTabsUnavailable": "Saved tabs are unavailable until restoration succeeds.",
+  "workbench.shell.restoringTabs": "Restoring tool tabs…",
+
+  // Tool chooser.
+  "workbench.chooser.title": "Open a tool",
+  "workbench.chooser.description": "Keep the tools you need alongside your conversation.",
+  "workbench.chooser.extensionViews": "Extension views",
+  "workbench.chooser.loadingViews": "Loading extension views…",
+  "workbench.chooser.refreshViews": "Refresh views",
+  "workbench.chooser.viewUnavailable": "View unavailable",
+  "workbench.chooser.empty": "Installed extensions can provide additional views here.",
+  "workbench.chooser.findingView": "Finding this extension view…",
+  "workbench.chooser.unavailableTitle": "This extension view is unavailable",
+  "workbench.chooser.unavailableBody":
+    "Your saved tab is retained. Extension commands can still be used when installed.",
+  "workbench.chooser.closeTab": "Close tab",
+
+  // Files tool: explorer.
+  "workbench.fileExplorer.label": "File explorer",
+  "workbench.fileExplorer.filterLabel": "Filter files",
+  "workbench.fileExplorer.filterPlaceholder": "Filter files…",
+  "workbench.fileExplorer.refresh": "Refresh",
+  "workbench.fileExplorer.loading": "Loading files...",
+  "workbench.fileExplorer.noIndexedFiles": "No indexed files",
+  "workbench.fileExplorer.noMatchingFiles": "No matching files",
+  "workbench.fileExplorer.loadFailed": "Couldn't load files",
+
+  // Files tool: editor pane.
+  "workbench.fileEditor.label": "Open file",
+  "workbench.fileEditor.closeTab": "Close {name}",
+  "workbench.fileEditor.viewSource": "View source",
+  "workbench.fileEditor.copyFile": "Copy file",
+  "workbench.fileEditor.open": "Open",
+  "workbench.fileEditor.pathLabel": "File path",
+  "workbench.fileEditor.noSelection": "Select a file from the explorer.",
+  "workbench.fileEditor.loading": "Loading file...",
+  "workbench.fileEditor.noPreview": "No preview available.",
+  "workbench.fileEditor.binaryPreview": "Binary or directory preview is not available.",
+  "workbench.fileEditor.truncated": "Preview truncated",
+  "workbench.fileEditor.imageAlt": "[image: {alt}]",
+  "workbench.fileEditor.image": "[image]",
+
+  // Review tool: panel chrome.
+  "workbench.review.panelLabel": "Review",
+  "workbench.review.scopeMenuLabel": "Review scope",
+  "workbench.review.optionsMenuLabel": "Review options",
+  "workbench.review.refresh": "Refresh",
+  "workbench.review.refreshComparison": "Refresh comparison",
+  "workbench.review.retry": "Retry",
+  "workbench.review.unavailableCheckout": "Unavailable checkout",
+  "workbench.review.currentTaskOption": "Current task · {name}",
+  "workbench.review.showFileTree": "Show file tree",
+  "workbench.review.hideFileTree": "Hide file tree",
+  "workbench.review.base": "Base",
+  "workbench.review.baseBranch": "Base branch",
+  "workbench.review.repositoryDefault": "Repository default",
+  "workbench.review.compare": "Compare",
+  "workbench.review.loadingComparison": "Loading comparison…",
+  "workbench.review.checkoutUnavailable": "The selected checkout is unavailable.",
+  "workbench.review.noChangesInCaptured": "No changes in the captured files.",
+  "workbench.review.noChanges": "No changes",
+  "workbench.review.fileNotInComparison": "This file is not part of the selected comparison.",
+  "workbench.review.openInFiles": "Open in Files",
+  "workbench.review.renamedFrom": "Renamed from {path}",
+  "workbench.review.loadingDiff": "Loading diff…",
+  "workbench.review.diffLabel": "Diff",
+  "workbench.review.noTextDiff": "No text diff is available for this file.",
+  "workbench.review.captured": "Captured {time}",
+  "workbench.review.coverageLimits": "Comparison has limits",
+  "workbench.review.coverageDetails": "Comparison details",
+  "workbench.review.coverageMissing": "Some changes could not be included.",
+
+  // Review tool: comparison scopes.
+  "workbench.scope.lastTurn": "Last Turn",
+  "workbench.scope.selectedTurn": "Selected Turn",
+  "workbench.scope.uncommitted": "Uncommitted",
+  "workbench.scope.unstaged": "Unstaged",
+  "workbench.scope.staged": "Staged",
+  "workbench.scope.branch": "Branch",
+
+  // Review tool: changed-file tree.
+  "workbench.reviewTree.label": "Changed files",
+  "workbench.reviewTree.filterChanged": "Filter changed files",
+  "workbench.reviewTree.filterPlaceholder": "Filter files…",
+  "workbench.reviewTree.reviewedCount": "Reviewed {reviewed} of {total}",
+  "workbench.reviewTree.noMatches": "No files match.",
+  "workbench.reviewTree.stage": "Stage",
+  "workbench.reviewTree.stageFile": "Stage file",
+  "workbench.reviewTree.unstage": "Unstage",
+  "workbench.reviewTree.unstageFile": "Unstage file",
+  "workbench.reviewTree.markReviewed": "Mark {path} reviewed",
+  "workbench.reviewTree.conflicted": "Conflicted",
+  "workbench.reviewTree.status.added": "added",
+  "workbench.reviewTree.status.copied": "copied",
+  "workbench.reviewTree.status.deleted": "deleted",
+  "workbench.reviewTree.status.modified": "modified",
+  "workbench.reviewTree.status.renamed": "renamed",
+  "workbench.reviewTree.status.untracked": "untracked",
+  "workbench.reviewTree.status.typechanged": "typechanged",
+
+  // Terminal tool.
+  "workbench.terminal.sessions": "Terminal sessions",
+  "workbench.terminal.closeTab": "Close {name}",
+  "workbench.terminal.new": "New terminal",
+  "workbench.terminal.restart": "Restart terminal",
+
+  // Side panel resize handle.
+  "workbench.resize.sidePanelWidth": "Side panel width",
+
+  // Layout problems shown in the side panel.
+  "workbench.error.saveFailed": "Couldn't save tool tabs. They are kept in this window.",
+  "workbench.error.restoreFailed":
+    "Couldn't restore saved tool tabs. Your current tabs are still available.",
+  "workbench.error.fileTabLimit":
+    "You have {count} file tabs open. Close a file tab before opening another.",
+  "workbench.error.toolTabLimit": "Close a tool tab before opening another.",
+} as const;
+
+export const zhMessages: Record<keyof typeof enMessages, string> = {
+  // Built-in tools: tab labels and the tool chooser copy.
+  "workbench.builtinTool.files.label": "文件",
+  "workbench.builtinTool.files.description": "浏览此检出中的文件",
+  "workbench.builtinTool.changes.label": "审阅",
+  "workbench.builtinTool.changes.description": "审阅未提交、分支或单轮变更",
+  "workbench.builtinTool.terminal.label": "终端",
+  "workbench.builtinTool.terminal.description": "在此任务的检出中运行命令",
+
+  // Side panel chrome.
+  "workbench.shell.sideWorkspaceLabel": "侧边工作区",
+  "workbench.shell.toolsLabel": "工作区工具",
+  "workbench.shell.closeTab": "关闭 {name} 标签页",
+  "workbench.shell.addTab": "添加标签页",
+  "workbench.shell.togglePanel": "切换侧边栏",
+  "workbench.shell.hidePanel": "隐藏侧边栏",
+  "workbench.shell.retryRestore": "重试恢复标签页",
+  "workbench.shell.savedTabsUnavailable": "恢复成功前，已保存的标签页不可用。",
+  "workbench.shell.restoringTabs": "正在恢复工具标签页…",
+
+  // Tool chooser.
+  "workbench.chooser.title": "打开工具",
+  "workbench.chooser.description": "把需要的工具留在对话旁边。",
+  "workbench.chooser.extensionViews": "扩展视图",
+  "workbench.chooser.loadingViews": "正在加载扩展视图…",
+  "workbench.chooser.refreshViews": "刷新视图",
+  "workbench.chooser.viewUnavailable": "视图不可用",
+  "workbench.chooser.empty": "已安装的扩展可以在这里提供更多视图。",
+  "workbench.chooser.findingView": "正在查找此扩展视图…",
+  "workbench.chooser.unavailableTitle": "此扩展视图不可用",
+  "workbench.chooser.unavailableBody": "已保存的标签页仍然保留；安装扩展后仍可使用其命令。",
+  "workbench.chooser.closeTab": "关闭标签页",
+
+  // Files tool: explorer.
+  "workbench.fileExplorer.label": "文件浏览器",
+  "workbench.fileExplorer.filterLabel": "筛选文件",
+  "workbench.fileExplorer.filterPlaceholder": "筛选文件…",
+  "workbench.fileExplorer.refresh": "刷新",
+  "workbench.fileExplorer.loading": "正在加载文件…",
+  "workbench.fileExplorer.noIndexedFiles": "没有已建立索引的文件",
+  "workbench.fileExplorer.noMatchingFiles": "没有匹配的文件",
+  "workbench.fileExplorer.loadFailed": "无法加载文件",
+
+  // Files tool: editor pane.
+  "workbench.fileEditor.label": "打开的文件",
+  "workbench.fileEditor.closeTab": "关闭 {name}",
+  "workbench.fileEditor.viewSource": "查看源码",
+  "workbench.fileEditor.copyFile": "复制文件",
+  "workbench.fileEditor.open": "打开",
+  "workbench.fileEditor.pathLabel": "文件路径",
+  "workbench.fileEditor.noSelection": "请从文件浏览器中选择一个文件。",
+  "workbench.fileEditor.loading": "正在加载文件…",
+  "workbench.fileEditor.noPreview": "没有可用的预览。",
+  "workbench.fileEditor.binaryPreview": "无法预览二进制文件或目录。",
+  "workbench.fileEditor.truncated": "预览已截断",
+  "workbench.fileEditor.imageAlt": "[图片：{alt}]",
+  "workbench.fileEditor.image": "[图片]",
+
+  // Review tool: panel chrome.
+  "workbench.review.panelLabel": "审阅",
+  "workbench.review.scopeMenuLabel": "审阅范围",
+  "workbench.review.optionsMenuLabel": "审阅选项",
+  "workbench.review.refresh": "刷新",
+  "workbench.review.refreshComparison": "刷新比较",
+  "workbench.review.retry": "重试",
+  "workbench.review.unavailableCheckout": "不可用的检出",
+  "workbench.review.currentTaskOption": "当前任务 · {name}",
+  "workbench.review.showFileTree": "显示文件树",
+  "workbench.review.hideFileTree": "隐藏文件树",
+  "workbench.review.base": "基线",
+  "workbench.review.baseBranch": "基线分支",
+  "workbench.review.repositoryDefault": "仓库默认",
+  "workbench.review.compare": "比较",
+  "workbench.review.loadingComparison": "正在加载比较…",
+  "workbench.review.checkoutUnavailable": "所选检出不可用。",
+  "workbench.review.noChangesInCaptured": "捕获的文件中没有变更。",
+  "workbench.review.noChanges": "没有变更",
+  "workbench.review.fileNotInComparison": "此文件不属于所选的比较。",
+  "workbench.review.openInFiles": "在文件中打开",
+  "workbench.review.renamedFrom": "重命名自 {path}",
+  "workbench.review.loadingDiff": "正在加载差异…",
+  "workbench.review.diffLabel": "差异",
+  "workbench.review.noTextDiff": "此文件没有可用的文本差异。",
+  "workbench.review.captured": "捕获于 {time}",
+  "workbench.review.coverageLimits": "比较存在限制",
+  "workbench.review.coverageDetails": "比较详情",
+  "workbench.review.coverageMissing": "部分变更未能包含在内。",
+
+  // Review tool: comparison scopes.
+  "workbench.scope.lastTurn": "上一轮",
+  "workbench.scope.selectedTurn": "所选轮次",
+  "workbench.scope.uncommitted": "未提交",
+  "workbench.scope.unstaged": "未暂存",
+  "workbench.scope.staged": "已暂存",
+  "workbench.scope.branch": "分支",
+
+  // Review tool: changed-file tree.
+  "workbench.reviewTree.label": "变更的文件",
+  "workbench.reviewTree.filterChanged": "筛选变更的文件",
+  "workbench.reviewTree.filterPlaceholder": "筛选文件…",
+  "workbench.reviewTree.reviewedCount": "已审阅 {reviewed} / 共 {total}",
+  "workbench.reviewTree.noMatches": "没有匹配的文件。",
+  "workbench.reviewTree.stage": "暂存",
+  "workbench.reviewTree.stageFile": "暂存文件",
+  "workbench.reviewTree.unstage": "取消暂存",
+  "workbench.reviewTree.unstageFile": "取消暂存文件",
+  "workbench.reviewTree.markReviewed": "将 {path} 标记为已审阅",
+  "workbench.reviewTree.conflicted": "冲突",
+  "workbench.reviewTree.status.added": "新增",
+  "workbench.reviewTree.status.copied": "复制",
+  "workbench.reviewTree.status.deleted": "删除",
+  "workbench.reviewTree.status.modified": "修改",
+  "workbench.reviewTree.status.renamed": "重命名",
+  "workbench.reviewTree.status.untracked": "未跟踪",
+  "workbench.reviewTree.status.typechanged": "类型变更",
+
+  // Terminal tool.
+  "workbench.terminal.sessions": "终端会话",
+  "workbench.terminal.closeTab": "关闭 {name}",
+  "workbench.terminal.new": "新建终端",
+  "workbench.terminal.restart": "重启终端",
+
+  // Side panel resize handle.
+  "workbench.resize.sidePanelWidth": "侧边栏宽度",
+
+  // Layout problems shown in the side panel.
+  "workbench.error.saveFailed": "无法保存工具标签页，它们仍保留在此窗口中。",
+  "workbench.error.restoreFailed": "无法恢复已保存的工具标签页，当前标签页仍然可用。",
+  "workbench.error.fileTabLimit": "已打开 {count} 个文件标签页，请先关闭一个文件标签页再打开新的。",
+  "workbench.error.toolTabLimit": "请先关闭一个工具标签页再打开新的。",
+};

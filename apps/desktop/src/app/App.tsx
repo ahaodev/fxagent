@@ -12,6 +12,8 @@ import {
 } from "../../contracts/scheduled-tasks";
 import { updateSnapshot, type DesktopAppSession } from "./desktop-app-state";
 import { DesktopStartupSurface, toStartupSurfaceState } from "./desktop-recovery";
+import { NoProjectFolderCanvas, NoWorkspaceCanvas, WorkspaceThreadsCanvas } from "./empty-canvas";
+import { StartupDiagnostics } from "./startup-diagnostics";
 import { buildFileWorkbenchContexts } from "./file-workbench-contexts";
 import { canTogglePrimarySidebar } from "./app-shell-utils";
 import { useDesktopCommands } from "./use-desktop-commands";
@@ -19,6 +21,7 @@ import { useRunningLabel } from "../features/conversation/hooks/use-running-labe
 import { useTimelineViewport } from "../features/conversation/hooks/use-timeline-viewport";
 import { buildDisplayTimelineItems } from "../features/conversation/timeline-turns";
 import { useTurnChanges } from "../features/conversation/hooks/use-turn-changes";
+import { useI18n } from "../i18n";
 import { formatRelativeTime } from "../lib/string-utils";
 import { restoreTopmostDialogFocus } from "../ui/dialog-focus";
 import { ComposerPanel } from "../features/conversation/composer-panel";
@@ -95,6 +98,7 @@ import { useSessionComposer } from "../features/conversation/hooks/use-session-c
 import { useTranscriptAnnotations } from "../features/conversation/annotations/use-transcript-annotations";
 
 export default function App({ desktop }: { readonly desktop: DesktopAppSession }) {
+  const { t } = useI18n();
   const workbenchWidth = useWorkbenchWidth();
   const snapshot = desktop.snapshot;
   const setSnapshot = desktop.setSnapshot;
@@ -1028,7 +1032,7 @@ export default function App({ desktop }: { readonly desktop: DesktopAppSession }
                 <button
                   aria-haspopup="menu"
                   aria-expanded={threadMenu.openMenu?.surface === "header"}
-                  aria-label="Thread actions"
+                  aria-label={t("app.shell.threadActions")}
                   className="icon-button"
                   data-testid="thread-header-menu"
                   type="button"
@@ -1048,20 +1052,7 @@ export default function App({ desktop }: { readonly desktop: DesktopAppSession }
         </Topbar>
 
         {snapshot.startupDiagnostics.length > 0 ? (
-          <div className="startup-diagnostics" role="status" data-testid="startup-diagnostics">
-            <strong>Some saved workspaces could not be refreshed.</strong>
-            <span>
-              {snapshot.startupDiagnostics
-                .map((diagnostic) => {
-                  const workspaceName = diagnostic.workspacePath
-                    ?.split(/[\\/]/)
-                    .filter(Boolean)
-                    .at(-1);
-                  return workspaceName ? `${workspaceName} is unavailable.` : diagnostic.message;
-                })
-                .join(" ")}
-            </span>
-          </div>
+          <StartupDiagnostics diagnostics={snapshot.startupDiagnostics} />
         ) : null}
 
         <>
@@ -1133,13 +1124,7 @@ export default function App({ desktop }: { readonly desktop: DesktopAppSession }
                 onSubmit={newThread.startThread}
               />
             ) : (
-              <section className="canvas canvas--empty">
-                <div className="empty-panel">
-                  <div className="session-header__eyebrow">Workspace</div>
-                  <h1>Open a folder to start</h1>
-                  <p>Add a project folder before creating a new thread.</p>
-                </div>
-              </section>
+              <NoProjectFolderCanvas />
             )
           ) : selectedWorkspace && selectedSession ? (
             <>
@@ -1152,16 +1137,15 @@ export default function App({ desktop }: { readonly desktop: DesktopAppSession }
                       data-testid="schema-skew-notice"
                     >
                       <span className="schema-skew-notice__text">
-                        This session was written by a newer version of pi — some content may not
-                        display. Update pi-gui (or open it with the pi CLI) to see everything.
+                        {t("app.shell.schemaSkewNotice")}
                       </span>
                       <button
                         type="button"
                         className="schema-skew-notice__dismiss"
-                        aria-label="Dismiss notice"
+                        aria-label={t("app.shell.dismissNotice")}
                         onClick={() => dismissSchemaSkewNotice(selectedSessionKey)}
                       >
-                        Dismiss
+                        {t("app.shell.dismiss")}
                       </button>
                     </div>
                   ) : null}
@@ -1300,37 +1284,14 @@ export default function App({ desktop }: { readonly desktop: DesktopAppSession }
               ) : null}
             </>
           ) : selectedWorkspace ? (
-            <section className="canvas canvas--empty">
-              <div className="empty-panel">
-                <div className="session-header__eyebrow">Workspace</div>
-                <h1>{selectedWorkspace.name}</h1>
-                <p>Create a thread for this folder, then jump between sessions from the sidebar.</p>
-                <div className="empty-panel__actions">
-                  <button
-                    className="button button--primary"
-                    type="button"
-                    onClick={() =>
-                      newThread.openSurface(
-                        selectedWorkspace?.rootWorkspaceId ?? selectedWorkspace?.id,
-                      )
-                    }
-                  >
-                    New thread
-                  </button>
-                </div>
-              </div>
-            </section>
+            <WorkspaceThreadsCanvas
+              workspaceName={selectedWorkspace.name}
+              onNewThread={() =>
+                newThread.openSurface(selectedWorkspace?.rootWorkspaceId ?? selectedWorkspace?.id)
+              }
+            />
           ) : (
-            <section className="canvas canvas--empty">
-              <div className="empty-panel">
-                <div className="session-header__eyebrow">Workspace</div>
-                <h1>Open a folder to start</h1>
-                <p>
-                  Add project folders, group sessions under them, and jump between threads from the
-                  sidebar.
-                </p>
-              </div>
-            </section>
+            <NoWorkspaceCanvas />
           )}
         </>
         {sidePanelVisible && selectedWorkspace && selectedSession ? (
@@ -1396,7 +1357,7 @@ export default function App({ desktop }: { readonly desktop: DesktopAppSession }
                     />
                   ) : (
                     <p className="workbench__unavailable" role="status">
-                      This file checkout is unavailable.
+                      {t("app.shell.fileCheckoutUnavailable")}
                     </p>
                   ),
                 terminal: () => (

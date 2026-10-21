@@ -5,6 +5,7 @@ import {
   type TaskWorkbenchTemplate,
   type ToolRef,
 } from "../../../contracts/workbench";
+import { t } from "../../i18n";
 import { EMPTY_FILE_TABS, openFile, openFileAtLine } from "./file-workbench-state";
 
 export interface WorkspaceFileReference {
@@ -59,14 +60,14 @@ function actionLimitError(view: TaskWorkbenchTemplate, action: WorkbenchAction):
       view.files.tabs.tabs.length >= MAX_WORKBENCH_FILE_TABS &&
       !view.files.tabs.tabs.includes(action.file.path))
   ) {
-    return `You have ${MAX_WORKBENCH_FILE_TABS} file tabs open. Close a file tab before opening another.`;
+    return t("workbench.error.fileTabLimit", { count: MAX_WORKBENCH_FILE_TABS });
   }
   if (
     action.type === "open-tool" &&
     view.tools.length >= MAX_WORKBENCH_TOOLS &&
     !view.tools.some((tool) => toolRefId(tool) === toolRefId(action.tool))
   ) {
-    return "Close a tool tab before opening another.";
+    return t("workbench.error.toolTabLimit");
   }
   return "";
 }
