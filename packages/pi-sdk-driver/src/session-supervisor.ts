@@ -1329,13 +1329,9 @@ export class SessionSupervisor {
     if (record.promptStarting && !record.session.isStreaming) {
       record.abortOnRunStart = true;
     }
-    try {
-      await record.session.abort();
-    } catch (error) {
-      // Abort is best-effort. Even if the runtime reports a failure we still
-      // reset local run state below so the UI does not stay stuck on "running".
-      console.warn(`[pi-sdk-driver] abort failed for ${sessionKey(record.ref)}:`, error);
-    }
+    // Best-effort. Even if the runtime reports a failure we still reset local run state below
+    // so the UI does not stay stuck on "running".
+    await this.abortRun(record, record.session);
 
     // Aborting ends the current turn, so any steer/follow-up messages queued
     // against it can never be delivered. Clear both the SDK queue and our
@@ -1352,6 +1348,27 @@ export class SessionSupervisor {
     await this.persistSnapshot(record);
     await this.emit(record, sessionUpdatedEvent(record));
     this.whenIdle(record);
+  }
+
+  /**
+   * Asks pi to abort the session's run. pi counts a run as busy from its before_agent_start
+   * handlers, and abort() waits for that run to end, so while the prompt is still starting this
+   * does not wait: pi aborts the run as soon as it starts. A slow or stuck handler must not hold
+   * up Stop or closing the session.
+   */
+  private async abortRun(record: ManagedSessionRecord, session: AgentSession): Promise<void> {
+    const abort = session.abort();
+    if (record.promptStarting) {
+      abort.catch((error: unknown) => {
+        console.warn(`[pi-sdk-driver] abort failed for ${sessionKey(record.ref)}:`, error);
+      });
+      return;
+    }
+    try {
+      await abort;
+    } catch (error) {
+      console.warn(`[pi-sdk-driver] abort failed for ${sessionKey(record.ref)}:`, error);
+    }
   }
 
   async setSessionModel(sessionRef: SessionRef, selection: SessionModelSelection): Promise<void> {
@@ -1567,11 +1584,7 @@ export class SessionSupervisor {
     this.cancelPendingHostUiRequests(record);
 
     if (record.session) {
-      try {
-        await record.session.abort();
-      } catch {
-        // Best effort.
-      }
+      await this.abortRun(record, record.session);
       record.unsubscribeAgent?.();
       record.unsubscribeAgent = undefined;
       // Guard dispose so a failure still lets us persist and emit sessionClosed

@@ -151,7 +151,8 @@ await test("Stop pressed while Pi is still starting a run cancels that run", asy
 
   const sent = driver.sendUserMessage(ref, { text: "first" });
   await reached;
-  assert.equal(runtime.session.isStreaming, false, "Pi has not started the run yet");
+  // pi counts the session as busy while before_agent_start handlers run, before its run starts.
+  assert.equal(runtime.session.isStreaming, true, "Pi is still starting the run");
   await driver.cancelCurrentRun(ref);
   release();
   await sent;
