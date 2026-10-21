@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import appIconUrl from "../assets/app-icon.png";
 
 function Icon({ children }: { readonly children: ReactNode }) {
   return (
@@ -174,24 +175,7 @@ export function ArrowUpIcon() {
 }
 
 export function PiLogoMark() {
-  return (
-    <svg aria-hidden="true" viewBox="0 0 64 64" fill="none">
-      <rect width="64" height="64" rx="18" fill="#1f2638" />
-      <text
-        x="50%"
-        y="54%"
-        textAnchor="middle"
-        dominantBaseline="middle"
-        fontFamily="SF Pro Display, SF Pro Text, ui-sans-serif, system-ui, sans-serif"
-        fontSize="34"
-        fontStyle="italic"
-        fontWeight="700"
-        fill="#ffffff"
-      >
-        π
-      </text>
-    </svg>
-  );
+  return <img aria-hidden="true" alt="" draggable={false} src={appIconUrl} />;
 }
 
 export function StopSquareIcon() {
