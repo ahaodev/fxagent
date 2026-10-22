@@ -26,7 +26,7 @@ const markdownResponse = [
   'const rendered: string = "markdown";',
   "```",
   "",
-  "Open the [issue](https://github.com/minghinmatthewlam/pi-gui/issues/19).",
+  "Open the [issue](https://github.com/ahaodev/fxagent/issues/19).",
 ].join("\n");
 
 const tableResponse = [
@@ -102,7 +102,7 @@ test("renders markdown formatting in assistant responses", async () => {
     const issueLink = messageRow.getByRole("link", { name: "issue" });
     await expect(issueLink).toHaveAttribute(
       "href",
-      "https://github.com/minghinmatthewlam/pi-gui/issues/19",
+      "https://github.com/ahaodev/fxagent/issues/19",
     );
     await expect(messageRow).not.toContainText("## Markdown rendering proof");
     await expect(messageRow).not.toContainText("```ts");

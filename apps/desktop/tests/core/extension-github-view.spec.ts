@@ -114,7 +114,7 @@ test("the GitHub example reads gh only when opened, opens links and drafts a fix
 
     const frame = await openGitHubView(window);
     await expect(
-      frame.getByRole("heading", { name: "minghinmatthewlam/pi-gui", exact: true }),
+      frame.getByRole("heading", { name: "ahaodev/fxagent", exact: true }),
     ).toBeVisible();
     await expect(frame.getByText("Updated just now")).toBeVisible();
     expect(await ghCalls(gh.log)).toBe(5);
@@ -132,7 +132,7 @@ test("the GitHub example reads gh only when opened, opens links and drafts a fix
     await frame.getByRole("button", { name: "Open on GitHub" }).click();
     await expect
       .poll(openedLinks)
-      .toEqual(["https://github.com/minghinmatthewlam/pi-gui/pull/223"]);
+      .toEqual(["https://github.com/ahaodev/fxagent/pull/223"]);
 
     // Start thread opens an editable draft in a new thread, never a sent message.
     await frame.getByRole("button", { name: "Start thread", exact: true }).click();

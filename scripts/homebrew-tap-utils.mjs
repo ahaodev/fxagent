@@ -22,7 +22,7 @@ cask "${caskToken}" do
   url "${assetUrl}"
   name "pi-gui"
   desc "Codex-style desktop shell for pi"
-  homepage "https://github.com/minghinmatthewlam/pi-gui"
+  homepage "https://github.com/ahaodev/fxagent"
 
   depends_on arch: :arm64
 

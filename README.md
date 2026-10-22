@@ -3,7 +3,7 @@
 The desktop app for the [pi](https://github.com/earendil-works/pi) coding agent.
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
-[![Latest release](https://img.shields.io/github/v/release/minghinmatthewlam/pi-gui?include_prereleases&label=release)](https://github.com/minghinmatthewlam/pi-gui/releases)
+[![Latest release](https://img.shields.io/github/v/release/ahaodev/fxagent?include_prereleases&label=release)](https://github.com/ahaodev/fxagent/releases)
 [![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey.svg)](#install)
 
 Run agents in parallel threads, each in its own git worktree if you want one. Review every
@@ -87,7 +87,7 @@ the review tab, your worktrees, and tabs from desktop extensions. Each task keep
 pi-gui runs on macOS (Apple Silicon), Linux (x64) and Windows (x64).
 
 Download the latest `.dmg` (macOS), `.AppImage` or `.deb` (Linux), or `.exe` (Windows) from the
-[Releases page](https://github.com/minghinmatthewlam/pi-gui/releases).
+[Releases page](https://github.com/ahaodev/fxagent/releases).
 
 - **macOS:** drag `pi-gui.app` into Applications. Releases are signed and notarized.
 - **Linux:** make the AppImage executable and run it, or install the `.deb`.

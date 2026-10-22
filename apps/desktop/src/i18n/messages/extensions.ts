@@ -116,7 +116,7 @@ export const enMessages = {
 
 export const zhMessages: Record<keyof typeof enMessages, string> = {
   "extensions.customize.title": "技能和扩展",
-  "extensions.customize.description": "pi 为{workspace}加载的可复用工作流和运行时附加组件。",
+  "extensions.customize.description": "为{workspace}加载的可复用工作流和运行时附加组件。",
   "extensions.customize.thisWorkspace": "此工作区",
   "extensions.customize.refresh": "刷新",
   "extensions.customize.newSkill": "新建技能",

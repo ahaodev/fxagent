@@ -215,7 +215,7 @@ export const zhMessages: Record<keyof typeof enMessages, string> = {
   "settings.notifications.status.unsupported": "不可用",
   "settings.notifications.status.checking": "检查中…",
   "settings.notifications.statusDescription.granted":
-    "macOS 将允许 pi-gui 为后台线程更新显示桌面通知。",
+    "macOS 将允许 fxagent 为后台线程更新显示桌面通知。",
   "settings.notifications.statusDescription.denied":
     "pi-gui 的 macOS 通知已关闭。请在系统设置中开启，以接收后台完成提醒。",
   "settings.notifications.statusDescription.default": "pi-gui 尚未向 macOS 请求桌面通知权限。",

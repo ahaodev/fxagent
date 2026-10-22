@@ -375,7 +375,7 @@ function showMcpSignInUrl(url: string, reason: string): void {
   const window = mainWindow && canPublishToWindow(mainWindow) ? mainWindow : undefined;
   const options: MessageBoxOptions = {
     type: "warning",
-    title: "pi-gui",
+    title: "fxagent",
     message: nativeT(language, "native.dialog.mcpSignIn.message"),
     detail: nativeT(language, "native.dialog.mcpSignIn.detail", { reason, url }),
     buttons: [
@@ -788,7 +788,7 @@ async function runManualUpdateCheck(): Promise<void> {
       // be silently suppressed if the OS permission is denied.
       const choice = await showDialog({
         type: "info",
-        title: "pi-gui",
+        title: "fxagent",
         message: nativeT(language, "native.dialog.update.availableMessage", {
           version: result.latestVersion,
         }),
@@ -811,7 +811,7 @@ async function runManualUpdateCheck(): Promise<void> {
     if (result.status === "up-to-date") {
       await showDialog({
         type: "info",
-        title: "pi-gui",
+        title: "fxagent",
         message: nativeT(language, "native.dialog.update.upToDate", {
           version: result.currentVersion,
         }),
@@ -822,16 +822,16 @@ async function runManualUpdateCheck(): Promise<void> {
 
     await showDialog({
       type: "warning",
-      title: "pi-gui",
+      title: "fxagent",
       message: nativeT(language, "native.dialog.update.checkFailed"),
       detail: result.message,
       buttons: [nativeT(language, "native.common.ok")],
     });
   } catch (error) {
-    console.error("pi-gui: manual update check failed:", error);
+    console.error("fxagent: manual update check failed:", error);
     await showDialog({
       type: "warning",
-      title: "pi-gui",
+      title: "fxagent",
       message: nativeT(language, "native.dialog.update.checkFailed"),
       detail: error instanceof Error ? error.message : String(error),
       buttons: [nativeT(language, "native.common.ok")],
@@ -941,7 +941,7 @@ if (augmentedPath.changed && !(appTestMode && process.env.PI_APP_TEST_EXACT_PATH
   process.env.PATH = augmentedPath.path;
 }
 
-app.setName("pi");
+app.setName("FxAgent");
 
 const configuredUserDataDir = process.env.PI_APP_USER_DATA_DIR?.trim() || app.getPath("userData");
 app.setPath("userData", configuredUserDataDir);
@@ -1038,15 +1038,15 @@ app
       openUrl: openMcpSignInUrl,
       builtinExtensions: [
         {
-          name: "pi-gui-thread-orchestration",
+          name: "fxagent-thread-orchestration",
           displayName: "Thread orchestration",
-          description: "Lets pi start, read and message other pi-gui threads",
+          description: "Lets pi start, read and message other fxagent threads",
           factory: createOrchestrationRuntimeExtension(orchestrationRuntimeBridge),
         },
         {
-          name: "pi-gui-scheduled-tasks",
+          name: "fxagent-scheduled-tasks",
           displayName: "Scheduled tasks",
-          description: "Lets pi create and update local pi-gui scheduled tasks",
+          description: "Lets pi create and update local fxagent scheduled tasks",
           factory: createScheduledTaskRuntimeExtension(scheduledTaskRuntimeBridge, (ctx) => {
             try {
               return sessionRefFromExtensionContext(ctx).workspaceId;
@@ -1331,12 +1331,12 @@ app.on("before-quit", (event) => {
     .flush(windowOwner.allWindows())
     .then(() => Promise.all([quittingStore.flushPersistence(), extensionViewOwner?.dispose()]))
     .catch((error: unknown) => {
-      console.error("pi-gui: persistence flush failed during quit:", error);
+      console.error("fxagent: persistence flush failed during quit:", error);
     });
   // Never let a hung flush block quit forever — quit after a bounded wait.
   const flushDeadline = new Promise<void>((resolve) => {
     setTimeout(() => {
-      console.warn("pi-gui: persistence flush timed out during quit; quitting anyway.");
+      console.warn("fxagent: persistence flush timed out during quit; quitting anyway.");
       resolve();
     }, QUIT_FLUSH_TIMEOUT_MS);
   });
@@ -1530,7 +1530,7 @@ async function promptForText(
     maximizable: false,
     fullscreenable: false,
     autoHideMenuBar: process.platform !== "darwin",
-    title: "pi-gui",
+    title: "FxAgent",
     webPreferences: { sandbox: true, contextIsolation: true, nodeIntegration: false },
   });
 

@@ -50,7 +50,7 @@ export default function extension(pi) {
   };
   const thread = document.createElement("input");
   thread.setAttribute("aria-label", "Thread id");
-  button("Open pull request", () => run(host.actions.openUrl("https://github.com/minghinmatthewlam/pi-gui/pull/220")));
+  button("Open pull request", () => run(host.actions.openUrl("https://github.com/ahaodev/fxagent/pull/220")));
   button("Open plain link", () => run(host.actions.openUrl("http://example.com")));
   root.append(thread);
   button("Open thread", () =>
@@ -109,7 +109,7 @@ test("an extension view opens https links and threads beside its own", async () 
     await frame.getByRole("button", { name: "Open pull request" }).click();
     await expect
       .poll(openedLinks)
-      .toEqual(["https://github.com/minghinmatthewlam/pi-gui/pull/220"]);
+      .toEqual(["https://github.com/ahaodev/fxagent/pull/220"]);
     await frame.getByRole("button", { name: "Open plain link" }).click();
     await expect(status).toHaveText("Extensions can only open https links");
     expect(await openedLinks()).toHaveLength(1);

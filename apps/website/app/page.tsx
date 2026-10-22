@@ -35,7 +35,7 @@ const showcase = [
     width: 1640,
     height: 1026,
     dark: false,
-    alt: "pi-gui running an agent thread while two other threads sit in the sidebar",
+    alt: "fxagent running an agent thread while two other threads sit in the sidebar",
   },
   {
     eyebrow: "Review",
@@ -88,7 +88,7 @@ const features = [
   },
   {
     title: "Your sessions, on disk",
-    body: "pi-gui reads and writes pi's own session files. Anything you set up with the pi CLI carries over.",
+    body: "fxagent reads and writes pi's own session files. Anything you set up with the pi CLI carries over.",
   },
   {
     title: "Fork and rewind",
@@ -109,7 +109,7 @@ const installs = [
     platform: "macOS",
     detail: "Apple Silicon. Signed and notarized.",
     steps:
-      "Download the .dmg from GitHub Releases and drag pi-gui into Applications, or install with Homebrew:",
+      "Download the .dmg from GitHub Releases and drag fxagent into Applications, or install with Homebrew:",
     command: BREW_INSTALL,
   },
   {
@@ -130,26 +130,26 @@ const faqs = [
     q: "What is pi?",
     a: (
       <>
-        <a href={PI_URL}>pi</a> is an open source coding agent that runs in your terminal. pi-gui is
+        <a href={PI_URL}>pi</a> is an open source coding agent that runs in your terminal. fxagent is
         a desktop app on top of it: sessions, models, tools and auth all run through pi itself.
       </>
     ),
   },
   {
     q: "Does it cost anything?",
-    a: "pi-gui is free and MIT licensed. You bring your own model provider, through a subscription sign-in or an API key.",
+    a: "fxagent is free and MIT licensed. You bring your own model provider, through a subscription sign-in or an API key.",
   },
   {
     q: "Can I keep using the pi CLI?",
-    a: "Yes. pi-gui uses pi's own session files and settings, so threads, credentials and skills are shared between the two.",
+    a: "Yes. fxagent uses pi's own session files and settings, so threads, credentials and skills are shared between the two.",
   },
   {
     q: "Where does my code go?",
-    a: "pi-gui runs on your machine. Your code goes only to the model provider you configure, the same way it does with the pi CLI. The app also checks GitHub for new releases.",
+    a: "fxagent runs on your machine. Your code goes only to the model provider you configure, the same way it does with the pi CLI. The app also checks GitHub for new releases.",
   },
   {
     q: "How do updates work?",
-    a: "pi-gui tells you when a new release is out. Homebrew installs update with brew upgrade --cask pi-gui; other installs update from GitHub Releases.",
+    a: "fxagent tells you when a new release is out. Homebrew installs update with brew upgrade --cask fxagent; other installs update from GitHub Releases.",
   },
 ] as const;
 
@@ -163,9 +163,9 @@ function GitHubIcon() {
 
 function Logo() {
   return (
-    <a className="logo" href="#top" aria-label="pi-gui home">
+    <a className="logo" href="#top" aria-label="fxagent home">
       <img src="/icon.svg" alt="" width={24} height={24} />
-      <span>pi-gui</span>
+      <span>fxagent</span>
     </a>
   );
 }
@@ -225,7 +225,7 @@ export default function Page() {
                 poster="/media/hero-poster.webp"
                 width={1920}
                 height={1200}
-                aria-label="An agent in pi-gui fixing a bug, running the tests, then the change open in the review tab"
+                aria-label="An agent in fxagent fixing a bug, running the tests, then the change open in the review tab"
               >
                 <source src="/media/hero.webm" type="video/webm" />
                 <source src="/media/hero.mp4" type="video/mp4" />
@@ -276,7 +276,7 @@ export default function Page() {
 
         <section id="install" className="install">
           <div className="container">
-            <h2 className="section-title">Install pi-gui</h2>
+            <h2 className="section-title">Install fxagent</h2>
             <p className="section-lede">
               Download the latest build from <a href={RELEASES_URL}>GitHub Releases</a>, or install
               with Homebrew on macOS. Then connect a provider under Settings, add a project folder

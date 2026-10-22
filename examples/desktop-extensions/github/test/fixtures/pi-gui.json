@@ -1,6 +1,6 @@
 {
   "repo": {
-    "nameWithOwner": "minghinmatthewlam/pi-gui"
+    "nameWithOwner": "ahaodev/fxagent"
   },
   "pr:open": [
     {
@@ -89,7 +89,7 @@
         }
       ],
       "reviewDecision": "",
-      "url": "https://github.com/minghinmatthewlam/pi-gui/pull/223"
+      "url": "https://github.com/ahaodev/fxagent/pull/223"
     },
     {
       "number": 222,
@@ -171,7 +171,7 @@
         }
       ],
       "reviewDecision": "",
-      "url": "https://github.com/minghinmatthewlam/pi-gui/pull/222"
+      "url": "https://github.com/ahaodev/fxagent/pull/222"
     },
     {
       "number": 218,
@@ -253,7 +253,7 @@
         }
       ],
       "reviewDecision": "",
-      "url": "https://github.com/minghinmatthewlam/pi-gui/pull/218"
+      "url": "https://github.com/ahaodev/fxagent/pull/218"
     },
     {
       "number": 109,
@@ -268,7 +268,7 @@
       "updatedAt": "2026-09-29T06:27:04Z",
       "statusCheckRollup": [],
       "reviewDecision": "",
-      "url": "https://github.com/minghinmatthewlam/pi-gui/pull/109"
+      "url": "https://github.com/ahaodev/fxagent/pull/109"
     }
   ],
   "pr:closed": [
@@ -352,7 +352,7 @@
         }
       ],
       "reviewDecision": "",
-      "url": "https://github.com/minghinmatthewlam/pi-gui/pull/220"
+      "url": "https://github.com/ahaodev/fxagent/pull/220"
     },
     {
       "number": 219,
@@ -434,7 +434,7 @@
         }
       ],
       "reviewDecision": "",
-      "url": "https://github.com/minghinmatthewlam/pi-gui/pull/219"
+      "url": "https://github.com/ahaodev/fxagent/pull/219"
     },
     {
       "number": 221,
@@ -516,7 +516,7 @@
         }
       ],
       "reviewDecision": "",
-      "url": "https://github.com/minghinmatthewlam/pi-gui/pull/221"
+      "url": "https://github.com/ahaodev/fxagent/pull/221"
     },
     {
       "number": 208,
@@ -598,7 +598,7 @@
         }
       ],
       "reviewDecision": "",
-      "url": "https://github.com/minghinmatthewlam/pi-gui/pull/208"
+      "url": "https://github.com/ahaodev/fxagent/pull/208"
     },
     {
       "number": 211,
@@ -680,7 +680,7 @@
         }
       ],
       "reviewDecision": "",
-      "url": "https://github.com/minghinmatthewlam/pi-gui/pull/211"
+      "url": "https://github.com/ahaodev/fxagent/pull/211"
     },
     {
       "number": 213,
@@ -762,7 +762,7 @@
         }
       ],
       "reviewDecision": "",
-      "url": "https://github.com/minghinmatthewlam/pi-gui/pull/213"
+      "url": "https://github.com/ahaodev/fxagent/pull/213"
     },
     {
       "number": 212,
@@ -844,7 +844,7 @@
         }
       ],
       "reviewDecision": "",
-      "url": "https://github.com/minghinmatthewlam/pi-gui/pull/212"
+      "url": "https://github.com/ahaodev/fxagent/pull/212"
     },
     {
       "number": 210,
@@ -859,7 +859,7 @@
       "updatedAt": "2026-09-30T16:28:06Z",
       "statusCheckRollup": [],
       "reviewDecision": "",
-      "url": "https://github.com/minghinmatthewlam/pi-gui/pull/210"
+      "url": "https://github.com/ahaodev/fxagent/pull/210"
     }
   ],
   "issue:open": [
@@ -875,7 +875,7 @@
       "createdAt": "2026-09-30T13:40:10Z",
       "updatedAt": "2026-09-30T20:32:21Z",
       "body": "After sending a couple of prompts (2-3) the model name changes from `github-copilot:claude-opus-5.5` to `github-copilot:claude-opus-5-5`\n\nSo I have to reselect/change the model again",
-      "url": "https://github.com/minghinmatthewlam/pi-gui/issues/216"
+      "url": "https://github.com/ahaodev/fxagent/issues/216"
     },
     {
       "number": 200,
@@ -889,7 +889,7 @@
       "createdAt": "2026-09-26T00:26:42Z",
       "updatedAt": "2026-09-27T08:38:02Z",
       "body": "I define some providers in `~/.pi/agent/models.json` with `\"apiKey\": \"$MY_API_KEY\"`, where the variable is exported in my zsh config. The pi CLI can use them, but when I open pi-gui from Spotlight or the Dock, all of those models show up under Settings \u2192 Models \u2192 Not connected, with no explanation. Launching the pi-gui binary from a terminal fixes it.\n\npi-gui already works around this for PATH (augmentPosixPath in main.ts). Could it load the login shell's environment at startup instead, the way VS Code does? Failing that, it would help if Settings showed which variable is missing.",
-      "url": "https://github.com/minghinmatthewlam/pi-gui/issues/200"
+      "url": "https://github.com/ahaodev/fxagent/issues/200"
     }
   ],
   "issue:closed": [
@@ -905,7 +905,7 @@
       "createdAt": "2026-09-24T23:21:47Z",
       "updatedAt": "2026-09-30T20:27:51Z",
       "body": "Add an option in pi-gui to start an ephemeral thread backed by pi's --no-session mode (or an in-memory/scratch session that is not persisted to disk).",
-      "url": "https://github.com/minghinmatthewlam/pi-gui/issues/186"
+      "url": "https://github.com/ahaodev/fxagent/issues/186"
     },
     {
       "number": 185,
@@ -919,7 +919,7 @@
       "createdAt": "2026-09-24T23:05:39Z",
       "updatedAt": "2026-09-25T20:16:44Z",
       "body": "Many developers use git worktree workflows to manage multiple active branches simultaneously.",
-      "url": "https://github.com/minghinmatthewlam/pi-gui/issues/185"
+      "url": "https://github.com/ahaodev/fxagent/issues/185"
     },
     {
       "number": 187,
@@ -933,7 +933,7 @@
       "createdAt": "2026-09-24T23:27:08Z",
       "updatedAt": "2026-09-25T17:59:16Z",
       "body": "A + icon on workspace headers to quickly create a new thread in that workspace, and resizable sidebar width.",
-      "url": "https://github.com/minghinmatthewlam/pi-gui/issues/187"
+      "url": "https://github.com/ahaodev/fxagent/issues/187"
     },
     {
       "number": 107,
@@ -947,7 +947,7 @@
       "createdAt": "2026-09-03T18:21:07Z",
       "updatedAt": "2026-09-25T01:27:26Z",
       "body": "There is currently no straightforward way in the GUI to see how much context has been used.",
-      "url": "https://github.com/minghinmatthewlam/pi-gui/issues/107"
+      "url": "https://github.com/ahaodev/fxagent/issues/107"
     },
     {
       "number": 55,
@@ -968,7 +968,7 @@
       "createdAt": "2026-07-28T00:48:35Z",
       "updatedAt": "2026-09-25T02:41:39Z",
       "body": "Session leases currently have two correctness gaps.",
-      "url": "https://github.com/minghinmatthewlam/pi-gui/issues/55"
+      "url": "https://github.com/ahaodev/fxagent/issues/55"
     },
     {
       "number": 106,
@@ -982,7 +982,7 @@
       "createdAt": "2026-09-03T02:09:47Z",
       "updatedAt": "2026-09-20T03:53:35Z",
       "body": "After clicking Detect models I got a very long list of models and couldn't scroll the page.",
-      "url": "https://github.com/minghinmatthewlam/pi-gui/issues/106"
+      "url": "https://github.com/ahaodev/fxagent/issues/106"
     },
     {
       "number": 48,
@@ -1000,7 +1000,7 @@
       "createdAt": "2026-07-19T09:48:19Z",
       "updatedAt": "2026-09-20T03:53:33Z",
       "body": "The chat/timeline page shows an unwanted horizontal scrollbar.",
-      "url": "https://github.com/minghinmatthewlam/pi-gui/issues/48"
+      "url": "https://github.com/ahaodev/fxagent/issues/48"
     }
   ],
   "issue:view:216": {
@@ -1034,7 +1034,7 @@
     "createdAt": "2026-09-30T13:40:10Z",
     "updatedAt": "2026-09-30T20:32:21Z",
     "body": "After sending a couple of prompts (2-3) the model name changes from `github-copilot:claude-opus-5.5` to `github-copilot:claude-opus-5-5`\n\nSo I have to reselect/change the model again",
-    "url": "https://github.com/minghinmatthewlam/pi-gui/issues/216"
+    "url": "https://github.com/ahaodev/fxagent/issues/216"
   },
   "pr:view:222": {
     "number": 222,
@@ -1116,7 +1116,7 @@
       }
     ],
     "reviewDecision": "",
-    "url": "https://github.com/minghinmatthewlam/pi-gui/pull/222",
+    "url": "https://github.com/ahaodev/fxagent/pull/222",
     "labels": [],
     "body": "Loads pi's MCP servers into pi-gui threads.\n\n<!-- template comment -->\nAdds code mode and tool search settings.",
     "comments": [],

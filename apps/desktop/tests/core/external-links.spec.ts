@@ -34,7 +34,7 @@ test("opens markdown web links externally without leaving the current session", 
   const userDataDir = await makeUserDataDir();
   const agentDir = join(userDataDir, "agent");
   const workspacePath = await makeWorkspace("external-links-workspace");
-  const targetUrl = "https://github.com/minghinmatthewlam/pi-gui/issues/20";
+  const targetUrl = "https://github.com/ahaodev/fxagent/issues/20";
   await seedAgentDir(agentDir);
   await seedExternalLinkSessionFixture(agentDir, workspacePath);
 

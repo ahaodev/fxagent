@@ -820,7 +820,7 @@ export async function seedExternalLinkSessionFixture(
     sessionManager.appendMessage({
       role: "assistant",
       content:
-        "Track this in [GitHub issue](https://github.com/minghinmatthewlam/pi-gui/issues/20). Ignore [email fallback](mailto:test@example.com).",
+        "Track this in [GitHub issue](https://github.com/ahaodev/fxagent/issues/20). Ignore [email fallback](mailto:test@example.com).",
       timestamp: nextTimestamp(),
     });
     sessionManager.appendSessionInfo("External link fixture session");

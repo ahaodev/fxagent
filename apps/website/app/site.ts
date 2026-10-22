@@ -1,11 +1,11 @@
-export const SITE_NAME = "pi-gui";
-export const SITE_URL = "https://www.pi-gui.com";
+export const SITE_NAME = "fxagent";
+export const SITE_URL = "https://www.fxopc.ahaodev.com.com";
 export const OG_IMAGE_PATH = "/og.png";
-export const OG_IMAGE_ALT = "pi-gui reviewing an agent's change next to the thread that made it";
+export const OG_IMAGE_ALT = "fxagent reviewing an agent's change next to the thread that made it";
 export const OG_IMAGE_WIDTH = 1200;
 export const OG_IMAGE_HEIGHT = 630;
 
-export const GITHUB_URL = "https://github.com/minghinmatthewlam/pi-gui";
+export const GITHUB_URL = "https://github.com/ahaodev/fxagent";
 export const RELEASES_URL = `${GITHUB_URL}/releases`;
 export const PI_URL = "https://github.com/earendil-works/pi";
 export const BREW_INSTALL = "brew install --cask minghinmatthewlam/tap/pi-gui";
