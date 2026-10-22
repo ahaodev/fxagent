@@ -3,12 +3,12 @@ import type {
   ExtensionFlagValues,
   SessionConfig,
   SessionUsageSnapshot,
-} from "@pi-gui/session-driver";
+} from "@fxagent/session-driver";
 import {
   createEmptyExtensionUiState as createBaseExtensionUiState,
   type ExtensionUiState,
-} from "@pi-gui/pi-sdk-driver";
-import type { RuntimeCommandRecord } from "@pi-gui/session-driver/runtime-types";
+} from "@fxagent/pi-sdk-driver";
+import type { RuntimeCommandRecord } from "@fxagent/session-driver/runtime-types";
 import type {
   ComposerAttachment,
   QueuedComposerMessage,

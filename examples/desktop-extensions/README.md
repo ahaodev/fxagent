@@ -14,23 +14,23 @@ service through Chord. It does not require a new app-specific IPC operation.
 | [Trace](./trace/README.md)         | Listen to pi's agent events (turns, model calls, tools, compaction) and record each reply as spans with the context each call sent | Watch a live waterfall of the reply, pick an earlier reply, inspect a call or tool     | `/trace`                                                                           |
 
 The test suites are actual `node:test` fixtures, including an intentional failure;
-they are not pi-gui's repository checks. PR Review needs a configured Pi model,
+they are not fxagent's repository checks. PR Review needs a configured Pi model,
 `git`, authenticated `gh`, and the PR head/base commits already present locally.
 Neither example installs dependencies, posts a GitHub review, or merges a PR.
 
 ## Build and configure locally
 
-Use this checkout's installed dependencies. `@pi-gui/extension-ui` is a **private,
+Use this checkout's installed dependencies. `@fxagent/extension-ui` is a **private,
 local workspace package**, not a published npm package or an upstream Pi API.
 For this development workflow, keep the examples in this checkout so their
 backend imports resolve through its `node_modules`. The root links the helper
 as a workspace dependency. The backend
 uses the host's Chord installation; only the browser code bundles its own imports.
 
-From the pi-gui repository root, after the normal repository dependency setup:
+From the fxagent repository root, after the normal repository dependency setup:
 
 ```sh
-pnpm --filter @pi-gui/extension-ui build
+pnpm --filter @fxagent/extension-ui build
 node examples/desktop-extensions/pr-review/build.mjs
 node examples/desktop-extensions/test-runs/build.mjs
 node examples/desktop-extensions/github/build.mjs
@@ -41,13 +41,13 @@ node examples/desktop-extensions/trace/build.mjs
 Add the absolute paths to the existing `extensions` array in the target project's
 `.pi/settings.json`, or `~/.pi/agent/settings.json` for user-wide availability.
 Preserve the file's other settings and existing extension entries. For example,
-replace `/absolute/path/to/pi-gui` with this checkout's actual location:
+replace `/absolute/path/to/fxagent` with this checkout's actual location:
 
 ```json
 {
   "extensions": [
-    "/absolute/path/to/pi-gui/examples/desktop-extensions/pr-review/index.ts",
-    "/absolute/path/to/pi-gui/examples/desktop-extensions/test-runs/index.ts"
+    "/absolute/path/to/fxagent/examples/desktop-extensions/pr-review/index.ts",
+    "/absolute/path/to/fxagent/examples/desktop-extensions/test-runs/index.ts"
   ]
 }
 ```
@@ -58,7 +58,7 @@ Pi extensions. Pi's auto-discovered `.pi/extensions/*/index.ts` and
 `~/.pi/agent/extensions/*/index.ts` locations are also supported, but moving these
 examples there requires arranging their backend dependencies too.
 
-In pi-gui, select that project and use **Extensions → Refresh** to reload runtime
+In fxagent, select that project and use **Extensions → Refresh** to reload runtime
 discovery and inspect diagnostics, then **Back to app**. This path also works
 before a model is configured. In a task with a configured model, `/reload` is
 another way to reload the idle runtime after changing extension configuration.
@@ -100,9 +100,9 @@ the absolute archive directory, or replace it with that path:
 
 ```sh
 pnpm add \
-  "$extension_tarballs/pi-gui-extension-ui-0.0.0.tgz" \
-  "$extension_tarballs/pi-gui-example-pr-review-0.0.0.tgz" \
-  "$extension_tarballs/pi-gui-example-test-runs-0.0.0.tgz" \
+  "$extension_tarballs/fxagent-extension-ui-0.0.0.tgz" \
+  "$extension_tarballs/fxagent-example-pr-review-0.0.0.tgz" \
+  "$extension_tarballs/fxagent-example-test-runs-0.0.0.tgz" \
   @earendil-works/chord@1.0.0 \
   @earendil-works/pi-ai@1.3.0 \
   @earendil-works/pi-coding-agent@1.3.0
@@ -114,8 +114,8 @@ setting for the project where you want to use them:
 ```json
 {
   "extensions": [
-    "/absolute/path/to/local-extensions/node_modules/@pi-gui/example-pr-review",
-    "/absolute/path/to/local-extensions/node_modules/@pi-gui/example-test-runs"
+    "/absolute/path/to/local-extensions/node_modules/@fxagent/example-pr-review",
+    "/absolute/path/to/local-extensions/node_modules/@fxagent/example-test-runs"
   ]
 }
 ```

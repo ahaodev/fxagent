@@ -5,7 +5,7 @@ view. This package connects them through Chord without scanning or loading a
 second extension instance.
 
 ```ts
-import { registerDesktopView } from "@pi-gui/extension-ui";
+import { registerDesktopView } from "@fxagent/extension-ui";
 import { defineFacet } from "@earendil-works/chord";
 
 export default function extension(pi) {
@@ -34,7 +34,7 @@ it. The helper does not invoke the backend factory.
 
 The browser entry exports `mount(root, host)`, returning a cleanup function or a
 promise of one. `DesktopViewContext` is exported from
-`@pi-gui/extension-ui/browser`. Its `services` is a Chord `RemoteServiceSource`, so
+`@fxagent/extension-ui/browser`. Its `services` is a Chord `RemoteServiceSource`, so
 the frontend can create its own facet host with `serviceSources: [host.services]`.
 Use `env.use(Service)` during setup, then subscribe to state in `env.onActivate`.
 Bundle the browser's framework and Chord dependencies. Backend facets must create
@@ -44,14 +44,14 @@ state with `env.replicatedState`, which uses the host's Chord instance.
 `host.actions.prepareTaskDraft({ title, prompt, files? })` prepares a task draft.
 `host.actions.openUrl(url)` opens an https link in the browser.
 `host.actions.openThread(sessionId)` opens another thread of the same folder or its
-pi-gui worktrees, by pi session id; any other thread is refused. It resolves once the
+fxagent worktrees, by pi session id; any other thread is refused. It resolves once the
 thread is found, and the app's switch to it then closes the view.
 None accepts a workspace or window identity. The desktop binds actions
 to the initiating connection. The host supplies theme colors and an `AbortSignal`
 that reports connection loss; the frontend should stop using old service handles
 when that signal aborts.
 
-`@pi-gui/extension-ui/transport` provides server and client connections over an
+`@fxagent/extension-ui/transport` provides server and client connections over an
 ordered JSON message channel. Each connection owns a Chord endpoint; Chord owns
 service dispatch and replicated state. The adapter validates complete messages,
 uses a separate state codec per subscription, and buffers updates until hydration
@@ -65,12 +65,12 @@ the app-owned frame bootstrap. It exports `createChordClientConnection` and
 `parseDesktopHostAction`. The desktop supplies and scopes the channel; this package
 does not expose Electron, Node, filesystem access, or general IPC to the browser.
 
-Run `pnpm --filter @pi-gui/extension-ui test` for registration, action validation,
+Run `pnpm --filter @fxagent/extension-ui test` for registration, action validation,
 transport lifecycle, malformed-message, and separate-browser-bundle checks. The
 bundle test executes two distinct browser-target modules in Node to prove the
 Chord module boundary; desktop tests separately prove the real iframe/IPC flow.
 
-Desktop development starts `pnpm --filter @pi-gui/extension-ui watch` alongside
+Desktop development starts `pnpm --filter @fxagent/extension-ui watch` alongside
 the other shared-package watchers. Each TypeScript emit is followed by a browser
 bridge rebuild, so edits update both the normal modules and the self-contained
 frame entry. The watcher closes both compiler and bundler resources on shutdown.

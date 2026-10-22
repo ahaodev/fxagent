@@ -10,7 +10,7 @@ import type {
   AgentSessionRuntime,
   ExtensionFactory,
 } from "@earendil-works/pi-coding-agent";
-import type { SessionDriverEvent } from "@pi-gui/session-driver";
+import type { SessionDriverEvent } from "@fxagent/session-driver";
 import { PiSdkDriver } from "../dist/pi-sdk-driver.js";
 import { createAgentSessionRuntimeWithNpmFallback } from "../dist/npm-package-fallback.js";
 
@@ -61,7 +61,7 @@ async function fixture(
   streamFunction: StreamFunction,
   extension?: ExtensionFactory,
 ) {
-  const root = await mkdtemp(join(tmpdir(), "pi-gui-boundary-lifecycle-"));
+  const root = await mkdtemp(join(tmpdir(), "fxagent-boundary-lifecycle-"));
   const agentDir = join(root, "agent");
   const cwd = join(root, "workspace");
   await mkdir(agentDir);

@@ -1,5 +1,5 @@
 import { BACKGROUND_CONTEXT } from "@earendil-works/chord/context";
-import type { DesktopViewContext } from "@pi-gui/extension-ui/browser";
+import type { DesktopViewContext } from "@fxagent/extension-ui/browser";
 import { Usage, type ContextKind, type UsageState } from "./contract.ts";
 import {
   CONTEXT_ITEM_LABELS,
@@ -507,7 +507,7 @@ export async function mount(root: HTMLElement, host: DesktopViewContext): Promis
     return h("li", {}, button, open ? threadDetail(row) : null);
   };
 
-  // Opens that thread in pi-gui; the app refuses threads outside this folder, and the switch
+  // Opens that thread in fxagent; the app refuses threads outside this folder, and the switch
   // then closes this view.
   const openThreadButton = (id: string) => {
     const button = h("button", { class: "more open", type: "button" }, "Open thread");

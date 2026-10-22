@@ -12,11 +12,11 @@ import type {
   WorkspaceRecord,
   WorktreeRecord,
 } from "../../../../contracts/desktop-state";
-import type { PiDesktopApi } from "../../../../contracts/ipc";
+import type { FxagentDesktopApi } from "../../../../contracts/ipc";
 import { t } from "../../../i18n";
 
 interface UseWorkspaceMenuParams {
-  readonly api: PiDesktopApi | undefined;
+  readonly api: FxagentDesktopApi | undefined;
   readonly setSnapshot: Dispatch<SetStateAction<DesktopAppState | null>>;
   readonly updateSnapshot: (
     setSnapshot: Dispatch<SetStateAction<DesktopAppState | null>>,

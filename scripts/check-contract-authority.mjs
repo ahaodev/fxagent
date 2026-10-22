@@ -20,13 +20,13 @@ export function checkContractDeclarations(file, text) {
           .join(".*")}$`,
       );
       const ownedExamples = [
-        "@pi-gui/session-driver",
-        "@pi-gui/session-driver/runtime-types",
-        "@pi-gui/catalogs",
-        "@pi-gui/pi-sdk-driver",
+        "@fxagent/session-driver",
+        "@fxagent/session-driver/runtime-types",
+        "@fxagent/catalogs",
+        "@fxagent/pi-sdk-driver",
       ];
       if (
-        name.startsWith("@pi-gui/") ||
+        name.startsWith("@fxagent/") ||
         (name.includes("*") && ownedExamples.some((owned) => pattern.test(owned)))
       ) {
         const { line } = source.getLineAndCharacterOfPosition(node.getStart(source));

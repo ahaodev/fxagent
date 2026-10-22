@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 import { mkdir, mkdtemp, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import type { SessionRef } from "@pi-gui/session-driver";
+import type { SessionRef } from "@fxagent/session-driver";
 import type { SessionRecord, WorkspaceRecord } from "../../contracts/desktop-state";
 import {
   runExtensionAction as runChecked,
@@ -19,7 +19,7 @@ const runExtensionAction = async (host: AppOperationHost, target: SessionRef, ra
 const target = { workspaceId: "workspace", sessionId: "session" };
 
 async function fixture() {
-  const root = await mkdtemp(join(tmpdir(), "pi-gui-app-ops-"));
+  const root = await mkdtemp(join(tmpdir(), "fxagent-app-ops-"));
   const checkout = join(root, "checkout");
   await mkdir(join(checkout, "src"), { recursive: true });
   await writeFile(join(checkout, "src", "a.ts"), "export const a = 1;\n");
@@ -65,7 +65,7 @@ const folder = (
   ...(rootWorkspaceId ? { rootWorkspaceId } : {}),
   sessions,
 });
-// The card's folder, one of its pi-gui worktrees, and an unrelated folder.
+// The card's folder, one of its fxagent worktrees, and an unrelated folder.
 const folders = [
   folder("workspace", [thread("session"), thread("sibling"), thread("old", "2026-09-01")]),
   folder("worktree", [thread("in-worktree")], "workspace"),

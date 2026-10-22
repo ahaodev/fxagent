@@ -18,8 +18,8 @@ test("shows not enabled yet and enables via Ask macOS", async () => {
     initialWorkspaces: [workspacePath],
     testMode: "background",
     envOverrides: {
-      PI_APP_TEST_NOTIFICATION_PERMISSION_STATUS: "default",
-      PI_APP_TEST_NOTIFICATION_PERMISSION_REQUEST_RESULT: "granted",
+      FXAGENT_TEST_NOTIFICATION_PERMISSION_STATUS: "default",
+      FXAGENT_TEST_NOTIFICATION_PERMISSION_REQUEST_RESULT: "granted",
     },
   });
 
@@ -54,8 +54,8 @@ test("shows turned off and opens System Settings when macOS notifications are de
     initialWorkspaces: [workspacePath],
     testMode: "background",
     envOverrides: {
-      PI_APP_TEST_NOTIFICATION_PERMISSION_STATUS: "denied",
-      PI_APP_TEST_NOTIFICATION_SETTINGS_LOG_PATH: settingsLogPath,
+      FXAGENT_TEST_NOTIFICATION_PERMISSION_STATUS: "denied",
+      FXAGENT_TEST_NOTIFICATION_SETTINGS_LOG_PATH: settingsLogPath,
     },
   });
 
@@ -66,7 +66,7 @@ test("shows turned off and opens System Settings when macOS notifications are de
 
     await expect(window.locator(".settings-view")).toContainText("Turned off");
     await expect(window.locator(".settings-view")).toContainText(
-      "macOS notifications are turned off for pi-gui",
+      "macOS notifications are turned off for fxagent",
     );
     await expect(window.getByRole("button", { name: "Ask macOS", exact: true })).toHaveCount(0);
     await expect(

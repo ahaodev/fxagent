@@ -23,8 +23,8 @@ export const enMessages = {
   "native.dialog.mcpSignIn.message": "Open this MCP sign-in link yourself",
   "native.dialog.mcpSignIn.detail": "{reason} Check the link before you open it:\n\n{url}",
   "native.dialog.mcpSignIn.reasonHttpsOnly":
-    "pi-gui opens only https links, or http links on this computer.",
-  "native.dialog.mcpSignIn.reasonBrowserFailed": "pi-gui could not open your browser.",
+    "fxagent opens only https links, or http links on this computer.",
+  "native.dialog.mcpSignIn.reasonBrowserFailed": "fxagent could not open your browser.",
   "native.dialog.mcpSignIn.copyLink": "Copy link",
   "native.dialog.openWorkspace.title": "Open workspace folder",
   "native.dialog.attachFiles.title": "Attach files",
@@ -41,13 +41,13 @@ export const enMessages = {
   "native.notification.levelError": "Error",
   "native.notification.levelWarning": "Warning",
   "native.notification.levelBody": "{level}: {message}",
-  "native.notification.updateAvailableTitle": "pi-gui Release Available",
+  "native.notification.updateAvailableTitle": "fxagent Release Available",
   "native.notification.updateAvailableBody":
     "Version {latestVersion} is available (you have {currentVersion}). Click to view the release.",
 
   "native.updateCheck.timedOut": "The update check timed out.",
   "native.updateCheck.unreachable": "The update check could not reach GitHub.",
-  "native.updateCheck.noRelease": "No stable pi-gui release has been published yet.",
+  "native.updateCheck.noRelease": "No stable fxagent release has been published yet.",
   "native.updateCheck.httpStatus": "GitHub Releases returned {status}.",
   "native.updateCheck.unreadable": "GitHub Releases returned an unreadable response.",
   "native.updateCheck.noVersions": "GitHub Releases did not return any published versions.",
@@ -77,8 +77,8 @@ export const zhMessages: Record<NativeMessageKey, string> = {
 
   "native.dialog.mcpSignIn.message": "请自行打开这个 MCP 登录链接",
   "native.dialog.mcpSignIn.detail": "{reason} 打开前请检查该链接：\n\n{url}",
-  "native.dialog.mcpSignIn.reasonHttpsOnly": "pi-gui 只会打开 https 链接，或本机上的 http 链接。",
-  "native.dialog.mcpSignIn.reasonBrowserFailed": "pi-gui 无法打开你的浏览器。",
+  "native.dialog.mcpSignIn.reasonHttpsOnly": "fxagent 只会打开 https 链接，或本机上的 http 链接。",
+  "native.dialog.mcpSignIn.reasonBrowserFailed": "fxagent 无法打开你的浏览器。",
   "native.dialog.mcpSignIn.copyLink": "复制链接",
   "native.dialog.openWorkspace.title": "打开工作区文件夹",
   "native.dialog.attachFiles.title": "附加文件",
@@ -95,13 +95,13 @@ export const zhMessages: Record<NativeMessageKey, string> = {
   "native.notification.levelError": "错误",
   "native.notification.levelWarning": "警告",
   "native.notification.levelBody": "{level}：{message}",
-  "native.notification.updateAvailableTitle": "pi-gui 有新版本可用",
+  "native.notification.updateAvailableTitle": "fxagent 有新版本可用",
   "native.notification.updateAvailableBody":
     "版本 {latestVersion} 已可用（你当前是 {currentVersion}）。点击查看发布说明。",
 
   "native.updateCheck.timedOut": "检查更新超时。",
   "native.updateCheck.unreachable": "检查更新时无法连接 GitHub。",
-  "native.updateCheck.noRelease": "pi-gui 尚未发布稳定版本。",
+  "native.updateCheck.noRelease": "fxagent 尚未发布稳定版本。",
   "native.updateCheck.httpStatus": "GitHub Releases 返回了 {status}。",
   "native.updateCheck.unreadable": "GitHub Releases 返回了无法读取的响应。",
   "native.updateCheck.noVersions": "GitHub Releases 没有返回任何已发布的版本。",

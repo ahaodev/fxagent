@@ -2,7 +2,7 @@ import { defineFacet } from "@earendil-works/chord";
 import { BACKGROUND_CONTEXT } from "@earendil-works/chord/context";
 import { Type } from "@earendil-works/pi-ai";
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
-import { registerDesktopView } from "@pi-gui/extension-ui";
+import { registerDesktopView } from "@fxagent/extension-ui";
 import { GitHub, initialState, needsAttention, type GitHubState } from "./contract.ts";
 import { loadRepository, readItem } from "./source.ts";
 
@@ -138,7 +138,7 @@ export default function githubExtension(pi: ExtensionAPI): void {
     frontend: new URL("./dist/desktop.js", import.meta.url),
     backend: () =>
       defineFacet({
-        id: "pi-gui.example.github.backend",
+        id: "fxagent.example.github.backend",
         setup(env) {
           const state = env.replicatedState(snapshot);
           const listener = (next: GitHubState) => state.replace(BACKGROUND_CONTEXT, next);

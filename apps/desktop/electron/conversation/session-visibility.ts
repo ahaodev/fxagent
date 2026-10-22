@@ -1,6 +1,6 @@
 import type { BrowserWindow } from "electron";
 import type { DesktopAppState } from "../../contracts/desktop-state";
-import type { SessionRef } from "@pi-gui/session-driver";
+import type { SessionRef } from "@fxagent/session-driver";
 
 type SessionVisibilityOverride = "active" | "inactive" | undefined;
 
@@ -56,6 +56,6 @@ function isSelectedSession(
 }
 
 function sessionVisibilityOverride(): SessionVisibilityOverride {
-  return (globalThis as { __PI_APP_TEST_SESSION_VISIBILITY__?: SessionVisibilityOverride })
-    .__PI_APP_TEST_SESSION_VISIBILITY__;
+  return (globalThis as { __FXAGENT_TEST_SESSION_VISIBILITY__?: SessionVisibilityOverride })
+    .__FXAGENT_TEST_SESSION_VISIBILITY__;
 }

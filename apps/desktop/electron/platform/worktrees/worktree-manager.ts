@@ -6,8 +6,8 @@ import type {
   CatalogStorage,
   WorktreeCatalogEntry,
   WorktreeCatalogSnapshot,
-} from "@pi-gui/catalogs";
-import type { WorkspaceRef } from "@pi-gui/session-driver";
+} from "@fxagent/catalogs";
+import type { WorkspaceRef } from "@fxagent/session-driver";
 
 const execFileAsync = promisify(execFile);
 
@@ -198,7 +198,7 @@ export class GitWorktreeManager {
       throw new Error("The primary workspace cannot be removed as a git worktree.");
     }
     if (this.options.isAppWorktreePath && !(await this.isRemovableAppWorktree(targetPath))) {
-      throw new Error("Only worktrees created by pi-gui can be removed here.");
+      throw new Error("Only worktrees created by fxagent can be removed here.");
     }
 
     try {
@@ -224,7 +224,7 @@ export class GitWorktreeManager {
   }
 
   /**
-   * Location alone does not prove pi-gui made a checkout, so removal also needs
+   * Location alone does not prove fxagent made a checkout, so removal also needs
    * the `pi/*` branch every app worktree is created on (as the startup prune does).
    */
   private async isRemovableAppWorktree(path: string): Promise<boolean> {
@@ -313,7 +313,7 @@ export class GitWorktreeManager {
         await deleteAppWorktreeBranch(repoRoot, branchName);
       } catch (error) {
         skipped.push(candidatePath);
-        console.warn(`pi-gui: kept orphaned worktree ${candidatePath}: ${errorMessage(error)}`);
+        console.warn(`fxagent: kept orphaned worktree ${candidatePath}: ${errorMessage(error)}`);
       }
     }
 
@@ -337,7 +337,7 @@ async function deleteAppWorktreeBranch(
     await runGit(["-C", repoRoot, "branch", "-d", branchName]);
   } catch (error) {
     console.warn(
-      `pi-gui: kept branch ${branchName} after worktree removal: ${errorMessage(error)}`,
+      `fxagent: kept branch ${branchName} after worktree removal: ${errorMessage(error)}`,
     );
   }
 }

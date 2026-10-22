@@ -45,7 +45,7 @@ export class PendingComposerDraftFlusher {
         resolve();
       };
       const timer = setTimeout(() => {
-        console.warn("pi-gui: a window did not save its composer draft in time.");
+        console.warn("fxagent: a window did not save its composer draft in time.");
         done();
       }, this.timeoutMs);
       contents.once("destroyed", done);

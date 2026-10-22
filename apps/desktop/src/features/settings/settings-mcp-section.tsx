@@ -41,10 +41,10 @@ export function SettingsMcpSection({ workspaceId, actions }: SettingsMcpSectionP
   useEffect(() => setError(undefined), [workspaceId]);
 
   // pi in the terminal may have edited mcp.json while the app was in the background.
-  useEffect(() => window.piApp?.onWindowFocused(() => setReloadKey((key) => key + 1)), []);
+  useEffect(() => window.fxagentApp?.onWindowFocused(() => setReloadKey((key) => key + 1)), []);
 
   useEffect(() => {
-    const api = window.piApp;
+    const api = window.fxagentApp;
     if (!api) return;
     let cancelled = false;
     api

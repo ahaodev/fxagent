@@ -1,6 +1,6 @@
 # GitHub
 
-One Pi extension that ties GitHub into pi-gui two ways: a side-panel view of the
+One Pi extension that ties GitHub into fxagent two ways: a side-panel view of the
 current repository's pull requests and issues for you, and a `github_read` tool
 the model can use to read one issue or pull request.
 
@@ -45,8 +45,8 @@ pnpm --dir examples/desktop-extensions/github test
 ```
 
 The tests use `test/fake-gh.mjs`, a stand-in `gh` that answers from
-`test/fixtures/pi-gui.json`. Load the example like the others: add
-`/absolute/path/to/pi-gui/examples/desktop-extensions/github/index.ts` to
+`test/fixtures/fxagent.json`. Load the example like the others: add
+`/absolute/path/to/fxagent/examples/desktop-extensions/github/index.ts` to
 `extensions` in `.pi/settings.json`, refresh extensions, then choose **GitHub**
 under **Add tab (+) → Extension views**. The Electron test is
 `apps/desktop/tests/core/extension-github-view.spec.ts`.

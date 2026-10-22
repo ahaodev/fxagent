@@ -4,12 +4,12 @@ This is a normal file-based Pi extension with an optional custom browser view.
 The command, agent tool and desktop buttons share one backend run owner. It uses
 Pi's `createLocalBashOperations` API for live process output,
 timeout and cancellation. The optional desktop declaration uses Pi-gui's local
-private `@pi-gui/extension-ui` package. This helper is implemented in this repository;
+private `@fxagent/extension-ui` package. This helper is implemented in this repository;
 it is not published to npm or provided by upstream Pi.
 
 The supplied suites execute real `node:test` files: a passing suite, an intentional
 failure, a slow suite, and that same slow suite with a short timeout. They do not
-run the pi-gui repository's checks. Node must be on the shell PATH. To adapt this
+run the fxagent repository's checks. Node must be on the shell PATH. To adapt this
 example, edit the fixed suite definitions in `index.ts`; the browser never sends
 shell text or filesystem paths.
 

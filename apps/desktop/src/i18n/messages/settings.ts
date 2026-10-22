@@ -53,7 +53,7 @@ export const enMessages = {
     "Let desktop colors show through supported surfaces.",
   "settings.notifications.systemGroup": "System",
   "settings.notifications.systemGroupDescription":
-    "macOS decides whether pi-gui can show desktop notifications at all.",
+    "macOS decides whether fxagent can show desktop notifications at all.",
   "settings.notifications.access.title": "macOS notification access",
   "settings.notifications.status.granted": "Enabled",
   "settings.notifications.status.denied": "Turned off",
@@ -61,20 +61,20 @@ export const enMessages = {
   "settings.notifications.status.unsupported": "Unavailable",
   "settings.notifications.status.checking": "Checking…",
   "settings.notifications.statusDescription.granted":
-    "macOS will allow pi-gui to show desktop notifications for background thread updates.",
+    "macOS will allow fxagent to show desktop notifications for background thread updates.",
   "settings.notifications.statusDescription.denied":
-    "macOS notifications are turned off for pi-gui. Enable them in System Settings to receive background completion alerts.",
+    "macOS notifications are turned off for fxagent. Enable them in System Settings to receive background completion alerts.",
   "settings.notifications.statusDescription.default":
-    "pi-gui has not asked macOS for desktop notification access yet.",
+    "fxagent has not asked macOS for desktop notification access yet.",
   "settings.notifications.statusDescription.unsupported":
     "Desktop notifications are unavailable on this system.",
   "settings.notifications.statusDescription.checking":
-    "Checking whether macOS notifications are available for pi-gui.",
+    "Checking whether macOS notifications are available for fxagent.",
   "settings.notifications.ask.title": "Turn on notifications",
   "settings.notifications.ask.descriptionAsk":
-    "pi-gui asks macOS when active work first moves into the background. You can also ask now.",
+    "fxagent asks macOS when active work first moves into the background. You can also ask now.",
   "settings.notifications.ask.descriptionDenied":
-    "macOS notifications are already turned off for pi-gui. Open System Settings to enable them again.",
+    "macOS notifications are already turned off for fxagent. Open System Settings to enable them again.",
   "settings.notifications.ask.askMacOs": "Ask macOS",
   "settings.notifications.ask.openSystemSettings": "Open System Settings",
   "settings.notifications.inAppGroup": "In-app alerts",
@@ -207,7 +207,7 @@ export const zhMessages: Record<keyof typeof enMessages, string> = {
   "settings.appearance.transparency.title": "窗口透明效果",
   "settings.appearance.transparency.description": "让桌面颜色透过支持的界面区域显示。",
   "settings.notifications.systemGroup": "系统",
-  "settings.notifications.systemGroupDescription": "macOS 决定 pi-gui 能否显示桌面通知。",
+  "settings.notifications.systemGroupDescription": "macOS 决定 fxagent 能否显示桌面通知。",
   "settings.notifications.access.title": "macOS 通知权限",
   "settings.notifications.status.granted": "已启用",
   "settings.notifications.status.denied": "已关闭",
@@ -217,15 +217,15 @@ export const zhMessages: Record<keyof typeof enMessages, string> = {
   "settings.notifications.statusDescription.granted":
     "macOS 将允许 fxagent 为后台线程更新显示桌面通知。",
   "settings.notifications.statusDescription.denied":
-    "pi-gui 的 macOS 通知已关闭。请在系统设置中开启，以接收后台完成提醒。",
-  "settings.notifications.statusDescription.default": "pi-gui 尚未向 macOS 请求桌面通知权限。",
+    "fxagent 的 macOS 通知已关闭。请在系统设置中开启，以接收后台完成提醒。",
+  "settings.notifications.statusDescription.default": "fxagent 尚未向 macOS 请求桌面通知权限。",
   "settings.notifications.statusDescription.unsupported": "此系统不支持桌面通知。",
-  "settings.notifications.statusDescription.checking": "正在检查 pi-gui 是否可以使用 macOS 通知。",
+  "settings.notifications.statusDescription.checking": "正在检查 fxagent 是否可以使用 macOS 通知。",
   "settings.notifications.ask.title": "开启通知",
   "settings.notifications.ask.descriptionAsk":
-    "当活跃工作首次转入后台时，pi-gui 会向 macOS 请求通知权限。你也可以现在请求。",
+    "当活跃工作首次转入后台时，fxagent 会向 macOS 请求通知权限。你也可以现在请求。",
   "settings.notifications.ask.descriptionDenied":
-    "pi-gui 的 macOS 通知已关闭。请打开系统设置重新开启。",
+    "fxagent 的 macOS 通知已关闭。请打开系统设置重新开启。",
   "settings.notifications.ask.askMacOs": "请求 macOS 授权",
   "settings.notifications.ask.openSystemSettings": "打开系统设置",
   "settings.notifications.inAppGroup": "应用内提醒",

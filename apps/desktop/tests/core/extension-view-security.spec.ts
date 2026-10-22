@@ -79,7 +79,7 @@ test("custom frontend exchanges Chord state while its opaque frame cannot access
     // This is a boundary assertion against the real exposed API, not a shortcut for UI behavior.
     const staleResult = await window.evaluate(async (connectionId) => {
       try {
-        await globalThis.window.piApp.sendExtensionViewMessage({
+        await globalThis.window.fxagentApp.sendExtensionViewMessage({
           connectionId,
           message: { type: "closed", reason: "old runtime" },
         });
@@ -175,7 +175,7 @@ test("two real windows share one task backend while their frame connections rema
     expect(await second.getByTestId("extension-view-frame").getAttribute("src")).not.toBe(firstUrl);
     const wrongSender = await second.evaluate(async (connectionId) => {
       try {
-        await globalThis.window.piApp.sendExtensionViewMessage({
+        await globalThis.window.fxagentApp.sendExtensionViewMessage({
           connectionId,
           message: { type: "closed", reason: "wrong window" },
         });
@@ -196,7 +196,7 @@ test("two real windows share one task backend while their frame connections rema
     await expect(secondFrame.locator("#counter")).toHaveText("Count 2 · activations 1");
     const closedSender = await second.evaluate(async (connectionId) => {
       try {
-        await globalThis.window.piApp.sendExtensionViewMessage({
+        await globalThis.window.fxagentApp.sendExtensionViewMessage({
           connectionId,
           message: { type: "closed", reason: "closed window" },
         });

@@ -12,7 +12,7 @@ const PROVIDER = "sign-in-choice-provider";
  * Radius sign-ins do, and records the option it was given.
  */
 async function startSupervisor(options: readonly { id: string; label: string }[]) {
-  const root = await mkdtemp(join(tmpdir(), "pi-gui-sign-in-choice-"));
+  const root = await mkdtemp(join(tmpdir(), "fxagent-sign-in-choice-"));
   const agentDir = join(root, "agent");
   const workspacePath = join(root, "workspace");
   await mkdir(agentDir, { recursive: true });

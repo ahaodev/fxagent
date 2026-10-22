@@ -34,7 +34,7 @@ function handle(request) {
       return {
         protocolVersion: request.params?.protocolVersion ?? "2025-06-18",
         capabilities: { tools: {} },
-        serverInfo: { name: "pi-gui-test-server", version: "1.0.0" },
+        serverInfo: { name: "fxagent-test-server", version: "1.0.0" },
       };
     case "ping":
       return {};

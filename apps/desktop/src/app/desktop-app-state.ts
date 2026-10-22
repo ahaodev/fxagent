@@ -7,7 +7,7 @@ import {
   type SetStateAction,
 } from "react";
 import type { DesktopAppState, SelectedTranscriptRecord } from "../../contracts/desktop-state";
-import type { PiDesktopApi } from "../../contracts/ipc";
+import type { FxagentDesktopApi } from "../../contracts/ipc";
 
 export type HydrationOperation = "state" | "selected-transcript";
 
@@ -339,7 +339,7 @@ export function retryableHydrationTargets(
 
 function createInitialHydrationModel(): DesktopHydrationModel {
   const initial = initialDesktopHydrationModel();
-  if (typeof window === "undefined" || window.piApp) {
+  if (typeof window === "undefined" || window.fxagentApp) {
     return initial;
   }
   return reduceDesktopHydration(initial, { type: "bridge-missing" });
@@ -356,7 +356,7 @@ export function useDesktopAppState(): DesktopAppSession {
   }, []);
 
   const pullState = useCallback(
-    (api: PiDesktopApi) => {
+    (api: FxagentDesktopApi) => {
       const attemptId = modelRef.current.nextAttemptId;
       apply({ type: "state-pull-started", attemptId });
       void api.getState().then(
@@ -377,7 +377,7 @@ export function useDesktopAppState(): DesktopAppSession {
   );
 
   const pullTranscript = useCallback(
-    (api: PiDesktopApi) => {
+    (api: FxagentDesktopApi) => {
       const attemptId = modelRef.current.nextAttemptId;
       apply({ type: "transcript-pull-started", attemptId });
       void api.getSelectedTranscript().then(
@@ -399,7 +399,7 @@ export function useDesktopAppState(): DesktopAppSession {
 
   useEffect(() => {
     let active = true;
-    const api = window.piApp;
+    const api = window.fxagentApp;
     if (!api) {
       apply({ type: "bridge-missing" });
       return undefined;
@@ -443,7 +443,7 @@ export function useDesktopAppState(): DesktopAppSession {
   }, []);
 
   const retry = useCallback(() => {
-    const api = window.piApp;
+    const api = window.fxagentApp;
     if (!api) {
       apply({ type: "bridge-missing" });
       return;
@@ -459,7 +459,7 @@ export function useDesktopAppState(): DesktopAppSession {
   }, [apply, pullState, pullTranscript]);
 
   const relaunch = useCallback(() => {
-    const api = window.piApp;
+    const api = window.fxagentApp;
     if (!api) {
       return;
     }
@@ -475,7 +475,8 @@ export function useDesktopAppState(): DesktopAppSession {
     setSnapshot,
     retry,
     relaunch,
-    canRelaunch: Boolean(typeof window !== "undefined" && window.piApp) && !model.bridgeMissing,
+    canRelaunch:
+      Boolean(typeof window !== "undefined" && window.fxagentApp) && !model.bridgeMissing,
   };
 }
 

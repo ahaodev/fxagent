@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { ExtensionAction, ExtensionCard, ExtensionCardTone } from "@pi-gui/session-driver";
+import type { ExtensionAction, ExtensionCard, ExtensionCardTone } from "@fxagent/session-driver";
 import { ExtensionIcon } from "../../ui/icons";
 import { useI18n, type Translate } from "../../i18n";
 

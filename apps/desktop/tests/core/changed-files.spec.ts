@@ -14,7 +14,7 @@ import {
 } from "../helpers/electron-app";
 
 const execFileAsync = promisify(execFile);
-const proofDir = process.env.PI_APP_CHANGED_FILES_PROOF_DIR;
+const proofDir = process.env.FXAGENT_CHANGED_FILES_PROOF_DIR;
 
 test("preserves an exact changed-file path through diff and stage actions", async () => {
   test.setTimeout(30_000);

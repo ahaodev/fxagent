@@ -18,8 +18,8 @@ import {
   isThemePresetId,
   isThreadGrouping,
 } from "../../contracts/desktop-state";
-import type { ExtensionFlagValues } from "@pi-gui/session-driver";
-import type { ModelSettingsSnapshot } from "@pi-gui/session-driver/runtime-types";
+import type { ExtensionFlagValues } from "@fxagent/session-driver";
+import type { ModelSettingsSnapshot } from "@fxagent/session-driver/runtime-types";
 import { readJsonWithBackup, writeFileAtomicQueued } from "./atomic-file-write";
 import { decodeAttachments } from "./attachment-store";
 import { randomUUID } from "node:crypto";
@@ -44,7 +44,7 @@ export interface PersistedUiState {
   /** Flag values each thread's pi session started with, by session key. */
   readonly extensionFlagsBySession?: Record<string, ExtensionFlagValues>;
   readonly notificationPreferences?: Partial<NotificationPreferences>;
-  /** Names of pi-gui built-in extensions the user switched off. */
+  /** Names of fxagent built-in extensions the user switched off. */
   readonly disabledBuiltinExtensions?: readonly string[];
   readonly integratedTerminalShell?: string;
   readonly lastViewedAtBySession?: Record<string, string>;

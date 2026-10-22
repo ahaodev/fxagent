@@ -1,6 +1,6 @@
 import { ipcMain, shell, type BrowserWindow, type IpcMainInvokeEvent } from "electron";
 import path from "node:path";
-import type { SessionRef } from "@pi-gui/session-driver";
+import type { SessionRef } from "@fxagent/session-driver";
 import type {
   ComposerAttachment,
   DesktopAppState,

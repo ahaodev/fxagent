@@ -1,4 +1,4 @@
-import type { RuntimeSkillRecord, RuntimeSourceScope } from "@pi-gui/session-driver/runtime-types";
+import type { RuntimeSkillRecord, RuntimeSourceScope } from "@fxagent/session-driver/runtime-types";
 import type { WorkspaceRecord } from "../../../contracts/desktop-state";
 import { useI18n } from "../../i18n";
 import { titleCase } from "../../lib/string-utils";

@@ -13,7 +13,7 @@ export const enMessages = {
   "scheduled.view.emptyActiveTitle": "No active scheduled tasks",
   "scheduled.view.emptyTitle": "No scheduled tasks",
   "scheduled.view.emptyActiveBody":
-    "Scheduled tasks run on this device while pi-gui is open. They do not run in the cloud or after you quit.",
+    "Scheduled tasks run on this device while fxagent is open. They do not run in the cloud or after you quit.",
   "scheduled.view.emptyBody": "Create a task manually or ask pi to set one up.",
   "scheduled.view.taskActions": "Actions for {title}",
   "scheduled.view.resume": "Resume",
@@ -59,7 +59,7 @@ export const zhMessages: Record<keyof typeof enMessages, string> = {
   "scheduled.view.emptyActiveTitle": "没有进行中的定时任务",
   "scheduled.view.emptyTitle": "没有定时任务",
   "scheduled.view.emptyActiveBody":
-    "定时任务在 pi-gui 打开时于本机运行，不会在云端运行，退出后也会停止。",
+    "定时任务在 fxagent 打开时于本机运行，不会在云端运行，退出后也会停止。",
   "scheduled.view.emptyBody": "手动创建任务，或让 pi 帮你设置。",
   "scheduled.view.taskActions": "{title} 的操作",
   "scheduled.view.resume": "恢复",

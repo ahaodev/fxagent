@@ -7,8 +7,8 @@ import {
   type RefObject,
   type SetStateAction,
 } from "react";
-import type { ExtensionFlagValues, SessionUsageSnapshot } from "@pi-gui/session-driver";
-import type { RuntimeSnapshot } from "@pi-gui/session-driver/runtime-types";
+import type { ExtensionFlagValues, SessionUsageSnapshot } from "@fxagent/session-driver";
+import type { RuntimeSnapshot } from "@fxagent/session-driver/runtime-types";
 import type {
   ComposerAttachment,
   QueuedComposerMessage,

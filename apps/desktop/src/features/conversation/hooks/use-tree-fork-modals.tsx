@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState, type Dispatch, type SetStateAction } from "react";
-import type { SessionTreeSnapshot } from "@pi-gui/session-driver/types";
+import type { SessionTreeSnapshot } from "@fxagent/session-driver/types";
 import {
   type AppView,
   type DesktopAppState,
@@ -9,7 +9,7 @@ import {
   type WorkspaceRecord,
 } from "../../../../contracts/desktop-state";
 import { applySnapshotIfNewer } from "../../../app/desktop-app-state";
-import type { PiDesktopApi } from "../../../../contracts/ipc";
+import type { FxagentDesktopApi } from "../../../../contracts/ipc";
 import { resolveRepoWorkspaceId } from "../../../../contracts/workspace-roots";
 
 interface TreeModalState {
@@ -29,7 +29,7 @@ interface ForkModalState {
 }
 
 interface UseTreeForkModalsParams {
-  readonly api: PiDesktopApi | undefined;
+  readonly api: FxagentDesktopApi | undefined;
   readonly snapshot: DesktopAppState | null;
   readonly setSnapshot: Dispatch<SetStateAction<DesktopAppState | null>>;
   readonly selectedWorkspace: WorkspaceRecord | undefined;

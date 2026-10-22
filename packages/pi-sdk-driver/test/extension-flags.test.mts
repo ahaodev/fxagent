@@ -4,12 +4,12 @@ import { mkdtemp, mkdir, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
-import type { SessionDriverEvent } from "@pi-gui/session-driver";
+import type { SessionDriverEvent } from "@fxagent/session-driver";
 import type { BuiltinExtension } from "../dist/builtin-extensions.js";
 import { PiSdkDriver } from "../dist/pi-sdk-driver.js";
 
 async function setup(t: test.TestContext) {
-  const root = await mkdtemp(join(tmpdir(), "pi-gui-flags-"));
+  const root = await mkdtemp(join(tmpdir(), "fxagent-flags-"));
   const agentDir = join(root, "agent");
   const workspacePath = join(root, "workspace");
   await mkdir(agentDir, { recursive: true });
@@ -28,7 +28,7 @@ async function setup(t: test.TestContext) {
 /** Records what the extension reads with pi.getFlag once the session starts, like a real extension. */
 function flagReader(seen: Record<string, unknown>[]): BuiltinExtension {
   return {
-    name: "pi-gui-flag-reader",
+    name: "fxagent-flag-reader",
     displayName: "Flag reader",
     description: "Reads its flags at session start",
     factory: (pi: ExtensionAPI) => {

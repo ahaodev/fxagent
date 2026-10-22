@@ -16,15 +16,15 @@ test("a real provider records PR findings through the installed extension and pr
     process.platform === "win32",
     "The offline GitHub metadata fixture uses a POSIX executable.",
   );
-  const provider = process.env.PI_GUI_PROVIDER;
-  const model = process.env.PI_GUI_MODEL;
+  const provider = process.env.FXAGENT_PROVIDER;
+  const model = process.env.FXAGENT_MODEL;
   if (!authConfig.sourceDir || !provider || !model)
-    throw new Error("Set real-auth source, PI_GUI_PROVIDER and PI_GUI_MODEL for this proof.");
+    throw new Error("Set real-auth source, FXAGENT_PROVIDER and FXAGENT_MODEL for this proof.");
   const auth: unknown = JSON.parse(await readFile(join(authConfig.sourceDir, "auth.json"), "utf8"));
   if (!auth || typeof auth !== "object" || Array.isArray(auth) || !(provider in auth))
     throw new Error("The selected provider has no saved credentials.");
   // Credential copies stay outside the shareable screenshot/trace directory.
-  const privateRoot = await mkdtemp(join(tmpdir(), "pi-gui-extension-live-private-"));
+  const privateRoot = await mkdtemp(join(tmpdir(), "fxagent-extension-live-private-"));
   await chmod(privateRoot, 0o700);
   const agentDir = join(privateRoot, "agent");
   await mkdir(agentDir, { mode: 0o700 });
@@ -51,7 +51,7 @@ test("a real provider records PR findings through the installed extension and pr
     agentDir,
     initialWorkspaces: [workspacePath],
     scrubProviderEnv: true,
-    envOverrides: { ...fixture.envOverrides, PI_APP_TEST_MODE: undefined },
+    envOverrides: { ...fixture.envOverrides, FXAGENT_TEST_MODE: undefined },
   });
   const pid = harness.electronApp.process().pid;
   let tracing = false;
@@ -64,8 +64,8 @@ test("a real provider records PR findings through the installed extension and pr
       userData: app.getPath("userData"),
       visible: BrowserWindow.getAllWindows()[0]?.isVisible(),
       focused: BrowserWindow.getAllWindows()[0]?.isFocused(),
-      testMode: process.env.PI_APP_TEST_MODE ?? null,
-      testHooks: "__PI_APP_TEST_HOOKS" in globalThis,
+      testMode: process.env.FXAGENT_TEST_MODE ?? null,
+      testHooks: "__FXAGENT_TEST_HOOKS" in globalThis,
     }));
     const documentFocused = await window.evaluate(() => document.hasFocus());
     await writeFile(

@@ -1,6 +1,9 @@
 import { expect, test } from "@playwright/test";
-import { sessionKey } from "@pi-gui/session-driver";
-import type { RuntimeExtensionRecord, RuntimeSnapshot } from "@pi-gui/session-driver/runtime-types";
+import { sessionKey } from "@fxagent/session-driver";
+import type {
+  RuntimeExtensionRecord,
+  RuntimeSnapshot,
+} from "@fxagent/session-driver/runtime-types";
 import type { TranscriptMessage } from "../../contracts/timeline-types";
 import { extensionToolLabels, extensionToolRowLabel } from "../../contracts/tool-labels";
 import {
@@ -31,7 +34,7 @@ function runtime(extensions: RuntimeExtensionRecord[]): RuntimeSnapshot {
   return { extensions } as unknown as RuntimeSnapshot;
 }
 
-test("a folder's extension tools are labelled, pi-gui's own and unlabelled tools are not", () => {
+test("a folder's extension tools are labelled, fxagent's own and unlabelled tools are not", () => {
   const tool = (name: string, label: string, replacesPiTool = false) => ({
     name,
     label,
@@ -52,7 +55,7 @@ test("a folder's extension tools are labelled, pi-gui's own and unlabelled tools
       extension("tickets", [tool("ticket_read", "Look up ticket")]),
     ]),
   );
-  // Replacing pi's bash keeps pi-gui's handling; a name two extensions register is ambiguous.
+  // Replacing pi's bash keeps fxagent's handling; a name two extensions register is ambiguous.
   // A switched-off extension's tool does not count as a clash.
   expect([...labels]).toEqual([
     ["github_read", "Read GitHub issue or PR"],

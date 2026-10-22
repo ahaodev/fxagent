@@ -11,7 +11,7 @@ import { PRELOAD_DEV_RELOAD_MARKER } from "./dev-reload-preload-probe";
 import {
   createDesktopCommandSubscription,
   desktopIpc,
-  type PiDesktopApi,
+  type FxagentDesktopApi,
   type CustomProviderConfig,
   type CustomProviderProbeInput,
   type CustomProviderProbeResult,
@@ -21,7 +21,7 @@ import {
   type ChangedFilesResult,
   type DesktopNotificationPermissionStatus,
   type WorkspaceFilePreview,
-  type PiDesktopCommand,
+  type FxagentDesktopCommand,
   type TerminalDataEvent,
   type TerminalErrorEvent,
   type TerminalExitEvent,
@@ -43,14 +43,14 @@ import type {
   ChangeReviewFileStageInput,
   ChangeReviewFileStageResult,
 } from "../contracts/review";
-import type { SessionRef } from "@pi-gui/session-driver/types";
+import type { SessionRef } from "@fxagent/session-driver/types";
 import type {
   NavigateSessionTreeOptions,
   NavigateSessionTreeResult,
   SessionTreeSnapshot,
-} from "@pi-gui/session-driver/types";
-import type { HostUiResponse } from "@pi-gui/session-driver";
-import type { RuntimeSettingsSnapshot } from "@pi-gui/session-driver/runtime-types";
+} from "@fxagent/session-driver/types";
+import type { HostUiResponse } from "@fxagent/session-driver";
+import type { RuntimeSettingsSnapshot } from "@fxagent/session-driver/runtime-types";
 import type {
   LanguagePreference,
   AppView,
@@ -71,8 +71,9 @@ import type {
   CreateScheduledTaskInput,
   UpdateScheduledTaskInput,
 } from "../contracts/desktop-state";
+import { readAppEnv } from "./app-env";
 
-const devReloadMarkersEnabled = process.env.PI_APP_DEV_RELOAD_MARKERS === "1";
+const devReloadMarkersEnabled = readAppEnv("DEV_RELOAD_MARKERS") === "1";
 
 function resolveDevReloadMarkers() {
   if (!devReloadMarkersEnabled) {
@@ -109,11 +110,11 @@ ipcRenderer.on(desktopIpc.flushPendingComposerDraft, (_event, requestId: number)
 });
 
 const appCommands = createDesktopCommandSubscription();
-ipcRenderer.on(desktopIpc.appCommand, (_event, command: PiDesktopCommand) => {
+ipcRenderer.on(desktopIpc.appCommand, (_event, command: FxagentDesktopCommand) => {
   appCommands.deliver(command);
 });
 
-contextBridge.exposeInMainWorld("piApp", {
+contextBridge.exposeInMainWorld("fxagentApp", {
   platform: process.platform,
   versions: process.versions,
   ping: () => ipcRenderer.invoke(desktopIpc.ping) as Promise<string>,
@@ -187,7 +188,8 @@ contextBridge.exposeInMainWorld("piApp", {
       ipcRenderer.removeListener(desktopIpc.selectedTranscriptChanged, handle);
     };
   },
-  onCommand: (listener: (command: PiDesktopCommand) => void) => appCommands.subscribe(listener),
+  onCommand: (listener: (command: FxagentDesktopCommand) => void) =>
+    appCommands.subscribe(listener),
   onWorkspacePicked: (listener: (workspaceId: string) => void) => {
     const handle = (_event: Electron.IpcRendererEvent, workspaceId: string) => {
       listener(workspaceId);
@@ -610,4 +612,4 @@ contextBridge.exposeInMainWorld("piApp", {
     };
   },
   relaunchApplication: () => ipcRenderer.invoke(desktopIpc.relaunchApplication) as Promise<void>,
-} satisfies PiDesktopApi);
+} satisfies FxagentDesktopApi);

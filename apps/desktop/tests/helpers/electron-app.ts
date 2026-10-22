@@ -6,8 +6,8 @@ import { tmpdir } from "node:os";
 import { promisify } from "node:util";
 import { expect, type Page } from "@playwright/test";
 import { _electron as electron, type ElectronApplication } from "playwright";
-import type { SessionDriverEvent, SessionRef } from "@pi-gui/session-driver";
-import type { PiDesktopApi } from "../../contracts/ipc";
+import type { SessionDriverEvent, SessionRef } from "@fxagent/session-driver";
+import type { FxagentDesktopApi } from "../../contracts/ipc";
 import type {
   DesktopAppState,
   NewThreadEnvironment,
@@ -33,11 +33,11 @@ const desktopDir = resolve(__dirname, "..", "..");
 const execFileAsync = promisify(execFile);
 const require = createRequire(__filename);
 const electronExecutablePath = require("electron") as string;
-const REAL_AUTH_ENV_VAR = "PI_APP_REAL_AUTH";
+const REAL_AUTH_ENV_VAR = "FXAGENT_REAL_AUTH";
 // Quit is bounded at a few seconds in main; past this the app is stuck, not slow.
 const APP_EXIT_TIMEOUT_MS = 30_000;
 const APP_OUTPUT_TAIL_LINES = 40;
-const REAL_AUTH_SOURCE_DIR_ENV_VAR = "PI_APP_REAL_AUTH_SOURCE_DIR";
+const REAL_AUTH_SOURCE_DIR_ENV_VAR = "FXAGENT_REAL_AUTH_SOURCE_DIR";
 const REQUIRED_REAL_AUTH_FILES = ["auth.json"] as const;
 const OPTIONAL_REAL_AUTH_FILES = ["settings.json", "models.json"] as const;
 // Provider auth env vars the pi runtime honors that do NOT end in `_API_KEY`
@@ -63,7 +63,7 @@ function isProviderAuthEnvVar(key: string): boolean {
     key.endsWith("_API_KEY") || (NON_API_KEY_PROVIDER_ENV_VARS as readonly string[]).includes(key)
   );
 }
-export type PiAppWindow = Window & { piApp?: PiDesktopApi };
+export type FxagentAppWindow = Window & { fxagentApp?: FxagentDesktopApi };
 export type DesktopTestMode = "foreground" | "background";
 
 export interface DesktopHarness {
@@ -193,7 +193,7 @@ export async function launchPackagedDesktop(
   const normalized = normalizeLaunchOptions(options);
   const agentDir = await prepareAgentDir(userDataDir, normalized);
   const env = buildDesktopLaunchEnv(userDataDir, agentDir, normalized);
-  const releaseDir = resolvePackagedReleaseDir(process.env.PI_APP_TEST_RELEASE_DIR);
+  const releaseDir = resolvePackagedReleaseDir(process.env.FXAGENT_TEST_RELEASE_DIR);
   const executablePath = await resolvePackagedAppExecutable(releaseDir);
   return launchDesktopExecutable(executablePath, env);
 }
@@ -269,7 +269,7 @@ function createDesktopHarness(electronApp: ElectronApplication): DesktopHarness 
       // placeholder and hang on domcontentloaded.
       page = await waitForDesktopRendererPage(electronApp);
       await page.waitForLoadState("domcontentloaded");
-      await page.waitForFunction(() => Boolean(globalThis.window.piApp), undefined, {
+      await page.waitForFunction(() => Boolean(globalThis.window.fxagentApp), undefined, {
         timeout: 15_000,
       });
     }
@@ -425,16 +425,16 @@ function buildDesktopLaunchEnv(
   }
   const env = {
     ...baseEnv,
-    PI_APP_USER_DATA_DIR: userDataDir,
-    PI_APP_INITIAL_WORKSPACES: (options.initialWorkspaces ?? []).join(delimiter),
-    PI_APP_TEST_MODE: options.testMode ?? process.env.PI_APP_TEST_MODE ?? "foreground",
+    FXAGENT_USER_DATA_DIR: userDataDir,
+    FXAGENT_INITIAL_WORKSPACES: (options.initialWorkspaces ?? []).join(delimiter),
+    FXAGENT_TEST_MODE: options.testMode ?? process.env.FXAGENT_TEST_MODE ?? "foreground",
     // Pin the system language so English-based specs do not depend on the machine's locale.
-    PI_APP_TEST_LOCALE: "en-US",
+    FXAGENT_TEST_LOCALE: "en-US",
     PI_CODING_AGENT_DIR: agentDir,
     ...(options.notificationLogPath
-      ? { PI_APP_NOTIFICATION_LOG_PATH: options.notificationLogPath }
+      ? { FXAGENT_NOTIFICATION_LOG_PATH: options.notificationLogPath }
       : {}),
-    PI_APP_OPEN_DEVTOOLS: "0",
+    FXAGENT_OPEN_DEVTOOLS: "0",
     ...(options.envOverrides ?? {}),
   };
   for (const [key, value] of Object.entries(options.envOverrides ?? {})) {
@@ -466,7 +466,7 @@ async function prepareAgentDir(
   userDataDir: string,
   options: LaunchDesktopOptions,
 ): Promise<string> {
-  if (process.env.PI_APP_TEST_LANE === "core" && options.realAuthSourceDir) {
+  if (process.env.FXAGENT_TEST_LANE === "core" && options.realAuthSourceDir) {
     throw new Error("Core tests must not use real provider credentials; use the live lane.");
   }
   if (options.agentDir && options.realAuthSourceDir) {
@@ -589,7 +589,7 @@ function isMissingPathError(error: unknown): boolean {
   return typeof error === "object" && error !== null && "code" in error && error.code === "ENOENT";
 }
 
-export async function makeUserDataDir(prefix = "pi-gui-user-data-"): Promise<string> {
+export async function makeUserDataDir(prefix = "fxagent-user-data-"): Promise<string> {
   return mkdtemp(join(tmpdir(), prefix));
 }
 
@@ -1059,7 +1059,7 @@ async function withAgentDirEnv<T>(agentDir: string, action: () => Promise<T>): P
 }
 
 export async function makeWorkspace(name: string): Promise<string> {
-  const root = await mkdtemp(join(tmpdir(), "pi-gui-workspace-"));
+  const root = await mkdtemp(join(tmpdir(), "fxagent-workspace-"));
   const workspacePath = join(root, name);
   await mkdir(workspacePath, { recursive: true });
   await writeFile(join(workspacePath, "README.md"), `# ${name}\n`, "utf8");
@@ -1088,7 +1088,7 @@ export async function writeProjectExtension(
 export async function initGitRepo(workspacePath: string): Promise<void> {
   await execFileAsync("git", ["init", "-b", "main"], { cwd: workspacePath });
   await execFileAsync("git", ["config", "user.name", "Pi App Tests"], { cwd: workspacePath });
-  await execFileAsync("git", ["config", "user.email", "pi-gui-tests@example.com"], {
+  await execFileAsync("git", ["config", "user.email", "fxagent-tests@example.com"], {
     cwd: workspacePath,
   });
 }
@@ -1108,9 +1108,9 @@ export async function writeTextFile(filePath: string, contents: string): Promise
 
 export async function getDesktopState(window: Page): Promise<DesktopAppState> {
   const state = await window.evaluate(() => {
-    const app = globalThis.window.piApp;
+    const app = globalThis.window.fxagentApp;
     if (!app) {
-      throw new Error("piApp IPC bridge is unavailable");
+      throw new Error("fxagentApp IPC bridge is unavailable");
     }
     return app.getState();
   });
@@ -1126,9 +1126,9 @@ export async function getSelectedTranscript(
   window: Page,
 ): Promise<SelectedTranscriptRecord | null> {
   return window.evaluate(async () => {
-    const app = globalThis.window.piApp;
+    const app = globalThis.window.fxagentApp;
     if (!app) {
-      throw new Error("piApp IPC bridge is unavailable");
+      throw new Error("fxagentApp IPC bridge is unavailable");
     }
     return app.getSelectedTranscript();
   });
@@ -1303,13 +1303,13 @@ export async function runOrchestrationRuntimeTool(
   return harness.electronApp.evaluate(async (_, payload) => {
     const hooks = (
       globalThis as {
-        __PI_APP_TEST_HOOKS?: {
+        __FXAGENT_TEST_HOOKS?: {
           runOrchestrationRuntimeTool?: (
             input: OrchestrationRuntimeToolTestInput,
           ) => Promise<OrchestrationRuntimeToolTestResult>;
         };
       }
-    ).__PI_APP_TEST_HOOKS;
+    ).__FXAGENT_TEST_HOOKS;
     if (!hooks?.runOrchestrationRuntimeTool) {
       throw new Error("Orchestration runtime-tool hook is unavailable");
     }
@@ -1325,13 +1325,13 @@ export async function runScheduledTaskRuntimeTool(
   return harness.electronApp.evaluate(async (_, payload) => {
     const hooks = (
       globalThis as {
-        __PI_APP_TEST_HOOKS?: {
+        __FXAGENT_TEST_HOOKS?: {
           runScheduledTaskRuntimeTool?: (
             input: OrchestrationRuntimeToolTestInput,
           ) => Promise<OrchestrationRuntimeToolTestResult>;
         };
       }
-    ).__PI_APP_TEST_HOOKS;
+    ).__FXAGENT_TEST_HOOKS;
     if (!hooks?.runScheduledTaskRuntimeTool) {
       throw new Error("Scheduled-task runtime-tool hook is unavailable");
     }
@@ -1347,11 +1347,11 @@ export async function fireDueScheduledTasks(
   return harness.electronApp.evaluate(async (_, payload) => {
     const hooks = (
       globalThis as {
-        __PI_APP_TEST_HOOKS?: {
+        __FXAGENT_TEST_HOOKS?: {
           fireDueScheduledTasks?: (nowIso?: string) => Promise<DesktopAppState>;
         };
       }
-    ).__PI_APP_TEST_HOOKS;
+    ).__FXAGENT_TEST_HOOKS;
     if (!hooks?.fireDueScheduledTasks) {
       throw new Error("Scheduled-task fire hook is unavailable");
     }
@@ -1373,9 +1373,9 @@ export async function emitTestSessionEvents(
   await harness.electronApp.evaluate(async (_, payloads) => {
     const hooks = (
       globalThis as {
-        __PI_APP_TEST_HOOKS?: { emitSessionEvent?: (event: SessionDriverEvent) => Promise<void> };
+        __FXAGENT_TEST_HOOKS?: { emitSessionEvent?: (event: SessionDriverEvent) => Promise<void> };
       }
-    ).__PI_APP_TEST_HOOKS;
+    ).__FXAGENT_TEST_HOOKS;
     if (!hooks?.emitSessionEvent) {
       throw new Error("Test session-event hook is unavailable");
     }
@@ -1394,9 +1394,9 @@ export async function triggerWindowActivation(harness: DesktopHarness): Promise<
   await harness.electronApp.evaluate(async () => {
     const hooks = (
       globalThis as {
-        __PI_APP_TEST_HOOKS?: { handleWindowActivation?: () => void };
+        __FXAGENT_TEST_HOOKS?: { handleWindowActivation?: () => void };
       }
-    ).__PI_APP_TEST_HOOKS;
+    ).__FXAGENT_TEST_HOOKS;
     if (!hooks?.handleWindowActivation) {
       throw new Error("Window-activation hook is unavailable");
     }
@@ -1408,9 +1408,9 @@ export async function setDeferredThreadTitleMode(harness: DesktopHarness): Promi
   await harness.electronApp.evaluate(async () => {
     const hooks = (
       globalThis as {
-        __PI_APP_TEST_HOOKS?: { setDeferredThreadTitleMode?: () => void };
+        __FXAGENT_TEST_HOOKS?: { setDeferredThreadTitleMode?: () => void };
       }
-    ).__PI_APP_TEST_HOOKS;
+    ).__FXAGENT_TEST_HOOKS;
     if (!hooks?.setDeferredThreadTitleMode) {
       throw new Error("Deferred thread-title hook is unavailable");
     }
@@ -1428,9 +1428,9 @@ export async function waitForDeferredThreadTitleRequest(
         harness.electronApp.evaluate(async () => {
           const hooks = (
             globalThis as {
-              __PI_APP_TEST_HOOKS?: { hasDeferredThreadTitle?: () => boolean };
+              __FXAGENT_TEST_HOOKS?: { hasDeferredThreadTitle?: () => boolean };
             }
-          ).__PI_APP_TEST_HOOKS;
+          ).__FXAGENT_TEST_HOOKS;
           if (!hooks?.hasDeferredThreadTitle) {
             throw new Error("Deferred thread-title hook is unavailable");
           }
@@ -1476,9 +1476,9 @@ export async function resolveDeferredThreadTitle(
   await harness.electronApp.evaluate(async (_, nextTitle) => {
     const hooks = (
       globalThis as {
-        __PI_APP_TEST_HOOKS?: { resolveDeferredThreadTitle?: (title: string) => void };
+        __FXAGENT_TEST_HOOKS?: { resolveDeferredThreadTitle?: (title: string) => void };
       }
-    ).__PI_APP_TEST_HOOKS;
+    ).__FXAGENT_TEST_HOOKS;
     if (!hooks?.resolveDeferredThreadTitle) {
       throw new Error("Deferred thread-title resolve hook is unavailable");
     }
@@ -1490,9 +1490,9 @@ export async function rejectDeferredThreadTitle(harness: DesktopHarness): Promis
   await harness.electronApp.evaluate(async () => {
     const hooks = (
       globalThis as {
-        __PI_APP_TEST_HOOKS?: { rejectDeferredThreadTitle?: () => void };
+        __FXAGENT_TEST_HOOKS?: { rejectDeferredThreadTitle?: () => void };
       }
-    ).__PI_APP_TEST_HOOKS;
+    ).__FXAGENT_TEST_HOOKS;
     if (!hooks?.rejectDeferredThreadTitle) {
       throw new Error("Deferred thread-title reject hook is unavailable");
     }
@@ -1719,9 +1719,9 @@ export async function waitForWorkspaceByPath(
 
 export async function addWorkspaceViaIpc(window: Page, workspacePath: string): Promise<void> {
   await window.evaluate(async (pathValue) => {
-    const app = globalThis.window.piApp;
+    const app = globalThis.window.fxagentApp;
     if (!app) {
-      throw new Error("piApp IPC bridge is unavailable");
+      throw new Error("fxagentApp IPC bridge is unavailable");
     }
     await app.addWorkspacePath(pathValue);
   }, workspacePath);
@@ -1901,9 +1901,9 @@ export async function startThreadViaIpc(
 
   const rootWorkspaceId = await window.evaluate(
     async ({ requestedWorkspaceName }) => {
-      const app = globalThis.window.piApp;
+      const app = globalThis.window.fxagentApp;
       if (!app) {
-        throw new Error("piApp IPC bridge is unavailable");
+        throw new Error("fxagentApp IPC bridge is unavailable");
       }
 
       const state = await app.getState();
@@ -1931,9 +1931,9 @@ export async function startThreadViaIpc(
       nextModelId,
       nextThinkingLevel,
     }) => {
-      const app = globalThis.window.piApp;
+      const app = globalThis.window.fxagentApp;
       if (!app) {
-        throw new Error("piApp IPC bridge is unavailable");
+        throw new Error("fxagentApp IPC bridge is unavailable");
       }
       await app.startThread({
         rootWorkspaceId,
@@ -1976,9 +1976,9 @@ export async function createNamedThread(
 
   const targetWorkspaceId = await window.evaluate(
     ({ requestedWorkspaceName }) => {
-      const app = globalThis.window.piApp;
+      const app = globalThis.window.fxagentApp;
       if (!app) {
-        throw new Error("piApp IPC bridge is unavailable");
+        throw new Error("fxagentApp IPC bridge is unavailable");
       }
       return app.getState().then((state) => {
         if (requestedWorkspaceName) {
@@ -2060,9 +2060,9 @@ export async function createSessionViaIpc(
 ): Promise<void> {
   await window.evaluate(
     async ({ workspaceTarget, targetTitle }) => {
-      const app = globalThis.window.piApp;
+      const app = globalThis.window.fxagentApp;
       if (!app) {
-        throw new Error("piApp IPC bridge is unavailable");
+        throw new Error("fxagentApp IPC bridge is unavailable");
       }
 
       const deadline = Date.now() + 10_000;
@@ -2239,7 +2239,7 @@ export async function readIpcInvokeControl(
 export async function reloadDesktopRenderer(window: Page): Promise<void> {
   await window.reload();
   await window.waitForLoadState("domcontentloaded");
-  await window.waitForFunction(() => Boolean(globalThis.window.piApp), undefined, {
+  await window.waitForFunction(() => Boolean(globalThis.window.fxagentApp), undefined, {
     timeout: 15_000,
   });
 }

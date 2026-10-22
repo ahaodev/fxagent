@@ -1,6 +1,6 @@
 /**
- * What a button an extension drew in pi-gui can ask the app to do. The list is closed: an
- * extension's UI has no other way to make pi-gui act, and main checks each one again when
+ * What a button an extension drew in fxagent can ask the app to do. The list is closed: an
+ * extension's UI has no other way to make fxagent act, and main checks each one again when
  * it is clicked (`apps/desktop/electron/extensions/app-operations.ts`).
  */
 export type ExtensionAction =
@@ -17,7 +17,7 @@ export type ExtensionAction =
   | { readonly type: "url"; readonly label: string; readonly url: string }
   /** Runs one of the thread's extension commands, such as "/ci rerun". Never starts a model turn. */
   | { readonly type: "command"; readonly label: string; readonly command: string }
-  /** Opens another thread of the same folder, or one of its pi-gui worktrees, by pi session id. */
+  /** Opens another thread of the same folder, or one of its fxagent worktrees, by pi session id. */
   | { readonly type: "openThread"; readonly label: string; readonly sessionId: string };
 
 export type ExtensionActionType = ExtensionAction["type"];

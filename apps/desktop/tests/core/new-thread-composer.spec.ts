@@ -172,9 +172,9 @@ test("new thread routes disabled-model recovery to settings models", async () =>
 
     await window.evaluate(
       async ({ workspaceId }) => {
-        const app = globalThis.window.piApp;
+        const app = globalThis.window.fxagentApp;
         if (!app) {
-          throw new Error("piApp IPC bridge is unavailable");
+          throw new Error("fxagentApp IPC bridge is unavailable");
         }
         await app.setScopedModelPatterns(workspaceId, ["fake-provider/fake-model"]);
       },
@@ -243,9 +243,9 @@ test("refreshing after a provider becomes available auto-enables that provider's
     expect(selectedWorkspaceId).toBeTruthy();
     await window.evaluate(
       async ({ workspaceId }) => {
-        const app = globalThis.window.piApp;
+        const app = globalThis.window.fxagentApp;
         if (!app) {
-          throw new Error("piApp IPC bridge is unavailable");
+          throw new Error("fxagentApp IPC bridge is unavailable");
         }
         await app.refreshRuntime(workspaceId);
       },

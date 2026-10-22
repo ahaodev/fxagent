@@ -1,9 +1,9 @@
 ---
 name: verify-pi-gui
-description: "Verify pi-gui's core conversation flows through visible Electron UI with a real provider: sending, streaming, thread switching, tools, stop, drafts and restart. Use for desktop user-flow verification; includes a separate settings smoke and a prioritized feature map."
+description: "Verify fxagent's core conversation flows through visible Electron UI with a real provider: sending, streaming, thread switching, tools, stop, drafts and restart. Use for desktop user-flow verification; includes a separate settings smoke and a prioritized feature map."
 ---
 
-# Verify pi-gui
+# Verify fxagent
 
 Read [features/README.md](features/README.md) before choosing coverage. Conversation behavior is the primary proof. A passing settings/navigation smoke does not establish that the app can send or stream a message. Use the existing `apps/desktop/tests/helpers/electron-app.ts` launcher; the skill supplies UI recipes and evidence capture, not a second app implementation.
 
@@ -12,10 +12,10 @@ Read [features/README.md](features/README.md) before choosing coverage. Conversa
 Run from the repository root with dependencies installed (Node >=22.19.0 <26, pnpm 10.25.0; setup is `pnpm install --frozen-lockfile`). The default command is the real-provider conversation proof:
 
 ```sh
-PI_APP_REAL_AUTH=1 \
-PI_APP_REAL_AUTH_SOURCE_DIR="$HOME/.pi/agent" \
-PI_GUI_PROVIDER=openai-codex \
-PI_GUI_MODEL=gpt-5.6-luna \
+FXAGENT_REAL_AUTH=1 \
+FXAGENT_REAL_AUTH_SOURCE_DIR="$HOME/.pi/agent" \
+FXAGENT_PROVIDER=openai-codex \
+FXAGENT_MODEL=gpt-5.6-luna \
 .agents/skills/verify-pi-gui/scripts/prove.sh
 ```
 
@@ -24,10 +24,10 @@ Use a provider/model actually configured for this user; those example values are
 For the remaining mapped surfaces after the default conversation proof, use the same real-auth environment:
 
 ```sh
-PI_APP_REAL_AUTH=1 \
-PI_APP_REAL_AUTH_SOURCE_DIR="$HOME/.pi/agent" \
-PI_GUI_PROVIDER=openai-codex \
-PI_GUI_MODEL=gpt-5.6-luna \
+FXAGENT_REAL_AUTH=1 \
+FXAGENT_REAL_AUTH_SOURCE_DIR="$HOME/.pi/agent" \
+FXAGENT_PROVIDER=openai-codex \
+FXAGENT_MODEL=gpt-5.6-luna \
 .agents/skills/verify-pi-gui/scripts/prove.sh --maintenance
 ```
 
@@ -41,7 +41,7 @@ For the secondary no-provider settings/navigation proof:
 .agents/skills/verify-pi-gui/scripts/prove.sh --smoke
 ```
 
-These commands build first, show and focus Electron with `PI_APP_TEST_MODE` removed, and retain a unique `.artifacts/verify-pi-gui/run-XXXXXX/`. Build failure blocks launch; do not reuse stale output. On this host the full Xcode selection can block `git`/`swiftc` on its license. An already working Command Line Tools installation can be selected per invocation with `DEVELOPER_DIR=/Library/Developer/CommandLineTools`; verify `xcrun --find swiftc` under that environment first. Do not accept licenses or change global developer settings for the user.
+These commands build first, show and focus Electron with `FXAGENT_TEST_MODE` removed, and retain a unique `.artifacts/verify-pi-gui/run-XXXXXX/`. Build failure blocks launch; do not reuse stale output. On this host the full Xcode selection can block `git`/`swiftc` on its license. An already working Command Line Tools installation can be selected per invocation with `DEVELOPER_DIR=/Library/Developer/CommandLineTools`; verify `xcrun --find swiftc` under that environment first. Do not accept licenses or change global developer settings for the user.
 
 Each run uses a scratch workspace and isolated profile. The conversation proof copies only the selected provider credentials into a mode-0700 private temporary directory outside the evidence tree, with a mode-0600 auth file. It creates a minimal model configuration there once and reuses it across restart. It does not modify the source profile. Do not publish the private directory or credentials. Separate profiles prevent history collision, but build output and foreground input are shared: serialize runs and do not drive the user's installed app.
 

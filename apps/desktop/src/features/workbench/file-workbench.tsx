@@ -7,14 +7,14 @@ import {
   type SetStateAction,
 } from "react";
 import type { WorkspaceRecord, WorktreeRecord } from "../../../contracts/desktop-state";
-import type { PiDesktopApi } from "../../../contracts/ipc";
+import type { FxagentDesktopApi } from "../../../contracts/ipc";
 import { t } from "../../i18n";
 import { FileEditorPane } from "./file-editor-pane";
 import { FileExplorer } from "./file-explorer";
 import { activateFile, closeFile, openFile, type FileWorkbenchTabs } from "./file-workbench-state";
 
 interface FileWorkbenchProps {
-  readonly api: PiDesktopApi;
+  readonly api: FxagentDesktopApi;
   readonly workspace: WorkspaceRecord;
   readonly worktree: WorktreeRecord | undefined;
   readonly sessionStatus: string | undefined;

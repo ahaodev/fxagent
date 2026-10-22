@@ -1,4 +1,4 @@
-import type { RuntimeSnapshot } from "@pi-gui/session-driver/runtime-types";
+import type { RuntimeSnapshot } from "@fxagent/session-driver/runtime-types";
 import { t } from "../../i18n";
 import { buildModelOptions } from "../conversation/composer-commands";
 

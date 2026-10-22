@@ -1,6 +1,6 @@
-import { JsonCatalogStore } from "@pi-gui/catalogs/node";
-import { sessionKey } from "@pi-gui/session-driver";
-import type { ExtensionFlagValues, SessionSchemaInfo } from "@pi-gui/session-driver";
+import { JsonCatalogStore } from "@fxagent/catalogs/node";
+import { sessionKey } from "@fxagent/session-driver";
+import type { ExtensionFlagValues, SessionSchemaInfo } from "@fxagent/session-driver";
 import type { BrowserWindow } from "electron";
 import { randomUUID } from "node:crypto";
 import { readFile, stat } from "node:fs/promises";
@@ -13,13 +13,13 @@ import {
   PiSdkDriver,
   type PiSdkDriverConfig,
   SessionLeasedError,
-} from "@pi-gui/pi-sdk-driver";
-import type { SessionCatalogEntry } from "@pi-gui/catalogs";
+} from "@fxagent/pi-sdk-driver";
+import type { SessionCatalogEntry } from "@fxagent/catalogs";
 import type {
   NavigateSessionTreeOptions,
   NavigateSessionTreeResult,
   SessionTreeSnapshot,
-} from "@pi-gui/session-driver/types";
+} from "@fxagent/session-driver/types";
 import type {
   CreateSessionOptions,
   HostUiResponse,
@@ -30,14 +30,14 @@ import type {
   SessionRef,
   SessionSnapshot,
   WorkspaceRef,
-} from "@pi-gui/session-driver";
+} from "@fxagent/session-driver";
 import type {
   ModelSettingsSnapshot,
   RuntimeCommandRecord,
   RuntimeLoginCallbacks,
   RuntimeSettingsSnapshot,
   RuntimeSnapshot,
-} from "@pi-gui/session-driver/runtime-types";
+} from "@fxagent/session-driver/runtime-types";
 import {
   type AppView,
   type ComposerAttachment,
@@ -286,7 +286,7 @@ export class DesktopAppStore {
   private readonly workspaceOwner: WorkspaceOwner;
   private readonly orchestrationOwner: OrchestrationOwner;
   private readonly scheduledTaskOwner: ScheduledTaskOwner;
-  /** App-wide: built-in pi-gui extensions the user switched off in Settings. */
+  /** App-wide: built-in fxagent extensions the user switched off in Settings. */
   private readonly disabledBuiltinExtensions = new Set<string>();
   /** Flag values last chosen in New thread, by root workspace: the next thread's defaults. */
   private readonly extensionFlagsByWorkspace = new Map<string, ExtensionFlagValues>();
@@ -1785,7 +1785,7 @@ export class DesktopAppStore {
     );
   }
 
-  /** pi-gui owns built-in extensions, so their switch is app-wide rather than in pi's settings. */
+  /** fxagent owns built-in extensions, so their switch is app-wide rather than in pi's settings. */
   private async setBuiltinExtensionEnabled(
     workspaceId: string,
     name: string,
@@ -1821,7 +1821,7 @@ export class DesktopAppStore {
       return reloaded
         ? state
         : this.withError(
-            "Some open threads could not reload; they pick up the pi-gui tools change when reopened.",
+            "Some open threads could not reload; they pick up the fxagent tools change when reopened.",
           );
     });
   }
@@ -2020,7 +2020,7 @@ export class DesktopAppStore {
         return;
       }
       console.warn(
-        `[pi-gui] Failed to refresh runtime for ${workspace?.path ?? "unknown workspace"} after custom provider update: ${
+        `[fxagent] Failed to refresh runtime for ${workspace?.path ?? "unknown workspace"} after custom provider update: ${
           result.reason instanceof Error ? result.reason.message : String(result.reason)
         }`,
       );
@@ -2039,7 +2039,7 @@ export class DesktopAppStore {
       }
       const workspace = this.state.workspaces[index];
       console.warn(
-        `[pi-gui] Failed to refresh session commands for ${workspace?.path ?? "unknown workspace"} after custom provider update: ${
+        `[fxagent] Failed to refresh session commands for ${workspace?.path ?? "unknown workspace"} after custom provider update: ${
           result.reason instanceof Error ? result.reason.message : String(result.reason)
         }`,
       );
@@ -2473,7 +2473,7 @@ export class DesktopAppStore {
         }
         const failedWorkspace = secondaryWorkspacesToLoad[index];
         console.warn(
-          `[pi-gui] Failed to preload runtime for ${failedWorkspace?.path ?? "unknown workspace"}: ${
+          `[fxagent] Failed to preload runtime for ${failedWorkspace?.path ?? "unknown workspace"}: ${
             result.reason instanceof Error ? result.reason.message : String(result.reason)
           }`,
         );
@@ -3182,7 +3182,7 @@ export class DesktopAppStore {
           commandName: pending.command.name,
           extensionPath: pending.command.sourceInfo.path,
           status: "supported",
-          message: "Observed working in pi-gui.",
+          message: "Observed working in fxagent.",
           capability: "gui-safe",
           updatedAt: timestamp,
         },
@@ -3216,7 +3216,7 @@ export class DesktopAppStore {
     const key = sessionKey(sessionRef);
     const pending = this.pendingRuntimeCommandsBySession.get(key);
     if (pending) {
-      const message = `/${pending.command.name} requires terminal-only ${formatCapabilityLabel(issue.capability)} and is not supported in pi-gui yet. Use pi in the terminal for this command.`;
+      const message = `/${pending.command.name} requires terminal-only ${formatCapabilityLabel(issue.capability)} and is not supported in fxagent yet. Use pi in the terminal for this command.`;
       pending.blockedMessage = message;
       recordLearnedCommandCompatibility(
         this.extensionCommandCompatibilityByWorkspace,

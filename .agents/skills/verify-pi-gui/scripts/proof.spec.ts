@@ -8,7 +8,7 @@ import {
 } from "../../../../apps/desktop/tests/helpers/electron-app";
 
 test("visible app navigation and settings persistence without test hooks", async () => {
-  const evidence = process.env.PI_GUI_PROOF_DIR;
+  const evidence = process.env.FXAGENT_PROOF_DIR;
   if (!evidence) throw new Error("Run scripts/prove.sh to allocate a unique evidence directory");
   const userDataDir = join(evidence, "profile");
   const workspace = join(evidence, "workspace");
@@ -21,7 +21,7 @@ test("visible app navigation and settings persistence without test hooks", async
       agentDir,
       initialWorkspaces: [workspace],
       scrubProviderEnv: true,
-      envOverrides: { PI_APP_TEST_MODE: undefined },
+      envOverrides: { FXAGENT_TEST_MODE: undefined },
     });
   const doctor = async (harness: DesktopHarness) => {
     await harness.focusWindow();
@@ -32,8 +32,8 @@ test("visible app navigation and settings persistence without test hooks", async
       userData: app.getPath("userData"),
       visible: BrowserWindow.getAllWindows()[0]?.isVisible(),
       focused: BrowserWindow.getAllWindows()[0]?.isFocused(),
-      testMode: process.env.PI_APP_TEST_MODE ?? null,
-      testHooks: "__PI_APP_TEST_HOOKS" in globalThis,
+      testMode: process.env.FXAGENT_TEST_MODE ?? null,
+      testHooks: "__FXAGENT_TEST_HOOKS" in globalThis,
     }));
     const documentFocused = await page.evaluate(() => document.hasFocus());
     expect(identity.visible).toBe(true);

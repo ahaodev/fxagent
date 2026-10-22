@@ -1,8 +1,8 @@
 import { randomUUID } from "node:crypto";
-import { sessionKey } from "@pi-gui/session-driver";
-import type { SessionConfig, SessionQueuedMessage, SessionRef } from "@pi-gui/session-driver";
-import type { PiSdkDriver } from "@pi-gui/pi-sdk-driver";
-import type { RuntimeCommandRecord, RuntimeSnapshot } from "@pi-gui/session-driver/runtime-types";
+import { sessionKey } from "@fxagent/session-driver";
+import type { SessionConfig, SessionQueuedMessage, SessionRef } from "@fxagent/session-driver";
+import type { PiSdkDriver } from "@fxagent/pi-sdk-driver";
+import type { RuntimeCommandRecord, RuntimeSnapshot } from "@fxagent/session-driver/runtime-types";
 import type {
   ComposerAttachment,
   DesktopAppState,

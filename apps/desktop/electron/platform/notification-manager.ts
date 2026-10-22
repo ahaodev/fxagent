@@ -4,11 +4,12 @@ import { dirname } from "node:path";
 import type { DesktopAppStore } from "../application/app-store";
 import type { NotificationPermissionService } from "./notification-permission";
 import type { AppLanguage, DesktopAppState } from "../../contracts/desktop-state";
-import { sessionKey } from "@pi-gui/session-driver";
-import type { SessionDriverEvent, SessionRef } from "@pi-gui/session-driver";
+import { sessionKey } from "@fxagent/session-driver";
+import type { SessionDriverEvent, SessionRef } from "@fxagent/session-driver";
 import { getSelectedSession } from "../../contracts/desktop-state";
 import { isSessionActivelyViewed } from "../conversation/session-visibility";
 import { nativeT, type NativeMessageKey } from "./native-messages";
+import { readAppEnv } from "../app-env";
 
 const MAX_COMPLETED_RUN_KEYS = 500;
 // An extension that throws on a frequent event repeats the same error notice; notify once per window.
@@ -319,7 +320,7 @@ export class NotificationManager {
   ): Promise<void> {
     this.dismissForSession(sessionRef);
     await this.logNotification(sessionRef, title, body);
-    if (process.env.PI_APP_TEST_MODE) {
+    if (readAppEnv("TEST_MODE")) {
       return;
     }
     const notification = new Notification({
@@ -344,7 +345,7 @@ export class NotificationManager {
     title: string,
     body: string,
   ): Promise<void> {
-    const logPath = process.env.PI_APP_NOTIFICATION_LOG_PATH?.trim();
+    const logPath = readAppEnv("NOTIFICATION_LOG_PATH")?.trim();
     if (!logPath) {
       return;
     }

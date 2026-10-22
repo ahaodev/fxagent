@@ -68,7 +68,7 @@ function expectedFor(seeded: readonly SeededUsageThread[], since: number | null)
 async function launchUsageDemo(options: { folderName?: string } = {}) {
   const userDataDir = await makeUserDataDir();
   const agentDir = join(userDataDir, "agent");
-  const workspace = await makeWorkspace(options.folderName ?? "pi-gui");
+  const workspace = await makeWorkspace(options.folderName ?? "fxagent");
   await seedAgentDir(agentDir, { withOpenAiAuth: false, withDefaultModel: false });
   await writeFile(
     join(agentDir, "settings.json"),
@@ -200,10 +200,10 @@ test("the Usage example totals real pi sessions for the folder and explains what
       formatTokens(all.tokens + tokens(late!.totals)),
     );
 
-    await window.evaluate(() => globalThis.window.piApp?.setThemeMode("dark"));
+    await window.evaluate(() => globalThis.window.fxagentApp?.setThemeMode("dark"));
     await frame.getByRole("heading", { name: "Usage", exact: true }).scrollIntoViewIfNeeded();
     await shoot(window, "usage-dark");
-    await window.evaluate(() => globalThis.window.piApp?.setThemeMode("light"));
+    await window.evaluate(() => globalThis.window.fxagentApp?.setThemeMode("light"));
 
     // Open thread switches the app to that thread, which closes this view.
     await expect(

@@ -1,6 +1,6 @@
 import { formatPercent, formatTokens } from "./model.ts";
 
-/** What one reply cost, as a `pi-gui.card` record: pi-gui draws it in the thread after the reply. */
+/** What one reply cost, as a `pi-gui.card` record: fxagent draws it in the thread after the reply. */
 export interface ReplyCard {
   title: string;
   subtitle?: string;

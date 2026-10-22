@@ -7,9 +7,12 @@ import {
   type KeyboardEvent,
   type RefObject,
 } from "react";
-import type { RuntimeExtensionRecord, RuntimeSnapshot } from "@pi-gui/session-driver/runtime-types";
+import type {
+  RuntimeExtensionRecord,
+  RuntimeSnapshot,
+} from "@fxagent/session-driver/runtime-types";
 import { extensionSourceSummary } from "../../extensions/extension-display";
-import type { PiDesktopApi } from "../../../../contracts/ipc";
+import type { FxagentDesktopApi } from "../../../../contracts/ipc";
 import { t } from "../../../i18n";
 import { nextMenuIndex } from "./use-slash-menu";
 
@@ -37,7 +40,7 @@ interface UseMentionMenuParams {
   readonly composerRef: RefObject<HTMLTextAreaElement | null>;
   readonly workspaceId: string | undefined;
   readonly runtime?: RuntimeSnapshot;
-  readonly api: PiDesktopApi | undefined;
+  readonly api: FxagentDesktopApi | undefined;
   readonly onEnableExtension?: (filePath: string) => Promise<void>;
 }
 

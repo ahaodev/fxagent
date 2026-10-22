@@ -30,9 +30,9 @@ test("requests notification permission when the user switches away from a runnin
     initialWorkspaces: [workspacePath],
     testMode: "background",
     envOverrides: {
-      PI_APP_TEST_NOTIFICATION_PERMISSION_STATUS: "default",
-      PI_APP_TEST_NOTIFICATION_PERMISSION_REQUEST_RESULT: "granted",
-      PI_APP_TEST_NOTIFICATION_PERMISSION_REQUEST_LOG_PATH: requestLogPath,
+      FXAGENT_TEST_NOTIFICATION_PERMISSION_STATUS: "default",
+      FXAGENT_TEST_NOTIFICATION_PERMISSION_REQUEST_RESULT: "granted",
+      FXAGENT_TEST_NOTIFICATION_PERMISSION_REQUEST_LOG_PATH: requestLogPath,
     },
   });
 
@@ -70,9 +70,9 @@ test("requests notification permission when the user leaves the threads surface"
     initialWorkspaces: [workspacePath],
     testMode: "background",
     envOverrides: {
-      PI_APP_TEST_NOTIFICATION_PERMISSION_STATUS: "default",
-      PI_APP_TEST_NOTIFICATION_PERMISSION_REQUEST_RESULT: "granted",
-      PI_APP_TEST_NOTIFICATION_PERMISSION_REQUEST_LOG_PATH: requestLogPath,
+      FXAGENT_TEST_NOTIFICATION_PERMISSION_STATUS: "default",
+      FXAGENT_TEST_NOTIFICATION_PERMISSION_REQUEST_RESULT: "granted",
+      FXAGENT_TEST_NOTIFICATION_PERMISSION_REQUEST_LOG_PATH: requestLogPath,
     },
   });
 
@@ -99,9 +99,9 @@ test("requests notification permission after a backgrounded session later flips 
     initialWorkspaces: [workspacePath],
     testMode: "background",
     envOverrides: {
-      PI_APP_TEST_NOTIFICATION_PERMISSION_STATUS: "default",
-      PI_APP_TEST_NOTIFICATION_PERMISSION_REQUEST_RESULT: "granted",
-      PI_APP_TEST_NOTIFICATION_PERMISSION_REQUEST_LOG_PATH: requestLogPath,
+      FXAGENT_TEST_NOTIFICATION_PERMISSION_STATUS: "default",
+      FXAGENT_TEST_NOTIFICATION_PERMISSION_REQUEST_RESULT: "granted",
+      FXAGENT_TEST_NOTIFICATION_PERMISSION_REQUEST_LOG_PATH: requestLogPath,
     },
   });
 
@@ -131,9 +131,9 @@ test("does not request notification permission when all notification categories 
     initialWorkspaces: [workspacePath],
     testMode: "background",
     envOverrides: {
-      PI_APP_TEST_NOTIFICATION_PERMISSION_STATUS: "default",
-      PI_APP_TEST_NOTIFICATION_PERMISSION_REQUEST_RESULT: "granted",
-      PI_APP_TEST_NOTIFICATION_PERMISSION_REQUEST_LOG_PATH: requestLogPath,
+      FXAGENT_TEST_NOTIFICATION_PERMISSION_STATUS: "default",
+      FXAGENT_TEST_NOTIFICATION_PERMISSION_REQUEST_RESULT: "granted",
+      FXAGENT_TEST_NOTIFICATION_PERMISSION_REQUEST_LOG_PATH: requestLogPath,
     },
   });
 
@@ -163,7 +163,7 @@ test("does not request notification permission when all notification categories 
 
 test("does not request notification permission twice after macOS decides during this launch", async () => {
   for (const status of ["denied", "granted"] as const) {
-    const userDataDir = await makeUserDataDir(`pi-gui-notification-decides-${status}-`);
+    const userDataDir = await makeUserDataDir(`fxagent-notification-decides-${status}-`);
     const requestLogPath = join(userDataDir, `notification-onboarding-decides-${status}.log`);
     const workspacePath = await makeWorkspace(
       `notification-onboarding-decides-${status}-workspace`,
@@ -172,9 +172,9 @@ test("does not request notification permission twice after macOS decides during 
       initialWorkspaces: [workspacePath],
       testMode: "background",
       envOverrides: {
-        PI_APP_TEST_NOTIFICATION_PERMISSION_STATUS: "default",
-        PI_APP_TEST_NOTIFICATION_PERMISSION_REQUEST_RESULT: status,
-        PI_APP_TEST_NOTIFICATION_PERMISSION_REQUEST_LOG_PATH: requestLogPath,
+        FXAGENT_TEST_NOTIFICATION_PERMISSION_STATUS: "default",
+        FXAGENT_TEST_NOTIFICATION_PERMISSION_REQUEST_RESULT: status,
+        FXAGENT_TEST_NOTIFICATION_PERMISSION_REQUEST_LOG_PATH: requestLogPath,
       },
     });
 
@@ -204,16 +204,16 @@ test("does not request notification permission twice after macOS decides during 
 
 test("does not request notification permission again after macOS already decided", async () => {
   for (const status of ["denied", "granted"] as const) {
-    const userDataDir = await makeUserDataDir(`pi-gui-notification-${status}-`);
+    const userDataDir = await makeUserDataDir(`fxagent-notification-${status}-`);
     const requestLogPath = join(userDataDir, `notification-onboarding-${status}.log`);
     const workspacePath = await makeWorkspace(`notification-onboarding-${status}-workspace`);
     const harness = await launchDesktop(userDataDir, {
       initialWorkspaces: [workspacePath],
       testMode: "background",
       envOverrides: {
-        PI_APP_TEST_NOTIFICATION_PERMISSION_STATUS: status,
-        PI_APP_TEST_NOTIFICATION_PERMISSION_REQUEST_RESULT: "granted",
-        PI_APP_TEST_NOTIFICATION_PERMISSION_REQUEST_LOG_PATH: requestLogPath,
+        FXAGENT_TEST_NOTIFICATION_PERMISSION_STATUS: status,
+        FXAGENT_TEST_NOTIFICATION_PERMISSION_REQUEST_RESULT: "granted",
+        FXAGENT_TEST_NOTIFICATION_PERMISSION_REQUEST_LOG_PATH: requestLogPath,
       },
     });
 
@@ -241,9 +241,9 @@ test("does not request notification permission on launch before any work is back
     initialWorkspaces: [workspacePath],
     testMode: "background",
     envOverrides: {
-      PI_APP_TEST_NOTIFICATION_PERMISSION_STATUS: "default",
-      PI_APP_TEST_NOTIFICATION_PERMISSION_REQUEST_RESULT: "granted",
-      PI_APP_TEST_NOTIFICATION_PERMISSION_REQUEST_LOG_PATH: requestLogPath,
+      FXAGENT_TEST_NOTIFICATION_PERMISSION_STATUS: "default",
+      FXAGENT_TEST_NOTIFICATION_PERMISSION_REQUEST_RESULT: "granted",
+      FXAGENT_TEST_NOTIFICATION_PERMISSION_REQUEST_LOG_PATH: requestLogPath,
     },
   });
 

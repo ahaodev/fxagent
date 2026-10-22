@@ -25,7 +25,7 @@ The installed public packages were used, rather than the cached Pico branch:
 
 These pre-implementation probes used a JSON-copying loopback adapter within the browser and an inline Pi extension. They establish Chord feasibility, not proof of the subsequently implemented Electron transport, asset containment or frontend isolation. Keep their evidence separate from the final product gates below.
 
-Evidence scripts and result JSON are retained in `/private/tmp/pi-gui-chord-087-probe-4r9zmy/`: `run-node.mjs`, `run-browser.mjs`, `run-bootstrap.mjs`, `browser-result.json` and `bootstrap-result.json`. Public source: [Chord 0.87.0](https://github.com/earendil-works/pi/tree/v0.87.0/packages/chord), [Coding Agent package exports](https://github.com/earendil-works/pi/blob/v0.87.0/packages/coding-agent/package.json).
+Evidence scripts and result JSON are retained in `/private/tmp/fxagent-chord-087-probe-4r9zmy/`: `run-node.mjs`, `run-browser.mjs`, `run-bootstrap.mjs`, `browser-result.json` and `bootstrap-result.json`. Public source: [Chord 0.87.0](https://github.com/earendil-works/pi/tree/v0.87.0/packages/chord), [Coding Agent package exports](https://github.com/earendil-works/pi/blob/v0.87.0/packages/coding-agent/package.json).
 
 ## Author contract
 
@@ -54,7 +54,7 @@ export function mount(root: HTMLElement, host: DesktopViewContext): () => void {
 }
 ```
 
-[`@pi-gui/extension-ui`](../packages/extension-ui/README.md) is a private workspace package. `registerDesktopView` reports availability and returns a disposer; terminal Pi can report no desktop host while the extension's commands/tools continue to work. Availability acknowledges discovery, not successful source validation or backend activation. `DesktopViewContext` supplies a scoped Chord service source, theme values, an abort signal and `openFile` / `prepareTaskDraft` / `openUrl` / `openThread` actions. Service tokens and domain schemas live with the extension and are shared by its entries. Backend state uses `env.replicatedState` so it belongs to the host's Chord instance. Browser dependencies are bundled separately; the author cannot assume the app's React or Node modules are available.
+[`@fxagent/extension-ui`](../packages/extension-ui/README.md) is a private workspace package. `registerDesktopView` reports availability and returns a disposer; terminal Pi can report no desktop host while the extension's commands/tools continue to work. Availability acknowledges discovery, not successful source validation or backend activation. `DesktopViewContext` supplies a scoped Chord service source, theme values, an abort signal and `openFile` / `prepareTaskDraft` / `openUrl` / `openThread` actions. Service tokens and domain schemas live with the extension and are shared by its entries. Backend state uses `env.replicatedState` so it belongs to the host's Chord instance. Browser dependencies are bundled separately; the author cannot assume the app's React or Node modules are available.
 
 ## Owners and flow
 

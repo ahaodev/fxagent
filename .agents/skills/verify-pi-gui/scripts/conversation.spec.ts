@@ -9,11 +9,11 @@ import {
 
 test("real conversation: stream, switch, tool, stop, archive, restart", async () => {
   test.setTimeout(360_000);
-  const evidence = process.env.PI_GUI_PROOF_DIR!;
-  const source = process.env.PI_APP_REAL_AUTH_SOURCE_DIR;
-  const provider = process.env.PI_GUI_PROVIDER;
-  const model = process.env.PI_GUI_MODEL;
-  if (process.env.PI_APP_REAL_AUTH !== "1" || !source || !provider || !model) {
+  const evidence = process.env.FXAGENT_PROOF_DIR!;
+  const source = process.env.FXAGENT_REAL_AUTH_SOURCE_DIR;
+  const provider = process.env.FXAGENT_PROVIDER;
+  const model = process.env.FXAGENT_MODEL;
+  if (process.env.FXAGENT_REAL_AUTH !== "1" || !source || !provider || !model) {
     throw new Error(
       "BLOCKED: conversation proof requires explicit real-auth source, provider and model; it never skips to a pass",
     );
@@ -21,7 +21,7 @@ test("real conversation: stream, switch, tool, stop, archive, restart", async ()
   const auth = JSON.parse(await readFile(join(source, "auth.json"), "utf8"));
   if (!auth[provider]) throw new Error(`BLOCKED: no saved credentials for ${provider}`);
   // Keep copied credentials outside the shareable evidence directory.
-  const privateRoot = await mkdtemp(join(tmpdir(), "pi-gui-conversation-private-"));
+  const privateRoot = await mkdtemp(join(tmpdir(), "fxagent-conversation-private-"));
   await chmod(privateRoot, 0o700);
   const profile = join(privateRoot, "profile");
   const agentDir = join(privateRoot, "agent");
@@ -75,7 +75,7 @@ test("real conversation: stream, switch, tool, stop, archive, restart", async ()
       agentDir,
       initialWorkspaces: [workspace],
       scrubProviderEnv: true,
-      envOverrides: { PI_APP_TEST_MODE: undefined },
+      envOverrides: { FXAGENT_TEST_MODE: undefined },
     });
     runs.push({ pid: harness.electronApp.process().pid!, closed: false });
     await harness.focusWindow();
@@ -108,8 +108,8 @@ test("real conversation: stream, switch, tool, stop, archive, restart", async ()
       userData: app.getPath("userData"),
       visible: BrowserWindow.getAllWindows()[0]?.isVisible(),
       focused: BrowserWindow.getAllWindows()[0]?.isFocused(),
-      testMode: process.env.PI_APP_TEST_MODE ?? null,
-      testHooks: "__PI_APP_TEST_HOOKS" in globalThis,
+      testMode: process.env.FXAGENT_TEST_MODE ?? null,
+      testHooks: "__FXAGENT_TEST_HOOKS" in globalThis,
     }));
     const documentFocused = await page.evaluate(() => document.hasFocus());
     await writeFile(

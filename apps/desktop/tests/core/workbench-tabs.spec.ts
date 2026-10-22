@@ -359,7 +359,7 @@ test("closing the Terminal view preserves its live shell", async () => {
     const terminal = window.getByTestId("integrated-terminal");
     await terminal.locator(".xterm").click();
     await window.keyboard.type(
-      "export PI_GUI_WORKBENCH_CANARY=retained; printf 'SHELL_'\"READY\\n\"",
+      "export FXAGENT_WORKBENCH_CANARY=retained; printf 'SHELL_'\"READY\\n\"",
     );
     await window.keyboard.press("Enter");
     await expect(terminal.locator(".xterm-rows")).toContainText("SHELL_READY");
@@ -368,7 +368,7 @@ test("closing the Terminal view preserves its live shell", async () => {
     await expectActiveTool(window, "Review");
     await addTool(window, "Terminal");
     await terminal.locator(".xterm").click();
-    await window.keyboard.type("printf 'SHELL_%s\\n' \"$PI_GUI_WORKBENCH_CANARY\"");
+    await window.keyboard.type("printf 'SHELL_%s\\n' \"$FXAGENT_WORKBENCH_CANARY\"");
     await window.keyboard.press("Enter");
     await expect(terminal.locator(".xterm-rows")).toContainText("SHELL_retained");
     await expect(window.getByTestId("terminal-tab")).toHaveCount(1);

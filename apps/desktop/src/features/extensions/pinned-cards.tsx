@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
-import type { SessionTranscriptPin } from "@pi-gui/session-driver";
+import type { SessionTranscriptPin } from "@fxagent/session-driver";
 import type { TranscriptMessage } from "../../../contracts/timeline-types";
 import { useI18n } from "../../i18n";
 import { ExtensionCardItem, type RunExtensionAction } from "../conversation/extension-card";

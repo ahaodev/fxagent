@@ -110,7 +110,7 @@ function writeShim(dir, marker) {
 }
 
 async function verifyLauncherContract() {
-  const spacedDir = mkdtempSync(path.join(os.tmpdir(), "pi gui launcher "));
+  const spacedDir = mkdtempSync(path.join(os.tmpdir(), "fxagent launcher "));
   const workdir = path.join(spacedDir, "work dir");
   mkdirSync(workdir, { recursive: true });
 

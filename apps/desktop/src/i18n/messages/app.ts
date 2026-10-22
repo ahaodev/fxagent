@@ -7,7 +7,7 @@ export const enMessages = {
 
   "app.shell.threadActions": "Thread actions",
   "app.shell.schemaSkewNotice":
-    "This session was written by a newer version of pi — some content may not display. Update pi-gui (or open it with the pi CLI) to see everything.",
+    "This session was written by a newer version of pi — some content may not display. Update fxagent (or open it with the pi CLI) to see everything.",
   "app.shell.dismiss": "Dismiss",
   "app.shell.dismissNotice": "Dismiss notice",
   "app.shell.fileCheckoutUnavailable": "This file checkout is unavailable.",
@@ -30,13 +30,13 @@ export const enMessages = {
   "app.startup.restoreFailedTitle": "Couldn't restore sessions",
   "app.startup.restoreFailedBody":
     "The desktop shell couldn't read folder and thread state. Retry, or relaunch the app.",
-  "app.startup.bridgeFailedBody": "The desktop shell isn't connected. Quit pi-gui and reopen it.",
+  "app.startup.bridgeFailedBody": "The desktop shell isn't connected. Quit fxagent and reopen it.",
   "app.startup.crashedTitle": "Something went wrong",
   "app.startup.crashedBody":
     "The desktop window hit an unexpected error. Retry to remount, or relaunch the app.",
   "app.startup.retry": "Retry",
   "app.startup.retrying": "Retrying…",
-  "app.startup.relaunch": "Relaunch pi-gui",
+  "app.startup.relaunch": "Relaunch fxagent",
 
   "app.secondarySurface.back": "Back to app",
   "app.secondarySurface.sectionsLabel": "{title} sections",
@@ -69,7 +69,7 @@ export const zhMessages: Record<keyof typeof enMessages, string> = {
 
   "app.shell.threadActions": "线程操作",
   "app.shell.schemaSkewNotice":
-    "这个会话由更新版本的 pi 写入，部分内容可能无法显示。请更新 pi-gui（或使用 pi CLI 打开）以查看全部内容。",
+    "这个会话由更新版本的 pi 写入，部分内容可能无法显示。请更新 fxagent（或使用 pi CLI 打开）以查看全部内容。",
   "app.shell.dismiss": "忽略",
   "app.shell.dismissNotice": "忽略提示",
   "app.shell.fileCheckoutUnavailable": "这个文件检出不可用。",
@@ -89,12 +89,12 @@ export const zhMessages: Record<keyof typeof enMessages, string> = {
   "app.startup.loadingBody": "桌面外壳正在从主进程恢复文件夹和线程状态。",
   "app.startup.restoreFailedTitle": "无法恢复会话",
   "app.startup.restoreFailedBody": "桌面外壳无法读取文件夹和线程状态。请重试，或重新启动应用。",
-  "app.startup.bridgeFailedBody": "桌面外壳未连接。请退出 pi-gui 后重新打开。",
+  "app.startup.bridgeFailedBody": "桌面外壳未连接。请退出 fxagent 后重新打开。",
   "app.startup.crashedTitle": "出了点问题",
   "app.startup.crashedBody": "桌面窗口遇到意外错误。重试以重新挂载，或重新启动应用。",
   "app.startup.retry": "重试",
   "app.startup.retrying": "正在重试…",
-  "app.startup.relaunch": "重新启动 pi-gui",
+  "app.startup.relaunch": "重新启动 fxagent",
 
   "app.secondarySurface.back": "返回应用",
   "app.secondarySurface.sectionsLabel": "{title}分区",

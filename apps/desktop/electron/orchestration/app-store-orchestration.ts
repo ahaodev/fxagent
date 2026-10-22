@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import type { AgentToolResult } from "@earendil-works/pi-coding-agent";
-import { sessionKey } from "@pi-gui/session-driver";
+import { sessionKey } from "@fxagent/session-driver";
 import type {
   CreateSessionOptions,
   SessionConfig,
@@ -10,8 +10,8 @@ import type {
   SessionRef,
   SessionSnapshot,
   WorkspaceRef,
-} from "@pi-gui/session-driver";
-import type { PiSdkDriver } from "@pi-gui/pi-sdk-driver";
+} from "@fxagent/session-driver";
+import type { PiSdkDriver } from "@fxagent/pi-sdk-driver";
 import type {
   DesktopAppState,
   OrchestrationEvidenceRecord,
@@ -48,6 +48,7 @@ import type {
   ReadThreadToolDetails,
   SendMessageToThreadToolDetails,
 } from "./orchestration-runtime";
+import { readAppEnv } from "../app-env";
 
 const CHILD_TITLE_LIMIT = 56;
 const MAX_CHILD_TRANSCRIPT_MESSAGES = 40;
@@ -1219,7 +1220,7 @@ function updateChildSupervisionLoop(
 }
 
 function supervisionIntervalMs(): number {
-  const configured = Number(process.env.PI_APP_ORCHESTRATION_SUPERVISION_INTERVAL_MS);
+  const configured = Number(readAppEnv("ORCHESTRATION_SUPERVISION_INTERVAL_MS"));
   if (!Number.isFinite(configured) || configured <= 0) {
     return DEFAULT_SUPERVISION_INTERVAL_MS;
   }

@@ -18,11 +18,11 @@ import {
 } from "../helpers/electron-app";
 
 const proofDir =
-  process.env.PI_APP_RECENCY_PROOF_DIR ?? join(tmpdir(), "pi-gui-recency-thread-list");
+  process.env.FXAGENT_RECENCY_PROOF_DIR ?? join(tmpdir(), "fxagent-recency-thread-list");
 
 test("caps each time bucket at five and hides workspace headers", async () => {
   test.setTimeout(90_000);
-  const userDataDir = await makeUserDataDir("pi-app-user-data-recency-cap-");
+  const userDataDir = await makeUserDataDir("fxagent-user-data-recency-cap-");
   const workspaceAPath = await makeWorkspace("recency-a");
   const workspaceBPath = await makeWorkspace("recency-b");
   const harness = await launchDesktop(userDataDir, {
@@ -59,7 +59,7 @@ test("caps each time bucket at five and hides workspace headers", async () => {
 
 test("does not bump Today when a thread is opened", async () => {
   test.setTimeout(90_000);
-  const userDataDir = await makeUserDataDir("pi-app-user-data-recency-open-");
+  const userDataDir = await makeUserDataDir("fxagent-user-data-recency-open-");
   const workspacePath = await makeWorkspace("recency-open");
   const harness = await launchDesktop(userDataDir, {
     initialWorkspaces: [workspacePath],
@@ -90,7 +90,7 @@ test("does not bump Today when a thread is opened", async () => {
 
 test("bumps a sent thread to the top of Today", async () => {
   test.setTimeout(90_000);
-  const userDataDir = await makeUserDataDir("pi-app-user-data-recency-send-");
+  const userDataDir = await makeUserDataDir("fxagent-user-data-recency-send-");
   const agentDir = join(userDataDir, "agent");
   await seedAgentDir(agentDir);
   const workspacePath = await makeWorkspace("recency-send");
@@ -129,7 +129,7 @@ test("bumps a sent thread to the top of Today", async () => {
 
 test("selects pinned threads first with 1-9 and paints badges while the modifier is held", async () => {
   test.setTimeout(120_000);
-  const userDataDir = await makeUserDataDir("pi-app-user-data-recency-shortcut-");
+  const userDataDir = await makeUserDataDir("fxagent-user-data-recency-shortcut-");
   const agentDir = join(userDataDir, "agent");
   await seedAgentDir(agentDir);
   const workspacePath = await makeWorkspace("recency-shortcut");
@@ -213,7 +213,7 @@ test("selects pinned threads first with 1-9 and paints badges while the modifier
 
 test("groups seeded Last 7 Days, Last 30 Days, and Older threads", async () => {
   test.setTimeout(120_000);
-  const userDataDir = await makeUserDataDir("pi-app-user-data-recency-buckets-");
+  const userDataDir = await makeUserDataDir("fxagent-user-data-recency-buckets-");
   const workspaceAPath = await makeWorkspace("recency-buckets-a");
   const workspaceBPath = await makeWorkspace("recency-buckets-b");
   const agentDir = join(userDataDir, "agent");
@@ -332,7 +332,7 @@ test("groups seeded Last 7 Days, Last 30 Days, and Older threads", async () => {
 
 test("caps a long Last 7 Days bucket and sorts the folder by last send", async () => {
   test.setTimeout(120_000);
-  const userDataDir = await makeUserDataDir("pi-app-user-data-grouping-");
+  const userDataDir = await makeUserDataDir("fxagent-user-data-grouping-");
   const workspacePath = await makeWorkspace("grouping-folder");
   const titles = ["Week 1", "Week 2", "Week 3", "Week 4", "Catalog newer", "Sent later"];
   const firstRun = await launchDesktop(userDataDir, {

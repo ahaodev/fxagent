@@ -97,11 +97,11 @@ test("folds a folder group from its row and keeps it folded across restart", asy
       async (target) => {
         await (
           window as unknown as {
-            piApp: {
+            fxagentApp: {
               archiveSession(t: { workspaceId: string; sessionId: string }): Promise<unknown>;
             };
           }
-        ).piApp.archiveSession(target);
+        ).fxagentApp.archiveSession(target);
       },
       { workspaceId, sessionId: alphaThread!.id },
     );

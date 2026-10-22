@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import type { ExtensionFlagValues } from "@pi-gui/session-driver";
-import type { RuntimeExtensionFlag, RuntimeSnapshot } from "@pi-gui/session-driver/runtime-types";
+import type { ExtensionFlagValues } from "@fxagent/session-driver";
+import type { RuntimeExtensionFlag, RuntimeSnapshot } from "@fxagent/session-driver/runtime-types";
 import { SettingsSwitch } from "../settings/settings-controls";
 import { useI18n } from "../../i18n";
 

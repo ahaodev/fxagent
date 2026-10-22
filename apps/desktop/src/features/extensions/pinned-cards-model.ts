@@ -1,4 +1,4 @@
-import type { ExtensionCard, SessionTranscriptPin } from "@pi-gui/session-driver";
+import type { ExtensionCard, SessionTranscriptPin } from "@fxagent/session-driver";
 import type { TimelineTranscriptItem, TranscriptMessage } from "../../../contracts/timeline-types";
 
 /** More pins than this stack too high above the composer; the most recently pinned ones show. */

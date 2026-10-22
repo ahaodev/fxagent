@@ -23,7 +23,7 @@ async function beginPrompt(
     (_electron, payload) => {
       const hooks = (
         globalThis as {
-          __PI_APP_TEST_HOOKS?: {
+          __FXAGENT_TEST_HOOKS?: {
             promptForText?: (
               message: string,
               placeholder?: string,
@@ -31,7 +31,7 @@ async function beginPrompt(
             ) => Promise<string>;
           };
         }
-      ).__PI_APP_TEST_HOOKS;
+      ).__FXAGENT_TEST_HOOKS;
       if (!hooks?.promptForText) {
         throw new Error("promptForText test hook is unavailable");
       }

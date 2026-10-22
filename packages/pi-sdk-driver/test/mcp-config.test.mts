@@ -11,7 +11,7 @@ import {
 } from "../dist/mcp-config.js";
 
 function setup() {
-  const root = mkdtempSync(join(tmpdir(), "pi-gui-mcp-config-"));
+  const root = mkdtempSync(join(tmpdir(), "fxagent-mcp-config-"));
   const agentDir = join(root, "agent");
   const cwd = join(root, "workspace");
   mkdirSync(agentDir, { recursive: true });
@@ -317,7 +317,7 @@ await test("a new server whose name differs from another only by - and _ is refu
 
 await test("a new global server is refused when it clashes with another open folder's", () => {
   const { agentDir, cwd, globalPath } = setup();
-  const other = mkdtempSync(join(tmpdir(), "pi-gui-mcp-other-"));
+  const other = mkdtempSync(join(tmpdir(), "fxagent-mcp-other-"));
   mkdirSync(join(other, ".pi"));
   writeFileSync(
     join(other, ".pi", "mcp.json"),
@@ -325,7 +325,7 @@ await test("a new global server is refused when it clashes with another open fol
   );
   assert.throws(
     () => addMcpServer({ agentDir, cwd }, { name: "my_docs", command: "node" }, [other]),
-    /"my-docs" already exists in .*pi-gui-mcp-other-/,
+    /"my-docs" already exists in .*fxagent-mcp-other-/,
     "pi would skip the other folder's server once the global file has the new one",
   );
   addMcpServer({ agentDir, cwd }, { name: "my-docs", command: "node" }, [other]);

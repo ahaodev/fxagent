@@ -25,7 +25,7 @@ interface TerminalPanelProps {
 
 export function TerminalPanel({ workspace, sessionId, onHide }: TerminalPanelProps) {
   const { t } = useI18n();
-  const api = window.piApp;
+  const api = window.fxagentApp;
   const panelRef = useRef<HTMLElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const fitAddonRef = useRef<FitAddon | null>(null);

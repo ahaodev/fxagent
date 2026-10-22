@@ -1,6 +1,6 @@
 import { createHash, randomUUID } from "node:crypto";
 import { realpath } from "node:fs/promises";
-import type { SessionRef } from "@pi-gui/session-driver/types";
+import type { SessionRef } from "@fxagent/session-driver/types";
 import type {
   ChangeReviewFileStageInput,
   ChangeReviewFileStageResult,

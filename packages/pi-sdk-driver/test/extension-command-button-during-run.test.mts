@@ -5,14 +5,14 @@ import { join } from "node:path";
 import test from "node:test";
 import { createAssistantMessageEventStream, type AssistantMessage } from "@earendil-works/pi-ai";
 import type { AgentSessionRuntime } from "@earendil-works/pi-coding-agent";
-import type { SessionDriverEvent } from "@pi-gui/session-driver";
+import type { SessionDriverEvent } from "@fxagent/session-driver";
 import { PiSdkDriver } from "../dist/pi-sdk-driver.js";
 import { createAgentSessionRuntimeWithNpmFallback } from "../dist/npm-package-fallback.js";
 
 type StreamFunction = AgentSessionRuntime["session"]["agent"]["streamFunction"];
 
 await test("a card button's failing command leaves the thread's running turn alone", async (t) => {
-  const root = await mkdtemp(join(tmpdir(), "pi-gui-button-run-"));
+  const root = await mkdtemp(join(tmpdir(), "fxagent-button-run-"));
   const agentDir = join(root, "agent");
   const cwd = join(root, "workspace");
   await mkdir(agentDir);

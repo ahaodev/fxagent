@@ -7,7 +7,7 @@
  */
 
 export interface SeedUsageOptions {
-  /** The folder the threads belong to (the pi-gui workspace path). */
+  /** The folder the threads belong to (the fxagent workspace path). */
   cwd: string;
   /** pi agent directory; sessions land in its default session directory for `cwd`. */
   agentDir: string;
@@ -198,7 +198,7 @@ export const DEMO_THREADS: readonly ThreadSpec[] = [
     ],
   },
   {
-    title: "Teach pi extensions in pi-gui",
+    title: "Teach pi extensions in fxagent",
     ...sonnet,
     minutesAgo: 3,
     turns: 7,

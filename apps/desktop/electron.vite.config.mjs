@@ -7,7 +7,7 @@ import tsconfigPaths from "vite-tsconfig-paths";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = __dirname;
 const pathsProject = path.resolve(projectRoot, "tsconfig.paths.json");
-const devPort = Number(process.env.PI_APP_DEV_PORT ?? "5173");
+const devPort = Number(process.env.FXAGENT_DEV_PORT ?? process.env.PI_APP_DEV_PORT ?? "5173");
 export default defineConfig(({ command }) => {
   const cleanOutputs = command === "build";
 
@@ -16,7 +16,7 @@ export default defineConfig(({ command }) => {
       plugins: [tsconfigPaths({ projects: [pathsProject] })],
       build: {
         outDir: "out/main",
-        externalizeDeps: { exclude: ["@earendil-works/chord", "@pi-gui/extension-ui"] },
+        externalizeDeps: { exclude: ["@earendil-works/chord", "@fxagent/extension-ui"] },
         emptyOutDir: cleanOutputs,
         rollupOptions: {
           input: {

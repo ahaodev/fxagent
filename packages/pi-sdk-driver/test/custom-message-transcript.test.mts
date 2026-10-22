@@ -5,7 +5,7 @@ import { join } from "node:path";
 import test, { type TestContext } from "node:test";
 import { createAssistantMessageEventStream, type AssistantMessage } from "@earendil-works/pi-ai";
 import type { AgentSessionRuntime, ExtensionAPI } from "@earendil-works/pi-coding-agent";
-import type { SessionDriverEvent, SessionTranscriptItem } from "@pi-gui/session-driver";
+import type { SessionDriverEvent, SessionTranscriptItem } from "@fxagent/session-driver";
 import { PiSdkDriver } from "../dist/pi-sdk-driver.js";
 import { createAgentSessionRuntimeWithNpmFallback } from "../dist/npm-package-fallback.js";
 
@@ -38,7 +38,7 @@ function reply(model: Parameters<StreamFunction>[0], text: string) {
 
 /** Real installed Pi and a real extension; only the provider is scripted. */
 async function fixture(t: TestContext, streamFunction: StreamFunction) {
-  const root = await mkdtemp(join(tmpdir(), "pi-gui-custom-message-"));
+  const root = await mkdtemp(join(tmpdir(), "fxagent-custom-message-"));
   const agentDir = join(root, "agent");
   const cwd = join(root, "workspace");
   await mkdir(agentDir);

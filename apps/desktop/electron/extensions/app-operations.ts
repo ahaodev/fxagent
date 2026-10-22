@@ -1,6 +1,6 @@
 import { stat } from "node:fs/promises";
 import path from "node:path";
-import { parseExtensionUrl, type ExtensionAction, type SessionRef } from "@pi-gui/session-driver";
+import { parseExtensionUrl, type ExtensionAction, type SessionRef } from "@fxagent/session-driver";
 import type { WorkspaceRecord } from "../../contracts/desktop-state";
 import type { ExtensionActionEffect } from "../../contracts/extension-actions";
 import { resolveExistingWorkspacePath } from "../platform/files/workspace-paths";
@@ -74,7 +74,7 @@ export async function runExtensionAction(
 
 /**
  * The unarchived thread with this pi session id in the target's folder or one of that folder's
- * pi-gui worktrees. Extensions only ever reach threads the user sees beside their own.
+ * fxagent worktrees. Extensions only ever reach threads the user sees beside their own.
  */
 function threadInFolder(
   workspaces: readonly WorkspaceRecord[],

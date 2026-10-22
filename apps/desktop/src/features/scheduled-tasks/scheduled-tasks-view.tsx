@@ -8,7 +8,7 @@ import {
   filterScheduledTasks,
   formatScheduledTaskRowMeta,
 } from "../../../contracts/scheduled-tasks";
-import type { PiDesktopApi } from "../../../contracts/ipc";
+import type { FxagentDesktopApi } from "../../../contracts/ipc";
 import type { Dispatch, SetStateAction } from "react";
 import { useI18n, type MessageKey } from "../../i18n";
 import type { ScheduledEditorState } from "./scheduled-task-editor";
@@ -16,7 +16,7 @@ import type { ScheduledEditorState } from "./scheduled-task-editor";
 interface ScheduledTasksViewProps {
   readonly tasks: readonly ScheduledTaskRecord[];
   readonly lastError?: string;
-  readonly api: PiDesktopApi;
+  readonly api: FxagentDesktopApi;
   readonly setSnapshot: Dispatch<SetStateAction<DesktopAppState | null>>;
   readonly updateSnapshot: (
     setSnapshot: Dispatch<SetStateAction<DesktopAppState | null>>,

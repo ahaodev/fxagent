@@ -10,7 +10,7 @@ import { PiSdkDriver } from "../dist/pi-sdk-driver.js";
 import { RuntimeSupervisor } from "../dist/runtime-supervisor.js";
 
 const DEMO: BuiltinExtension = {
-  name: "pi-gui-demo",
+  name: "fxagent-demo",
   displayName: "Demo tools",
   description: "Adds a demo tool",
   factory: (pi: ExtensionAPI) => {
@@ -25,7 +25,7 @@ const DEMO: BuiltinExtension = {
 };
 
 async function createDirs(): Promise<{ agentDir: string; workspacePath: string }> {
-  const root = await mkdtemp(join(tmpdir(), "pi-gui-builtins-"));
+  const root = await mkdtemp(join(tmpdir(), "fxagent-builtins-"));
   const agentDir = join(root, "agent");
   const workspacePath = join(root, "workspace");
   await mkdir(agentDir, { recursive: true });
@@ -47,7 +47,7 @@ await test("a switched-off built-in contributes no tools, and comes back on the 
   const demoTools = () =>
     loader
       .getExtensions()
-      .extensions.filter((extension) => extension.path === "<inline:pi-gui-demo>")
+      .extensions.filter((extension) => extension.path === "<inline:fxagent-demo>")
       .flatMap((extension) => [...extension.tools.keys()]);
 
   await loader.reload();
@@ -71,7 +71,7 @@ await test("Settings lists a switched-off built-in with its tools and name", asy
     const snapshot = refresh
       ? await supervisor.refreshRuntime(workspace)
       : await supervisor.getRuntimeSnapshot(workspace);
-    const record = snapshot.extensions.find((entry) => entry.path === "<inline:pi-gui-demo>");
+    const record = snapshot.extensions.find((entry) => entry.path === "<inline:fxagent-demo>");
     return record && { name: record.displayName, enabled: record.enabled, tools: record.tools };
   };
 
@@ -88,7 +88,7 @@ await test("Settings lists a switched-off built-in with its tools and name", asy
     tools: [{ name: "demo_tool", label: "Demo", replacesPiTool: false }],
   });
 
-  assert.equal(supervisor.builtinExtensionName("<inline:pi-gui-demo>"), "pi-gui-demo");
+  assert.equal(supervisor.builtinExtensionName("<inline:fxagent-demo>"), "fxagent-demo");
   assert.equal(supervisor.builtinExtensionName(join(workspacePath, "ext.ts")), undefined);
 });
 
@@ -152,7 +152,7 @@ await test(
 await test("Settings records each tool's label, and whether it replaces one of pi's tools", async () => {
   const { agentDir, workspacePath } = await createDirs();
   const tools: BuiltinExtension = {
-    name: "pi-gui-tools",
+    name: "fxagent-tools",
     displayName: "Tools",
     description: "Replaces ls and adds a tool without a label",
     factory: (pi: ExtensionAPI) => {
@@ -178,7 +178,7 @@ await test("Settings records each tool's label, and whether it replaces one of p
     workspaceId: "workspace-1",
     path: workspacePath,
   });
-  const record = snapshot.extensions.find((entry) => entry.path === "<inline:pi-gui-tools>");
+  const record = snapshot.extensions.find((entry) => entry.path === "<inline:fxagent-tools>");
   assert.deepEqual(record?.tools, [
     { name: "bare_tool", label: "", replacesPiTool: false },
     { name: "ls", label: "List (fancy)", replacesPiTool: true },

@@ -11,7 +11,7 @@ window.addEventListener(
   "keydown",
   (event) => {
     // Control+digit on macOS selects a side panel tab, not a thread; main queues it.
-    const platform = window.piApp?.platform ?? "linux";
+    const platform = window.fxagentApp?.platform ?? "linux";
     const chord = {
       meta: event.metaKey,
       control: event.ctrlKey,
@@ -37,7 +37,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <RendererErrorBoundary
       onRelaunch={() => {
-        window.piApp?.relaunchApplication()?.catch((error: unknown) => {
+        window.fxagentApp?.relaunchApplication()?.catch((error: unknown) => {
           console.error("[renderer] relaunchApplication failed", error);
         });
       }}

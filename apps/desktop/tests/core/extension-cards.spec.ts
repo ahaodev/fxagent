@@ -34,7 +34,7 @@ export default function ciCards(pi) {
     });
   });
   // Like a real extension, react to the reply pi has already streamed. pi tells extensions
-  // first and its own listeners (pi-gui) once they return, so append on the next task.
+  // first and its own listeners (fxagent) once they return, so append on the next task.
   pi.on("message_update", (event) => {
     if (event.message.role === "assistant") setTimeout(startReply, 0);
   });

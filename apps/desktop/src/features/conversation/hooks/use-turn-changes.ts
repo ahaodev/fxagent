@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { SessionRef } from "@pi-gui/session-driver/types";
-import type { PiDesktopApi } from "../../../../contracts/ipc";
+import type { SessionRef } from "@fxagent/session-driver/types";
+import type { FxagentDesktopApi } from "../../../../contracts/ipc";
 import type { TurnChangeSummary } from "../../../../contracts/review";
 import type { useWorkbench } from "../../workbench/use-workbench";
 
@@ -17,7 +17,7 @@ export function useTurnChanges({
   running,
   workbench,
 }: {
-  readonly api: PiDesktopApi | undefined;
+  readonly api: FxagentDesktopApi | undefined;
   readonly target: SessionRef | null;
   readonly running: boolean;
   readonly workbench: Pick<ReturnType<typeof useWorkbench>, "setChanges" | "openTool">;

@@ -5,7 +5,7 @@
  */
 import { writeFile } from "node:fs/promises";
 import { expect, test, type Page } from "@playwright/test";
-import type { SessionDriverEvent, SessionRef } from "@pi-gui/session-driver";
+import type { SessionDriverEvent, SessionRef } from "@fxagent/session-driver";
 import {
   createSessionViaIpc,
   getDesktopState,
@@ -177,9 +177,9 @@ async function emitNoWait(harness: DesktopHarness, event: SessionDriverEvent): P
   await harness.electronApp.evaluate(async (_, payload) => {
     const hooks = (
       globalThis as {
-        __PI_APP_TEST_HOOKS?: { emitSessionEvent?: (event: SessionDriverEvent) => Promise<void> };
+        __FXAGENT_TEST_HOOKS?: { emitSessionEvent?: (event: SessionDriverEvent) => Promise<void> };
       }
-    ).__PI_APP_TEST_HOOKS;
+    ).__FXAGENT_TEST_HOOKS;
     if (!hooks?.emitSessionEvent) {
       throw new Error("Test session-event hook is unavailable");
     }
@@ -238,7 +238,7 @@ async function measure(label: string, seeded: number): Promise<void> {
     });
 
     const transcriptLength = await window.evaluate(async () => {
-      const app = globalThis.window.piApp;
+      const app = globalThis.window.fxagentApp;
       const record = await app!.getSelectedTranscript();
       return record?.transcript.length ?? 0;
     });
@@ -312,7 +312,7 @@ async function measure(label: string, seeded: number): Promise<void> {
     // away mid-burst -- so a failure is reported rather than failing the run.
     const createSessionDuringStreamMs = await window
       .evaluate(async (workspaceId) => {
-        const app = globalThis.window.piApp;
+        const app = globalThis.window.fxagentApp;
         const started = performance.now();
         await app!.createSession({ workspaceId, title: `during-stream-${Date.now()}` });
         return performance.now() - started;

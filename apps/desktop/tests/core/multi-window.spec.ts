@@ -17,9 +17,9 @@ import {
 
 const platformModifier = process.platform === "darwin" ? "meta" : "control";
 
-async function waitForPiApp(window: Page): Promise<void> {
+async function waitForFxagentApp(window: Page): Promise<void> {
   await window.waitForLoadState("domcontentloaded");
-  await window.waitForFunction(() => Boolean(globalThis.window.piApp), undefined, {
+  await window.waitForFunction(() => Boolean(globalThis.window.fxagentApp), undefined, {
     timeout: 15_000,
   });
 }
@@ -50,15 +50,15 @@ async function waitForWindowCount(harness: DesktopHarness, count: number): Promi
 }
 
 async function browserWindowIndexForPage(harness: DesktopHarness, source: Page): Promise<number> {
-  const marker = `pi-gui-window-${Date.now()}-${Math.random()}`;
+  const marker = `fxagent-window-${Date.now()}-${Math.random()}`;
   await source.evaluate((value) => {
-    Object.assign(window, { __piGuiTestWindowMarker: value });
+    Object.assign(window, { __fxagentTestWindowMarker: value });
   }, marker);
   const index = await harness.electronApp.evaluate(async ({ BrowserWindow }, value) => {
     const windows = BrowserWindow.getAllWindows();
     for (const [candidateIndex, candidateWindow] of windows.entries()) {
       const candidateMarker: unknown = await candidateWindow.webContents
-        .executeJavaScript("window.__piGuiTestWindowMarker", true)
+        .executeJavaScript("window.__fxagentTestWindowMarker", true)
         .catch(() => undefined);
       if (candidateMarker === value) {
         return candidateIndex;
@@ -90,7 +90,7 @@ async function openWindowViaShortcut(harness: DesktopHarness, source: Page): Pro
   if (!opened) {
     throw new Error("Expected Shift+Cmd+N to create another Electron window.");
   }
-  await waitForPiApp(opened);
+  await waitForFxagentApp(opened);
   return opened;
 }
 
@@ -164,9 +164,9 @@ async function pendingDialogCount(
 
 async function selectSessionViaIpc(window: Page, title: string): Promise<void> {
   await window.evaluate(async (targetTitle) => {
-    const app = globalThis.window.piApp;
+    const app = globalThis.window.fxagentApp;
     if (!app) {
-      throw new Error("piApp IPC bridge is unavailable");
+      throw new Error("fxagentApp IPC bridge is unavailable");
     }
     const state = await app.getState();
     for (const workspace of state.workspaces) {
@@ -186,9 +186,9 @@ async function selectSessionViaIpcAndCaptureStateEvents(
   title: string,
 ): Promise<readonly string[]> {
   return window.evaluate(async (targetTitle) => {
-    const app = globalThis.window.piApp;
+    const app = globalThis.window.fxagentApp;
     if (!app) {
-      throw new Error("piApp IPC bridge is unavailable");
+      throw new Error("fxagentApp IPC bridge is unavailable");
     }
     const stateEvents: string[] = [];
     const unsubscribe = app.onStateChanged((nextState) => {
@@ -378,9 +378,9 @@ test("keeps each window selection when a background window changes transparency"
     await expectSelected(secondWindow, workspacePath, "Transparency second");
 
     const returnedSelection = await secondWindow.evaluate(async () => {
-      const app = globalThis.window.piApp;
+      const app = globalThis.window.fxagentApp;
       if (!app) {
-        throw new Error("piApp IPC bridge is unavailable");
+        throw new Error("fxagentApp IPC bridge is unavailable");
       }
       const state = await app.setEnableTransparency(true);
       const workspace = state.workspaces.find((entry) => entry.id === state.selectedWorkspaceId);
@@ -454,9 +454,9 @@ test("keeps sender dialog actions scoped without blocking another window", async
 
     await stubDelayedOpenDialog(harness, [attachmentPath]);
     const pickPromise = firstWindow.evaluate(async () => {
-      const app = globalThis.window.piApp;
+      const app = globalThis.window.fxagentApp;
       if (!app) {
-        throw new Error("piApp IPC bridge is unavailable");
+        throw new Error("fxagentApp IPC bridge is unavailable");
       }
       await app.pickComposerAttachments();
     });

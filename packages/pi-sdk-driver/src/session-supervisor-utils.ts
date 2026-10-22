@@ -23,16 +23,16 @@ import type {
   SessionTranscriptPin,
   SessionUsageSnapshot,
   WorkspaceRef,
-} from "@pi-gui/session-driver";
+} from "@fxagent/session-driver";
 import {
   EXTENSION_CARD_CUSTOM_TYPE,
   EXTENSION_PIN_CUSTOM_TYPE,
   parseExtensionAction,
-} from "@pi-gui/session-driver";
-import type { SessionQueuedMessage } from "@pi-gui/session-driver/types";
+} from "@fxagent/session-driver";
+import type { SessionQueuedMessage } from "@fxagent/session-driver/types";
 
-const FILE_ATTACHMENT_BLOCK_START = "<pi-gui-file-attachments>";
-const FILE_ATTACHMENT_BLOCK_END = "</pi-gui-file-attachments>";
+const FILE_ATTACHMENT_BLOCK_START = "<fxagent-file-attachments>";
+const FILE_ATTACHMENT_BLOCK_END = "</fxagent-file-attachments>";
 
 export interface SnapshotSource {
   readonly ref: SessionRef;

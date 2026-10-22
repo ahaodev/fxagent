@@ -15,7 +15,7 @@ import {
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { expect, test } from "@playwright/test";
-import type { TurnCaptureBoundary } from "@pi-gui/session-driver";
+import type { TurnCaptureBoundary } from "@fxagent/session-driver";
 import {
   TurnCheckpointStore,
   type CheckpointCapture,

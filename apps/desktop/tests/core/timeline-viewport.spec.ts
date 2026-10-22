@@ -21,7 +21,7 @@ test("long messages stay windowed and wheel scrolling preserves the visible row 
   });
   try {
     const p = await h.firstWindow();
-    const state = await p.evaluate(() => window.piApp!.getState());
+    const state = await p.evaluate(() => window.fxagentApp!.getState());
     await createSessionViaIpc(p, state.selectedWorkspaceId!, "Long viewport");
     await seedTranscriptMessages(h, p, {
       count: 120,
@@ -70,7 +70,7 @@ test("clicks and downward wheel at the bottom do not stop following; search uses
   });
   try {
     const p = await h.firstWindow();
-    const state = await p.evaluate(() => window.piApp!.getState());
+    const state = await p.evaluate(() => window.fxagentApp!.getState());
     await createSessionViaIpc(p, state.selectedWorkspaceId!, "Viewport intent");
     await seedTranscriptMessages(h, p, {
       count: 30,
@@ -122,7 +122,7 @@ test("streaming inside a tall measured code row never substitutes estimated geom
   });
   try {
     const p = await h.firstWindow();
-    const state = await p.evaluate(() => window.piApp!.getState());
+    const state = await p.evaluate(() => window.fxagentApp!.getState());
     await createSessionViaIpc(p, state.selectedWorkspaceId!, "Tall code");
     const seeded = await seedTranscriptMessages(h, p, {
       count: 2,
@@ -191,7 +191,7 @@ test("a layout clamp after user intent expires does not resume following", async
   });
   try {
     const p = await h.firstWindow();
-    const state = await p.evaluate(() => window.piApp!.getState());
+    const state = await p.evaluate(() => window.fxagentApp!.getState());
     await createSessionViaIpc(p, state.selectedWorkspaceId!, "Clamp reading");
     await streamAssistantDeltas(h, p, [
       Array.from({ length: 150 }, (_, i) => `Paragraph ${i}.\n\n`).join(""),
@@ -228,7 +228,7 @@ test("typing within a fixed-height multiline draft never shifts the chat", async
   });
   try {
     const p = await h.firstWindow();
-    const state = await p.evaluate(() => window.piApp!.getState());
+    const state = await p.evaluate(() => window.fxagentApp!.getState());
     await createSessionViaIpc(p, state.selectedWorkspaceId!, "Typing viewport");
     await seedTranscriptMessages(h, p, { count: 30 });
     const composer = p.getByTestId("composer");
@@ -259,7 +259,7 @@ test("small upward wheel input escapes bottom while typing and streaming overlap
   });
   try {
     const p = await h.firstWindow();
-    const state = await p.evaluate(() => window.piApp!.getState());
+    const state = await p.evaluate(() => window.fxagentApp!.getState());
     await createSessionViaIpc(p, state.selectedWorkspaceId!, "Small wheel");
     const { sessionRef } = await seedTranscriptMessages(h, p, { count: 30 });
     await jumpTimelineToBottom(p);

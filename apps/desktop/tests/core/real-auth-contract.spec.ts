@@ -4,15 +4,15 @@ import { expect, test } from "@playwright/test";
 import { getRealAuthConfig, launchDesktop, makeUserDataDir } from "../helpers/electron-app";
 
 test.skip(
-  process.env.PI_APP_REAL_AUTH === "1",
+  process.env.FXAGENT_REAL_AUTH === "1",
   "This contract covers the default non-real-auth path.",
 );
 
 test("default desktop launches keep real-auth mode disabled and seed fake auth in a temp agent dir", async () => {
   const realAuth = getRealAuthConfig();
   expect(realAuth.enabled).toBe(false);
-  expect(realAuth.skipReason).toContain("PI_APP_REAL_AUTH=1");
-  expect(realAuth.skipReason).toContain("PI_APP_REAL_AUTH_SOURCE_DIR");
+  expect(realAuth.skipReason).toContain("FXAGENT_REAL_AUTH=1");
+  expect(realAuth.skipReason).toContain("FXAGENT_REAL_AUTH_SOURCE_DIR");
 
   const userDataDir = await makeUserDataDir();
   const previousKey = process.env.OPENAI_API_KEY;
@@ -50,14 +50,14 @@ test("default desktop launches keep real-auth mode disabled and seed fake auth i
 });
 
 test("Core rejects an explicit real-auth source before opening it", async () => {
-  const previousLane = process.env.PI_APP_TEST_LANE;
-  process.env.PI_APP_TEST_LANE = "core";
+  const previousLane = process.env.FXAGENT_TEST_LANE;
+  process.env.FXAGENT_TEST_LANE = "core";
   try {
     await expect(
       launchDesktop(await makeUserDataDir(), { realAuthSourceDir: "/unused-real-auth-source" }),
     ).rejects.toThrow("Core tests must not use real provider credentials");
   } finally {
-    if (previousLane === undefined) delete process.env.PI_APP_TEST_LANE;
-    else process.env.PI_APP_TEST_LANE = previousLane;
+    if (previousLane === undefined) delete process.env.FXAGENT_TEST_LANE;
+    else process.env.FXAGENT_TEST_LANE = previousLane;
   }
 });

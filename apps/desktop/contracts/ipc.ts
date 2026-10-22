@@ -6,15 +6,15 @@ import type {
   ExtensionViewMessage,
   ExtensionViewCatalogChange,
 } from "./extension-views";
-import type { RuntimeSettingsSnapshot } from "@pi-gui/session-driver/runtime-types";
+import type { RuntimeSettingsSnapshot } from "@fxagent/session-driver/runtime-types";
 import type { ExtensionActionEffect, ExtensionActionRequest } from "./extension-actions";
 import type {
   NavigateSessionTreeOptions,
   NavigateSessionTreeResult,
   SessionTreeSnapshot,
-} from "@pi-gui/session-driver/types";
+} from "@fxagent/session-driver/types";
 import type { ClipboardImageRead } from "./composer-attachments";
-import type { SessionRef } from "@pi-gui/session-driver/types";
+import type { SessionRef } from "@fxagent/session-driver/types";
 import type { SaveTaskWorkbenchTemplateInput, TaskWorkbenchTemplate } from "./workbench";
 import type {
   TurnChangesInput,
@@ -106,136 +106,136 @@ export type NewMcpServerInput = { readonly name: string; readonly description?: 
 );
 
 export const desktopIpc = {
-  extensionViewOpenFile: "pi-gui:extension-view-open-file",
-  listExtensionViews: "pi-gui:list-extension-views",
-  openExtensionView: "pi-gui:open-extension-view",
-  sendExtensionViewMessage: "pi-gui:send-extension-view-message",
-  closeExtensionView: "pi-gui:close-extension-view",
-  runExtensionAction: "pi-gui:run-extension-action",
-  extensionViewMessage: "pi-gui:extension-view-message",
-  extensionViewCatalogChanged: "pi-gui:extension-view-catalog-changed",
-  stateRequest: "pi-gui:state-request",
-  stateChanged: "pi-gui:state-changed",
-  getTaskWorkbenchTemplate: "pi-gui:get-task-workbench-template",
-  saveTaskWorkbenchTemplate: "pi-gui:save-task-workbench-template",
-  selectedTranscriptRequest: "pi-gui:selected-transcript-request",
-  selectedTranscriptChanged: "pi-gui:selected-transcript-changed",
-  appCommand: "pi-gui:app-command",
-  workspacePicked: "pi-gui:workspace-picked",
-  clipboardImagePasted: "pi-gui:clipboard-image-pasted",
-  addWorkspacePath: "pi-gui:add-workspace-path",
-  pickWorkspace: "pi-gui:pick-workspace",
-  selectWorkspace: "pi-gui:select-workspace",
-  renameWorkspace: "pi-gui:rename-workspace",
-  removeWorkspace: "pi-gui:remove-workspace",
-  reorderWorkspaces: "pi-gui:reorder-workspaces",
-  reorderPinnedSessions: "pi-gui:reorder-pinned-sessions",
-  openWorkspaceInFinder: "pi-gui:open-workspace-in-finder",
-  createWorktree: "pi-gui:create-worktree",
-  removeWorktree: "pi-gui:remove-worktree",
-  openSkillInFinder: "pi-gui:open-skill-in-finder",
-  openExtensionInFinder: "pi-gui:open-extension-in-finder",
-  syncCurrentWorkspace: "pi-gui:sync-current-workspace",
-  selectSession: "pi-gui:select-session",
-  renameSession: "pi-gui:rename-session",
-  archiveSession: "pi-gui:archive-session",
-  unarchiveSession: "pi-gui:unarchive-session",
-  markSessionRead: "pi-gui:mark-session-read",
-  setSessionPinned: "pi-gui:set-session-pinned",
-  createSession: "pi-gui:create-session",
-  startThread: "pi-gui:start-thread",
-  forkThread: "pi-gui:fork-thread",
-  sendChildThreadFollowUp: "pi-gui:send-child-thread-follow-up",
-  setChildSupervisionLoop: "pi-gui:set-child-supervision-loop",
-  createScheduledTask: "pi-gui:create-scheduled-task",
-  updateScheduledTask: "pi-gui:update-scheduled-task",
-  deleteScheduledTask: "pi-gui:delete-scheduled-task",
-  beginScheduledTaskInterview: "pi-gui:begin-scheduled-task-interview",
-  cancelCurrentRun: "pi-gui:cancel-current-run",
-  setActiveView: "pi-gui:set-active-view",
-  setSidebarCollapsed: "pi-gui:set-sidebar-collapsed",
-  setThreadGrouping: "pi-gui:set-thread-grouping",
-  setWorkspaceCollapsed: "pi-gui:set-workspace-collapsed",
-  refreshRuntime: "pi-gui:refresh-runtime",
-  setModelSettingsScopeMode: "pi-gui:set-model-settings-scope-mode",
-  setDefaultModel: "pi-gui:set-default-model",
-  setDefaultThinkingLevel: "pi-gui:set-default-thinking-level",
-  setSessionModel: "pi-gui:set-session-model",
-  setSessionThinkingLevel: "pi-gui:set-session-thinking-level",
-  loginProvider: "pi-gui:login-provider",
-  logoutProvider: "pi-gui:logout-provider",
-  setProviderApiKey: "pi-gui:set-provider-api-key",
-  listCustomProviders: "pi-gui:list-custom-providers",
-  setCustomProvider: "pi-gui:set-custom-provider",
-  deleteCustomProvider: "pi-gui:delete-custom-provider",
-  probeCustomProviderModels: "pi-gui:probe-custom-provider-models",
-  setEnableSkillCommands: "pi-gui:set-enable-skill-commands",
-  setScopedModelPatterns: "pi-gui:set-scoped-model-patterns",
-  setSkillEnabled: "pi-gui:set-skill-enabled",
-  setExtensionEnabled: "pi-gui:set-extension-enabled",
-  listMcpServers: "pi-gui:list-mcp-servers",
-  addMcpServer: "pi-gui:add-mcp-server",
-  removeMcpServer: "pi-gui:remove-mcp-server",
-  setMcpServerEnabled: "pi-gui:set-mcp-server-enabled",
-  setCodemodeAlwaysOn: "pi-gui:set-codemode-always-on",
-  respondToHostUiRequest: "pi-gui:respond-to-host-ui-request",
-  setNotificationPreferences: "pi-gui:set-notification-preferences",
-  setIntegratedTerminalShell: "pi-gui:set-integrated-terminal-shell",
-  setEnableTransparency: "pi-gui:set-enable-transparency",
-  terminalEnsurePanel: "pi-gui:terminal-ensure-panel",
-  terminalCreateSession: "pi-gui:terminal-create-session",
-  terminalSetActiveSession: "pi-gui:terminal-set-active-session",
-  terminalWrite: "pi-gui:terminal-write",
-  terminalResize: "pi-gui:terminal-resize",
-  terminalRestartSession: "pi-gui:terminal-restart-session",
-  terminalCloseSession: "pi-gui:terminal-close-session",
-  terminalSetTitle: "pi-gui:terminal-set-title",
-  terminalSetFocused: "pi-gui:terminal-set-focused",
-  sidePanelSetFocused: "pi-gui:side-panel-set-focused",
-  terminalData: "pi-gui:terminal-data",
-  terminalExit: "pi-gui:terminal-exit",
-  terminalError: "pi-gui:terminal-error",
-  getNotificationPermissionStatus: "pi-gui:get-notification-permission-status",
-  requestNotificationPermission: "pi-gui:request-notification-permission",
-  openSystemNotificationSettings: "pi-gui:open-system-notification-settings",
-  notificationPermissionStatusChanged: "pi-gui:notification-permission-status-changed",
-  pickComposerAttachments: "pi-gui:pick-composer-attachments",
-  readClipboardImage: "pi-gui:read-clipboard-image",
-  addComposerAttachments: "pi-gui:add-composer-attachments",
-  removeComposerAttachment: "pi-gui:remove-composer-attachment",
-  editQueuedComposerMessage: "pi-gui:edit-queued-composer-message",
-  cancelQueuedComposerEdit: "pi-gui:cancel-queued-composer-edit",
-  removeQueuedComposerMessage: "pi-gui:remove-queued-composer-message",
-  steerQueuedComposerMessage: "pi-gui:steer-queued-composer-message",
-  persistComposerDraft: "pi-gui:persist-composer-draft",
-  updateComposerDraft: "pi-gui:update-composer-draft",
-  flushPendingComposerDraft: "pi-gui:flush-pending-composer-draft",
-  pendingComposerDraftFlushed: "pi-gui:pending-composer-draft-flushed",
-  submitComposer: "pi-gui:submit-composer",
-  getSessionTree: "pi-gui:get-session-tree",
-  navigateSessionTree: "pi-gui:navigate-session-tree",
-  toggleWindowMaximize: "pi-gui:toggle-window-maximize",
-  listWorkspaceFiles: "pi-gui:list-workspace-files",
-  readWorkspaceFile: "pi-gui:read-workspace-file",
-  revealWorkspaceFile: "pi-gui:reveal-workspace-file",
-  getChangedFiles: "pi-gui:get-changed-files",
-  getFileDiff: "pi-gui:get-file-diff",
-  stageFile: "pi-gui:stage-file",
-  getTurnChanges: "pi-gui:get-turn-changes",
-  getReview: "pi-gui:get-review",
-  getReviewFile: "pi-gui:get-review-file",
-  setReviewFileReviewed: "pi-gui:set-review-file-reviewed",
-  changeReviewFileStage: "pi-gui:change-review-file-stage",
-  getThemeMode: "pi-gui:get-theme-mode",
-  getResolvedTheme: "pi-gui:get-resolved-theme",
-  setThemeMode: "pi-gui:set-theme-mode",
-  setThemePresetId: "pi-gui:set-theme-preset-id",
-  setLanguage: "pi-gui:set-language",
-  themeChanged: "pi-gui:theme-changed",
-  windowFocused: "pi-gui:window-focused",
+  extensionViewOpenFile: "fxagent:extension-view-open-file",
+  listExtensionViews: "fxagent:list-extension-views",
+  openExtensionView: "fxagent:open-extension-view",
+  sendExtensionViewMessage: "fxagent:send-extension-view-message",
+  closeExtensionView: "fxagent:close-extension-view",
+  runExtensionAction: "fxagent:run-extension-action",
+  extensionViewMessage: "fxagent:extension-view-message",
+  extensionViewCatalogChanged: "fxagent:extension-view-catalog-changed",
+  stateRequest: "fxagent:state-request",
+  stateChanged: "fxagent:state-changed",
+  getTaskWorkbenchTemplate: "fxagent:get-task-workbench-template",
+  saveTaskWorkbenchTemplate: "fxagent:save-task-workbench-template",
+  selectedTranscriptRequest: "fxagent:selected-transcript-request",
+  selectedTranscriptChanged: "fxagent:selected-transcript-changed",
+  appCommand: "fxagent:app-command",
+  workspacePicked: "fxagent:workspace-picked",
+  clipboardImagePasted: "fxagent:clipboard-image-pasted",
+  addWorkspacePath: "fxagent:add-workspace-path",
+  pickWorkspace: "fxagent:pick-workspace",
+  selectWorkspace: "fxagent:select-workspace",
+  renameWorkspace: "fxagent:rename-workspace",
+  removeWorkspace: "fxagent:remove-workspace",
+  reorderWorkspaces: "fxagent:reorder-workspaces",
+  reorderPinnedSessions: "fxagent:reorder-pinned-sessions",
+  openWorkspaceInFinder: "fxagent:open-workspace-in-finder",
+  createWorktree: "fxagent:create-worktree",
+  removeWorktree: "fxagent:remove-worktree",
+  openSkillInFinder: "fxagent:open-skill-in-finder",
+  openExtensionInFinder: "fxagent:open-extension-in-finder",
+  syncCurrentWorkspace: "fxagent:sync-current-workspace",
+  selectSession: "fxagent:select-session",
+  renameSession: "fxagent:rename-session",
+  archiveSession: "fxagent:archive-session",
+  unarchiveSession: "fxagent:unarchive-session",
+  markSessionRead: "fxagent:mark-session-read",
+  setSessionPinned: "fxagent:set-session-pinned",
+  createSession: "fxagent:create-session",
+  startThread: "fxagent:start-thread",
+  forkThread: "fxagent:fork-thread",
+  sendChildThreadFollowUp: "fxagent:send-child-thread-follow-up",
+  setChildSupervisionLoop: "fxagent:set-child-supervision-loop",
+  createScheduledTask: "fxagent:create-scheduled-task",
+  updateScheduledTask: "fxagent:update-scheduled-task",
+  deleteScheduledTask: "fxagent:delete-scheduled-task",
+  beginScheduledTaskInterview: "fxagent:begin-scheduled-task-interview",
+  cancelCurrentRun: "fxagent:cancel-current-run",
+  setActiveView: "fxagent:set-active-view",
+  setSidebarCollapsed: "fxagent:set-sidebar-collapsed",
+  setThreadGrouping: "fxagent:set-thread-grouping",
+  setWorkspaceCollapsed: "fxagent:set-workspace-collapsed",
+  refreshRuntime: "fxagent:refresh-runtime",
+  setModelSettingsScopeMode: "fxagent:set-model-settings-scope-mode",
+  setDefaultModel: "fxagent:set-default-model",
+  setDefaultThinkingLevel: "fxagent:set-default-thinking-level",
+  setSessionModel: "fxagent:set-session-model",
+  setSessionThinkingLevel: "fxagent:set-session-thinking-level",
+  loginProvider: "fxagent:login-provider",
+  logoutProvider: "fxagent:logout-provider",
+  setProviderApiKey: "fxagent:set-provider-api-key",
+  listCustomProviders: "fxagent:list-custom-providers",
+  setCustomProvider: "fxagent:set-custom-provider",
+  deleteCustomProvider: "fxagent:delete-custom-provider",
+  probeCustomProviderModels: "fxagent:probe-custom-provider-models",
+  setEnableSkillCommands: "fxagent:set-enable-skill-commands",
+  setScopedModelPatterns: "fxagent:set-scoped-model-patterns",
+  setSkillEnabled: "fxagent:set-skill-enabled",
+  setExtensionEnabled: "fxagent:set-extension-enabled",
+  listMcpServers: "fxagent:list-mcp-servers",
+  addMcpServer: "fxagent:add-mcp-server",
+  removeMcpServer: "fxagent:remove-mcp-server",
+  setMcpServerEnabled: "fxagent:set-mcp-server-enabled",
+  setCodemodeAlwaysOn: "fxagent:set-codemode-always-on",
+  respondToHostUiRequest: "fxagent:respond-to-host-ui-request",
+  setNotificationPreferences: "fxagent:set-notification-preferences",
+  setIntegratedTerminalShell: "fxagent:set-integrated-terminal-shell",
+  setEnableTransparency: "fxagent:set-enable-transparency",
+  terminalEnsurePanel: "fxagent:terminal-ensure-panel",
+  terminalCreateSession: "fxagent:terminal-create-session",
+  terminalSetActiveSession: "fxagent:terminal-set-active-session",
+  terminalWrite: "fxagent:terminal-write",
+  terminalResize: "fxagent:terminal-resize",
+  terminalRestartSession: "fxagent:terminal-restart-session",
+  terminalCloseSession: "fxagent:terminal-close-session",
+  terminalSetTitle: "fxagent:terminal-set-title",
+  terminalSetFocused: "fxagent:terminal-set-focused",
+  sidePanelSetFocused: "fxagent:side-panel-set-focused",
+  terminalData: "fxagent:terminal-data",
+  terminalExit: "fxagent:terminal-exit",
+  terminalError: "fxagent:terminal-error",
+  getNotificationPermissionStatus: "fxagent:get-notification-permission-status",
+  requestNotificationPermission: "fxagent:request-notification-permission",
+  openSystemNotificationSettings: "fxagent:open-system-notification-settings",
+  notificationPermissionStatusChanged: "fxagent:notification-permission-status-changed",
+  pickComposerAttachments: "fxagent:pick-composer-attachments",
+  readClipboardImage: "fxagent:read-clipboard-image",
+  addComposerAttachments: "fxagent:add-composer-attachments",
+  removeComposerAttachment: "fxagent:remove-composer-attachment",
+  editQueuedComposerMessage: "fxagent:edit-queued-composer-message",
+  cancelQueuedComposerEdit: "fxagent:cancel-queued-composer-edit",
+  removeQueuedComposerMessage: "fxagent:remove-queued-composer-message",
+  steerQueuedComposerMessage: "fxagent:steer-queued-composer-message",
+  persistComposerDraft: "fxagent:persist-composer-draft",
+  updateComposerDraft: "fxagent:update-composer-draft",
+  flushPendingComposerDraft: "fxagent:flush-pending-composer-draft",
+  pendingComposerDraftFlushed: "fxagent:pending-composer-draft-flushed",
+  submitComposer: "fxagent:submit-composer",
+  getSessionTree: "fxagent:get-session-tree",
+  navigateSessionTree: "fxagent:navigate-session-tree",
+  toggleWindowMaximize: "fxagent:toggle-window-maximize",
+  listWorkspaceFiles: "fxagent:list-workspace-files",
+  readWorkspaceFile: "fxagent:read-workspace-file",
+  revealWorkspaceFile: "fxagent:reveal-workspace-file",
+  getChangedFiles: "fxagent:get-changed-files",
+  getFileDiff: "fxagent:get-file-diff",
+  stageFile: "fxagent:stage-file",
+  getTurnChanges: "fxagent:get-turn-changes",
+  getReview: "fxagent:get-review",
+  getReviewFile: "fxagent:get-review-file",
+  setReviewFileReviewed: "fxagent:set-review-file-reviewed",
+  changeReviewFileStage: "fxagent:change-review-file-stage",
+  getThemeMode: "fxagent:get-theme-mode",
+  getResolvedTheme: "fxagent:get-resolved-theme",
+  setThemeMode: "fxagent:set-theme-mode",
+  setThemePresetId: "fxagent:set-theme-preset-id",
+  setLanguage: "fxagent:set-language",
+  themeChanged: "fxagent:theme-changed",
+  windowFocused: "fxagent:window-focused",
   ping: "app:ping",
   openExternal: "app:open-external",
-  relaunchApplication: "pi-gui:relaunch-application",
+  relaunchApplication: "fxagent:relaunch-application",
 } as const;
 
 export const desktopCommands = {
@@ -284,8 +284,10 @@ const RECENT_THREAD_COMMANDS = [
 
 export const THREAD_SHORTCUT_SLOT_COUNT = RECENT_THREAD_COMMANDS.length;
 
-export function isRecentThreadCommand(command: PiDesktopCommand | undefined): boolean {
-  return (RECENT_THREAD_COMMANDS as readonly (PiDesktopCommand | undefined)[]).includes(command);
+export function isRecentThreadCommand(command: FxagentDesktopCommand | undefined): boolean {
+  return (RECENT_THREAD_COMMANDS as readonly (FxagentDesktopCommand | undefined)[]).includes(
+    command,
+  );
 }
 
 const SIDE_PANEL_TAB_COMMANDS = [
@@ -303,8 +305,8 @@ const SIDE_PANEL_TAB_COMMANDS = [
 export const SIDE_PANEL_TAB_SHORTCUT_SLOT_COUNT = SIDE_PANEL_TAB_COMMANDS.length;
 
 /** The zero-based side panel tab a command selects, or undefined for other commands. */
-export function sidePanelTabIndex(command: PiDesktopCommand | undefined): number | undefined {
-  const index = (SIDE_PANEL_TAB_COMMANDS as readonly (PiDesktopCommand | undefined)[]).indexOf(
+export function sidePanelTabIndex(command: FxagentDesktopCommand | undefined): number | undefined {
+  const index = (SIDE_PANEL_TAB_COMMANDS as readonly (FxagentDesktopCommand | undefined)[]).indexOf(
     command,
   );
   return index < 0 ? undefined : index;
@@ -341,7 +343,7 @@ export function getSidePanelTabCommand(
     readonly key: string;
     readonly code?: string;
   },
-): PiDesktopCommand | undefined {
+): FxagentDesktopCommand | undefined {
   if (!sidePanelTabModifierHeld(platform, input) || input.code?.startsWith("Numpad")) {
     return undefined;
   }
@@ -372,11 +374,11 @@ export function getSidePanelToggleShortcutLabel(platform: NodeJS.Platform): stri
   return platform === "darwin" ? "⌘⌥B" : "Ctrl+Alt+B";
 }
 
-export type PiDesktopStateListener = (state: DesktopAppState) => void;
-export type PiDesktopSelectedTranscriptListener = (
+export type FxagentDesktopStateListener = (state: DesktopAppState) => void;
+export type FxagentDesktopSelectedTranscriptListener = (
   payload: SelectedTranscriptRecord | null,
 ) => void;
-export type PiDesktopCommand = (typeof desktopCommands)[keyof typeof desktopCommands];
+export type FxagentDesktopCommand = (typeof desktopCommands)[keyof typeof desktopCommands];
 
 export type ChangedFileStatus =
   "added" | "copied" | "deleted" | "modified" | "renamed" | "untracked";
@@ -482,10 +484,10 @@ const MAX_QUEUED_DESKTOP_COMMANDS = 16;
  * is swapped. Those commands are kept until the next subscriber.
  */
 export function createDesktopCommandSubscription() {
-  let listener: ((command: PiDesktopCommand) => void) | null = null;
-  const queued: PiDesktopCommand[] = [];
+  let listener: ((command: FxagentDesktopCommand) => void) | null = null;
+  const queued: FxagentDesktopCommand[] = [];
   return {
-    subscribe(next: (command: PiDesktopCommand) => void): () => void {
+    subscribe(next: (command: FxagentDesktopCommand) => void): () => void {
       listener = next;
       const pending = queued.splice(0, queued.length);
       for (const command of pending) next(command);
@@ -493,7 +495,7 @@ export function createDesktopCommandSubscription() {
         if (listener === next) listener = null;
       };
     },
-    deliver(command: PiDesktopCommand): void {
+    deliver(command: FxagentDesktopCommand): void {
       if (listener) {
         listener(command);
         return;
@@ -575,7 +577,7 @@ export const earlyModifierChords = createEarlyModifierChordBuffer();
 
 export function getDesktopCommandFromShortcut(
   input: DesktopShortcutInput,
-): PiDesktopCommand | undefined {
+): FxagentDesktopCommand | undefined {
   if (!input.modifier) {
     return undefined;
   }
@@ -651,7 +653,7 @@ export function getDesktopCommandFromShortcut(
  * Callers accept palette commands only from the platform modifier, so macOS
  * Control+K and Control+P stay with text fields, and only from a first press.
  */
-export function isPaletteCommand(command: PiDesktopCommand | undefined): boolean {
+export function isPaletteCommand(command: FxagentDesktopCommand | undefined): boolean {
   return (
     command === desktopCommands.openCommandPalette || command === desktopCommands.openFilePalette
   );
@@ -663,7 +665,7 @@ export function isPaletteCommand(command: PiDesktopCommand | undefined): boolean
  * chords. Holding Archive would otherwise archive each next thread in turn, and
  * holding Review would flicker the panel.
  */
-export function isSinglePressCommand(command: PiDesktopCommand | undefined): boolean {
+export function isSinglePressCommand(command: FxagentDesktopCommand | undefined): boolean {
   return (
     isPaletteCommand(command) ||
     command === desktopCommands.toggleReview ||
@@ -692,17 +694,17 @@ export function isCloseFocusedSurfaceShortcut(input: {
   return input.key.toLowerCase() === "w" || input.code === "KeyW";
 }
 
-export interface PiDesktopApi {
+export interface FxagentDesktopApi {
   platform: NodeJS.Platform;
   versions: NodeJS.ProcessVersions;
   ping(): Promise<string>;
   getState(): Promise<DesktopAppState>;
   getTaskWorkbenchTemplate(target: SessionRef): Promise<TaskWorkbenchTemplate | null>;
   saveTaskWorkbenchTemplate(input: SaveTaskWorkbenchTemplateInput): Promise<void>;
-  onStateChanged(listener: PiDesktopStateListener): () => void;
+  onStateChanged(listener: FxagentDesktopStateListener): () => void;
   getSelectedTranscript(): Promise<SelectedTranscriptRecord | null>;
-  onSelectedTranscriptChanged(listener: PiDesktopSelectedTranscriptListener): () => void;
-  onCommand(listener: (command: PiDesktopCommand) => void): () => void;
+  onSelectedTranscriptChanged(listener: FxagentDesktopSelectedTranscriptListener): () => void;
+  onCommand(listener: (command: FxagentDesktopCommand) => void): () => void;
   onWorkspacePicked(listener: (workspaceId: string) => void): () => void;
   onClipboardImagePasted(listener: (result: ClipboardImageRead) => void): () => void;
   getPathForFile(file: File): string;

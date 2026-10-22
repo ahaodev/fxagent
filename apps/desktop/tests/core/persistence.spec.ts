@@ -374,9 +374,9 @@ test("preserves durable ui state when one startup workspace is unavailable", asy
     const window = await firstRun.firstWindow();
     const seededState = await window.evaluate(
       async ({ healthyPath, unavailablePath }) => {
-        const app = globalThis.window.piApp;
+        const app = globalThis.window.fxagentApp;
         if (!app) {
-          throw new Error("piApp IPC bridge is unavailable");
+          throw new Error("fxagentApp IPC bridge is unavailable");
         }
         let state = await app.getState();
         const healthy = state.workspaces.find((entry) => entry.path === healthyPath);
@@ -518,25 +518,25 @@ test("preserves durable ui state when one startup workspace is unavailable", asy
     }
 
     const healthySelection = await window.evaluate(async (workspaceId) => {
-      const app = globalThis.window.piApp;
+      const app = globalThis.window.fxagentApp;
       if (!app) {
-        throw new Error("piApp IPC bridge is unavailable");
+        throw new Error("fxagentApp IPC bridge is unavailable");
       }
       return app.selectWorkspace(workspaceId);
     }, healthyWorkspaceId);
     expect(healthySelection.selectedWorkspaceId).toBe(healthyWorkspaceId);
     await window.evaluate(
       async ({ workspaceId, sessionId }) => {
-        const app = globalThis.window.piApp;
+        const app = globalThis.window.fxagentApp;
         if (!app) {
-          throw new Error("piApp IPC bridge is unavailable");
+          throw new Error("fxagentApp IPC bridge is unavailable");
         }
         await app.selectSession({ workspaceId, sessionId });
       },
       { workspaceId: unavailableWorkspaceId, sessionId: unavailableSessionId },
     );
 
-    const proofDir = process.env.PI_APP_PERSISTENCE_PROOF_DIR?.trim();
+    const proofDir = process.env.FXAGENT_PERSISTENCE_PROOF_DIR?.trim();
     if (proofDir) {
       await mkdir(proofDir, { recursive: true });
       await window.screenshot({
@@ -565,7 +565,7 @@ test("preserves durable ui state when one startup workspace is unavailable", asy
       "unavailable-startup-workspace",
     );
 
-    const proofDir = process.env.PI_APP_PERSISTENCE_PROOF_DIR?.trim();
+    const proofDir = process.env.FXAGENT_PERSISTENCE_PROOF_DIR?.trim();
     if (proofDir) {
       await window.screenshot({
         path: join(proofDir, "unavailable-workspace-third-launch.png"),

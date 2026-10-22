@@ -17,19 +17,19 @@ async function main() {
     readme,
     /Download the latest `\.dmg` \(macOS\), `\.AppImage` or `\.deb` \(Linux\), or `\.exe` \(Windows\) from the\s+\[Releases page\]/,
   );
-  assert.match(readme, /brew install --cask pi-gui/);
-  assert.match(readme, /brew upgrade --cask pi-gui/);
+  assert.match(readme, /brew install --cask fxagent/);
+  assert.match(readme, /brew upgrade --cask fxagent/);
   assert.doesNotMatch(readme, /Homebrew installation will be published/);
 
   assert.match(
     siteMetadata,
     /Install it from GitHub Releases on macOS, Linux and Windows, or Homebrew on macOS/,
   );
-  assert.match(siteMetadata, /brew install --cask minghinmatthewlam\/tap\/pi-gui/);
+  assert.match(siteMetadata, /brew install --cask minghinmatthewlam\/tap\/fxagent/);
   assert.doesNotMatch(siteMetadata, /source-install today/);
 
   assert.match(websitePage, /BREW_INSTALL/);
-  assert.match(websitePage, /brew upgrade --cask pi-gui/);
+  assert.match(websitePage, /brew upgrade --cask fxagent/);
   assert.match(websitePage, /Building from source is for contributors/);
   assert.doesNotMatch(websitePage, /Run the beta from source/);
 

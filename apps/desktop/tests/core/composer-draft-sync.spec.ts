@@ -41,8 +41,8 @@ test("ignores stale persisted draft acknowledgements while typing", async () => 
       window.evaluate(
         async ({ stale }) => {
           await new Promise<void>((resolve) => globalThis.window.setTimeout(resolve, 50));
-          const app = globalThis.window.piApp;
-          if (!app) throw new Error("piApp IPC bridge is unavailable");
+          const app = globalThis.window.fxagentApp;
+          if (!app) throw new Error("fxagentApp IPC bridge is unavailable");
           const { selectedWorkspaceId, selectedSessionId } = await app.getState();
           if (!selectedWorkspaceId || !selectedSessionId) throw new Error("No selected session");
           await app.updateComposerDraft(stale, {
@@ -93,9 +93,9 @@ test("adopts a persisted draft when no local edit is pending", async () => {
 
     const persistedDraft = "persisted outside the local debounce";
     await window.evaluate(async (draft) => {
-      const app = globalThis.window.piApp;
+      const app = globalThis.window.fxagentApp;
       if (!app) {
-        throw new Error("piApp IPC bridge is unavailable");
+        throw new Error("fxagentApp IPC bridge is unavailable");
       }
       const { selectedWorkspaceId, selectedSessionId } = await app.getState();
       if (!selectedWorkspaceId || !selectedSessionId) throw new Error("No selected session");

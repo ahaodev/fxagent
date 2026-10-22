@@ -95,7 +95,7 @@ async function setElectronWindowSize(
 }
 
 async function writeProofScreenshot(window: Page, name: string): Promise<void> {
-  const proofDir = process.env.PI_APP_SIDEBAR_PROOF_DIR;
+  const proofDir = process.env.FXAGENT_SIDEBAR_PROOF_DIR;
   if (!proofDir) {
     return;
   }
@@ -110,7 +110,7 @@ async function expectSecondaryTakeover(window: Page, testId: string): Promise<vo
 }
 
 async function writeTakeoverProof(window: Page, name: string): Promise<void> {
-  const proofDir = process.env.PI_APP_TAKEOVER_PROOF_DIR;
+  const proofDir = process.env.FXAGENT_TAKEOVER_PROOF_DIR;
   if (proofDir) {
     await window.screenshot({ path: join(proofDir, name), fullPage: false });
   }
@@ -118,7 +118,7 @@ async function writeTakeoverProof(window: Page, name: string): Promise<void> {
 
 test("toggles and persists the primary sidebar from the button and keyboard shortcut", async () => {
   test.setTimeout(90_000);
-  const takeoverProofDir = process.env.PI_APP_TAKEOVER_PROOF_DIR;
+  const takeoverProofDir = process.env.FXAGENT_TAKEOVER_PROOF_DIR;
   if (takeoverProofDir) {
     await mkdir(takeoverProofDir, { recursive: true });
   }
@@ -226,7 +226,7 @@ test("toggles and persists the primary sidebar from the button and keyboard shor
 
 test("keeps collapsed sidebar out of narrow windows and reopens from the button", async () => {
   test.setTimeout(90_000);
-  const proofDir = process.env.PI_APP_SIDEBAR_PROOF_DIR;
+  const proofDir = process.env.FXAGENT_SIDEBAR_PROOF_DIR;
   if (proofDir) {
     await mkdir(proofDir, { recursive: true });
   }

@@ -9,7 +9,7 @@ import {
   getDesktopState,
   launchDesktop,
   makeWorkspace,
-  type PiAppWindow,
+  type FxagentAppWindow,
 } from "../tests/helpers/electron-app.ts";
 import { replaceFileAtomically } from "./atomic-output.mts";
 
@@ -19,8 +19,8 @@ const execFileAsync = promisify(execFile);
 const frameRate = 5;
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(scriptDir, "../../..");
-const publishingRoot = process.env.PI_GUI_MARKETING_STAGE_DIR
-  ? path.resolve(process.env.PI_GUI_MARKETING_STAGE_DIR)
+const publishingRoot = process.env.FXAGENT_MARKETING_STAGE_DIR
+  ? path.resolve(process.env.FXAGENT_MARKETING_STAGE_DIR)
   : repoRoot;
 const capturesDir = path.join(publishingRoot, "video", "public", "captures");
 const evidenceRoot = path.join(repoRoot, ".artifacts", "marketing", "showcase-captures");
@@ -95,8 +95,8 @@ async function captureParallelSessions(
 
   const started = await page.evaluate(
     async ({ nextProvider, nextModelId }) => {
-      const app = (window as PiAppWindow).piApp;
-      if (!app) throw new Error("piApp unavailable");
+      const app = (window as FxagentAppWindow).fxagentApp;
+      if (!app) throw new Error("fxagentApp unavailable");
       const initialState = await app.getState();
       const workspace = initialState.workspaces[0];
       if (!workspace) throw new Error("Expected workspace");
@@ -149,8 +149,8 @@ async function captureParallelSessions(
     await hold(800);
     await page.evaluate(
       ({ workspaceId: wId, sessionId }) => {
-        const app = (window as PiAppWindow).piApp;
-        if (!app) throw new Error("piApp unavailable");
+        const app = (window as FxagentAppWindow).fxagentApp;
+        if (!app) throw new Error("fxagentApp unavailable");
         return app.selectSession({ workspaceId: wId, sessionId });
       },
       { workspaceId: started.workspaceId, sessionId: started.firstSessionId },
@@ -158,16 +158,16 @@ async function captureParallelSessions(
     await hold(2500);
     await page.evaluate(
       ({ workspaceId: wId, sessionId }) => {
-        const app = (window as PiAppWindow).piApp;
-        if (!app) throw new Error("piApp unavailable");
+        const app = (window as FxagentAppWindow).fxagentApp;
+        if (!app) throw new Error("fxagentApp unavailable");
         return app.selectSession({ workspaceId: wId, sessionId });
       },
       { workspaceId: started.workspaceId, sessionId: started.secondSessionId },
     );
     await hold(2000);
     await page.evaluate(async ({ workspaceId: wId, firstSessionId, secondSessionId }) => {
-      const app = (window as PiAppWindow).piApp;
-      if (!app) throw new Error("piApp unavailable");
+      const app = (window as FxagentAppWindow).fxagentApp;
+      if (!app) throw new Error("fxagentApp unavailable");
       await app.selectSession({ workspaceId: wId, sessionId: firstSessionId });
       await app.cancelCurrentRun();
       await app.selectSession({ workspaceId: wId, sessionId: secondSessionId });
@@ -191,8 +191,8 @@ async function captureSlashCommands(page: Page, evidenceDir: string): Promise<vo
 
   // Create a session so the composer is visible
   await page.evaluate(async () => {
-    const app = (window as PiAppWindow).piApp;
-    if (!app) throw new Error("piApp unavailable");
+    const app = (window as FxagentAppWindow).fxagentApp;
+    if (!app) throw new Error("fxagentApp unavailable");
     const state = await app.getState();
     const workspace = state.workspaces[0];
     if (!workspace) throw new Error("Expected workspace");
@@ -258,16 +258,16 @@ async function captureSkillsSettings(page: Page, evidenceDir: string): Promise<v
 
     // Navigate to Skills view via IPC
     await page.evaluate(() => {
-      const app = (window as PiAppWindow).piApp;
-      if (!app) throw new Error("piApp unavailable");
+      const app = (window as FxagentAppWindow).fxagentApp;
+      if (!app) throw new Error("fxagentApp unavailable");
       return app.setActiveView("skills");
     });
     await hold(3000);
 
     // Navigate to Settings via IPC
     await page.evaluate(() => {
-      const app = (window as PiAppWindow).piApp;
-      if (!app) throw new Error("piApp unavailable");
+      const app = (window as FxagentAppWindow).fxagentApp;
+      if (!app) throw new Error("fxagentApp unavailable");
       return app.setActiveView("settings");
     });
     await hold(3000);
@@ -338,16 +338,16 @@ async function withFreshApp(
 }
 
 async function main(): Promise<void> {
-  if (process.env.PI_GUI_MARKETING_ALLOW_PROVIDER_ENV !== "1") {
+  if (process.env.FXAGENT_MARKETING_ALLOW_PROVIDER_ENV !== "1") {
     throw new Error(
-      "Showcase capture submits real prompts. Set PI_GUI_MARKETING_ALLOW_PROVIDER_ENV=1 plus PI_GUI_MARKETING_PROVIDER and PI_GUI_MARKETING_MODEL to opt in to provider environment variables.",
+      "Showcase capture submits real prompts. Set FXAGENT_MARKETING_ALLOW_PROVIDER_ENV=1 plus FXAGENT_MARKETING_PROVIDER and FXAGENT_MARKETING_MODEL to opt in to provider environment variables.",
     );
   }
-  const provider = process.env.PI_GUI_MARKETING_PROVIDER?.trim();
-  const modelId = process.env.PI_GUI_MARKETING_MODEL?.trim();
+  const provider = process.env.FXAGENT_MARKETING_PROVIDER?.trim();
+  const modelId = process.env.FXAGENT_MARKETING_MODEL?.trim();
   if (!provider || !modelId) {
     throw new Error(
-      "PI_GUI_MARKETING_PROVIDER and PI_GUI_MARKETING_MODEL are required for showcase capture.",
+      "FXAGENT_MARKETING_PROVIDER and FXAGENT_MARKETING_MODEL are required for showcase capture.",
     );
   }
 

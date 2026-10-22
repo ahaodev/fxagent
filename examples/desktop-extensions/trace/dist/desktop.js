@@ -33,7 +33,7 @@ function defineService(id, options) {
 }
 
 // examples/desktop-extensions/trace/contract.ts
-var Trace = defineService("pi-gui.example.trace.v1");
+var Trace = defineService("fxagent.example.trace.v1");
 
 // examples/desktop-extensions/trace/trace.ts
 function promptTokens(usage) {

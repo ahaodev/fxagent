@@ -1,6 +1,6 @@
 import type { MouseEvent as ReactMouseEvent, ReactNode } from "react";
 import type { AppView, WorkspaceRecord, WorktreeRecord } from "../../contracts/desktop-state";
-import { getSidePanelToggleShortcutLabel, type PiDesktopApi } from "../../contracts/ipc";
+import { getSidePanelToggleShortcutLabel, type FxagentDesktopApi } from "../../contracts/ipc";
 import { useI18n } from "../i18n";
 import { SidePanelIcon } from "../ui/icons";
 
@@ -11,7 +11,7 @@ interface TopbarProps {
   readonly rootWorkspace: WorkspaceRecord | undefined;
   readonly selectedWorkspace: WorkspaceRecord | undefined;
   readonly selectedWorktree: WorktreeRecord | undefined;
-  readonly api: PiDesktopApi;
+  readonly api: FxagentDesktopApi;
   readonly panelAvailable: boolean;
   readonly panelVisible: boolean;
   readonly onTogglePanel: () => void;

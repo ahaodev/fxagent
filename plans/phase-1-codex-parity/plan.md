@@ -5,7 +5,7 @@
 - Main remaining risk: true parallel background session runs may expose hidden `pi` SDK assumptions around subscription scope and session status restoration.
 
 ## Phase 1 Goal
-Make `pi-app` feel materially closer to Codex App in real use, not just shell polish.
+Make `fxagent` feel materially closer to Codex App in real use, not just shell polish.
 
 Phase 1 focuses on:
 - true parallel background session runs

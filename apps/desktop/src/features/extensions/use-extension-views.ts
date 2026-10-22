@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { SessionRef } from "@pi-gui/session-driver/types";
-import type { PiDesktopApi } from "../../../contracts/ipc";
+import type { SessionRef } from "@fxagent/session-driver/types";
+import type { FxagentDesktopApi } from "../../../contracts/ipc";
 import type { DesktopExtensionViewInfo } from "../../../contracts/extension-views";
 
 interface ExtensionViewCatalog {
@@ -14,7 +14,7 @@ export function useExtensionViews({
   api,
   target,
 }: {
-  readonly api: PiDesktopApi | undefined;
+  readonly api: FxagentDesktopApi | undefined;
   readonly target: SessionRef | null;
 }) {
   const [catalog, setCatalog] = useState<ExtensionViewCatalog | null>(null);

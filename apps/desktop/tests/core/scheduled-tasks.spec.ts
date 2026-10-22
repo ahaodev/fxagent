@@ -1,6 +1,6 @@
 import { join, resolve } from "node:path";
 import { expect, test } from "@playwright/test";
-import type { PiSdkDriver } from "@pi-gui/pi-sdk-driver";
+import type { PiSdkDriver } from "@fxagent/pi-sdk-driver";
 import {
   createNamedThread,
   fireDueScheduledTasks,
@@ -117,9 +117,9 @@ test("firing a due existing-thread task labels the user bubble and shows a chip"
     expect(sessionId).toBeTruthy();
     await window.evaluate(
       async ({ targetWorkspaceId, targetSessionId }) => {
-        const app = globalThis.window.piApp;
+        const app = globalThis.window.fxagentApp;
         if (!app) {
-          throw new Error("piApp IPC bridge is unavailable");
+          throw new Error("fxagentApp IPC bridge is unavailable");
         }
         await app.createScheduledTask({
           title: "Due ping",
@@ -163,9 +163,9 @@ test("a scheduled run can use the scheduled-task tools while it is still running
     const state = await getDesktopState(window);
     await window.evaluate(
       async (target) => {
-        const app = globalThis.window.piApp;
+        const app = globalThis.window.fxagentApp;
         if (!app) {
-          throw new Error("piApp IPC bridge is unavailable");
+          throw new Error("fxagentApp IPC bridge is unavailable");
         }
         await app.createScheduledTask({
           title: "Self-checking task",
@@ -186,19 +186,19 @@ test("a scheduled run can use the scheduled-task tools while it is still running
         }) => Promise<{ content: readonly { text?: string }[] }>;
         const hooks = (
           globalThis as {
-            __PI_APP_TEST_HOOKS?: {
+            __FXAGENT_TEST_HOOKS?: {
               runScheduledTaskRuntimeTool?: ToolHook;
               fireDueScheduledTasks?: (nowIso?: string) => Promise<unknown>;
             };
           }
-        ).__PI_APP_TEST_HOOKS;
+        ).__FXAGENT_TEST_HOOKS;
         const runTool = hooks?.runScheduledTaskRuntimeTool;
         const fire = hooks?.fireDueScheduledTasks;
         if (!runTool || !fire) {
           throw new Error("Scheduled-task test hooks are unavailable");
         }
         const { createRequire } = process.getBuiltinModule("module");
-        const { PiSdkDriver: Driver } = createRequire(input.entry)("@pi-gui/pi-sdk-driver") as {
+        const { PiSdkDriver: Driver } = createRequire(input.entry)("@fxagent/pi-sdk-driver") as {
           PiSdkDriver: typeof PiSdkDriver;
         };
         let listed = "";
@@ -254,16 +254,16 @@ test("a second active bind to the same thread is rejected", async () => {
       },
     };
     await window.evaluate(async (input) => {
-      const app = globalThis.window.piApp;
+      const app = globalThis.window.fxagentApp;
       if (!app) {
-        throw new Error("piApp IPC bridge is unavailable");
+        throw new Error("fxagentApp IPC bridge is unavailable");
       }
       await app.createScheduledTask(input);
     }, payload);
     const second = await window.evaluate(async (input) => {
-      const app = globalThis.window.piApp;
+      const app = globalThis.window.fxagentApp;
       if (!app) {
-        throw new Error("piApp IPC bridge is unavailable");
+        throw new Error("fxagentApp IPC bridge is unavailable");
       }
       return app.createScheduledTask({ ...input, title: "Second bind", instruction: "Second" });
     }, payload);
@@ -288,9 +288,9 @@ test("past once create is rejected and title-only edit keeps timezone and nextRu
     const state = await getDesktopState(window);
     const past = await window.evaluate(
       async (input) => {
-        const app = globalThis.window.piApp;
+        const app = globalThis.window.fxagentApp;
         if (!app) {
-          throw new Error("piApp IPC bridge is unavailable");
+          throw new Error("fxagentApp IPC bridge is unavailable");
         }
         return app.createScheduledTask(input);
       },
@@ -310,9 +310,9 @@ test("past once create is rejected and title-only edit keeps timezone and nextRu
 
     const created = await window.evaluate(
       async (input) => {
-        const app = globalThis.window.piApp;
+        const app = globalThis.window.fxagentApp;
         if (!app) {
-          throw new Error("piApp IPC bridge is unavailable");
+          throw new Error("fxagentApp IPC bridge is unavailable");
         }
         return app.createScheduledTask(input);
       },
@@ -339,9 +339,9 @@ test("past once create is rejected and title-only edit keeps timezone and nextRu
 
     const renamed = await window.evaluate(
       async ({ id }) => {
-        const app = globalThis.window.piApp;
+        const app = globalThis.window.fxagentApp;
         if (!app) {
-          throw new Error("piApp IPC bridge is unavailable");
+          throw new Error("fxagentApp IPC bridge is unavailable");
         }
         return app.updateScheduledTask(id, { title: "Renamed morning ping" });
       },

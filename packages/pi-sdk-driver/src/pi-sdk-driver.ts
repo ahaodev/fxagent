@@ -2,13 +2,13 @@ import type {
   SessionCatalogSnapshot,
   WorkspaceCatalogSnapshot,
   WorkspaceId,
-} from "@pi-gui/catalogs";
+} from "@fxagent/catalogs";
 import type {
   NavigateSessionTreeOptions,
   NavigateSessionTreeResult,
   SessionQueuedMessage,
   SessionTreeSnapshot,
-} from "@pi-gui/session-driver/types";
+} from "@fxagent/session-driver/types";
 import type {
   CreateSessionOptions,
   ForkSessionOptions,
@@ -22,7 +22,7 @@ import type {
   SessionMessageInput,
   Unsubscribe,
   WorkspaceRef,
-} from "@pi-gui/session-driver";
+} from "@fxagent/session-driver";
 import {
   SessionSupervisor,
   type PiSdkDriverOptions,

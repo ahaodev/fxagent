@@ -2,7 +2,7 @@ import { useMemo, useRef } from "react";
 import type {
   SessionTranscriptCustomMessage,
   SessionTranscriptMessage,
-} from "@pi-gui/session-driver";
+} from "@fxagent/session-driver";
 import type {
   DisplayTimelineItem,
   TimelineActivity,

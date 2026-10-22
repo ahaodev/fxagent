@@ -13,7 +13,7 @@ export interface PiAddonExtensionOptions {
 /**
  * pi's own add-ons, handed to pi the way its CLI does (`dist/extensions/index.js`), so pi loads
  * them as `builtin:<name>` and a `-builtin:<name>` `extensions` setting leaves one out. The names
- * must match pi's. Kept apart from pi-gui's own built-ins, whose gating drops these flags.
+ * must match pi's. Kept apart from fxagent's own built-ins, whose gating drops these flags.
  */
 const PI_ADDONS = [
   {

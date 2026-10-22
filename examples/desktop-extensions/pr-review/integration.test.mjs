@@ -16,7 +16,7 @@ import {
   SessionManager,
   SettingsManager,
 } from "@earendil-works/pi-coding-agent";
-import { DESKTOP_VIEW_REGISTER } from "@pi-gui/extension-ui";
+import { DESKTOP_VIEW_REGISTER } from "@fxagent/extension-ui";
 
 // This is an offline integration test, not a real GitHub or model review.
 // Only gh's metadata response is a fixture; Pi, its file loader, Chord, and Git run normally.
@@ -131,7 +131,7 @@ test(
         },
       });
       facetHost = await createFacetHost({ facets: [declarations[0].backend()] });
-      const service = facetHost.services.use(defineService("pi-gui.examples.pr-review.v1"));
+      const service = facetHost.services.use(defineService("fxagent.examples.pr-review.v1"));
       const result = await service.request({ requestId: "offline-admission" }, BACKGROUND_CONTEXT);
       assert.deepEqual(result, { reviewId: "offline-admission" });
       const error = await rejected;

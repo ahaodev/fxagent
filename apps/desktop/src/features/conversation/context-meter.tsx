@@ -3,7 +3,7 @@ import type {
   SessionPlanLimit,
   SessionPromptCache,
   SessionUsageSnapshot,
-} from "@pi-gui/session-driver";
+} from "@fxagent/session-driver";
 import { t, useI18n } from "../../i18n";
 
 interface ContextMeterProps {

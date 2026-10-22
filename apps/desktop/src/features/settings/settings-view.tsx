@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import type {
   RuntimeSettingsSnapshot,
   RuntimeSnapshot,
-} from "@pi-gui/session-driver/runtime-types";
+} from "@fxagent/session-driver/runtime-types";
 import type {
   LanguagePreference,
   ModelSettingsScopeMode,

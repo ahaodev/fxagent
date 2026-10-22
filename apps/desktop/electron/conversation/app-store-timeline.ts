@@ -1,6 +1,6 @@
-import { isCardEntryItem, sessionKey } from "@pi-gui/session-driver";
-import type { SessionTranscriptItem, SessionTranscriptPin } from "@pi-gui/session-driver";
-import type { SessionDriverEvent, SessionQueuedMessage, SessionRef } from "@pi-gui/session-driver";
+import { isCardEntryItem, sessionKey } from "@fxagent/session-driver";
+import type { SessionTranscriptItem, SessionTranscriptPin } from "@fxagent/session-driver";
+import type { SessionDriverEvent, SessionQueuedMessage, SessionRef } from "@fxagent/session-driver";
 import type { TranscriptMessage } from "../../contracts/desktop-state";
 import {
   extensionToolRowLabel,

@@ -5,7 +5,7 @@ import { join } from "node:path";
 import test, { type TestContext } from "node:test";
 import { createAssistantMessageEventStream, type AssistantMessage } from "@earendil-works/pi-ai";
 import type { AgentSessionRuntime, ExtensionFactory } from "@earendil-works/pi-coding-agent";
-import type { SessionDriverEvent } from "@pi-gui/session-driver";
+import type { SessionDriverEvent } from "@fxagent/session-driver";
 import { PiSdkDriver } from "../dist/pi-sdk-driver.js";
 import { createAgentSessionRuntimeWithNpmFallback } from "../dist/npm-package-fallback.js";
 
@@ -45,7 +45,7 @@ const streamFunction: StreamFunction = (model) => {
 };
 
 async function setUp(t: TestContext, extensionFactories: ExtensionFactory[] = []) {
-  const root = await mkdtemp(join(tmpdir(), "pi-gui-queue-settle-"));
+  const root = await mkdtemp(join(tmpdir(), "fxagent-queue-settle-"));
   const agentDir = join(root, "agent");
   const cwd = join(root, "workspace");
   await mkdir(agentDir);
@@ -205,7 +205,7 @@ await test("a message queued after pi settled, before the app heard, starts the 
 });
 
 await test("a message queued while pi's settle hooks run starts the next turn", async (t) => {
-  // pi stops streaming before it runs extensions' agent_settled handlers (pi-gui's own turn
+  // pi stops streaming before it runs extensions' agent_settled handlers (fxagent's own turn
   // capture is one) and tells the driver only after them, so the driver still counts the run.
   let holdSettle = false;
   let releaseSettle!: () => void;

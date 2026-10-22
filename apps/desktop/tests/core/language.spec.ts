@@ -20,7 +20,7 @@ test("follows the system language until the user picks one, and keeps the pick a
     launchDesktop(userDataDir, {
       initialWorkspaces: [workspacePath],
       testMode: "background",
-      envOverrides: { PI_APP_TEST_LOCALE: systemLocale },
+      envOverrides: { FXAGENT_TEST_LOCALE: systemLocale },
     });
 
   // Fresh install on a Chinese system: the UI starts in Chinese with "System" selected.

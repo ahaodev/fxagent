@@ -1,18 +1,18 @@
 import type {
   RuntimeExtensionRecord,
   RuntimeSourceScope,
-} from "@pi-gui/session-driver/runtime-types";
+} from "@fxagent/session-driver/runtime-types";
 import { t } from "../../i18n";
 
 /** Grouping of extensions in the customize page: where one was discovered, or which pi adds it. */
-export type ExtensionGroupKey = RuntimeSourceScope | "pi-addons" | "pi-gui-tools";
+export type ExtensionGroupKey = RuntimeSourceScope | "pi-addons" | "fxagent-tools";
 
 export function extensionSourceSummary(extension: RuntimeExtensionRecord): string {
   return `${extensionScopeLabel(extension)} · ${extension.sourceInfo.origin}`;
 }
 
-/** Extensions pi-gui itself adds to every session; switched on and off app-wide. */
-export function isPiGuiBuiltinExtension(extension: RuntimeExtensionRecord): boolean {
+/** Extensions fxagent itself adds to every session; switched on and off app-wide. */
+export function isFxagentBuiltinExtension(extension: RuntimeExtensionRecord): boolean {
   return (
     extension.sourceInfo.source === "builtin" &&
     extension.sourceInfo.origin === "top-level" &&
@@ -29,7 +29,7 @@ export function isPiAddonExtension(extension: RuntimeExtensionRecord): boolean {
 }
 
 export function extensionScopeLabel(extension: RuntimeExtensionRecord): string {
-  if (isPiGuiBuiltinExtension(extension) || isPiAddonExtension(extension)) {
+  if (isFxagentBuiltinExtension(extension) || isPiAddonExtension(extension)) {
     return extensionGroupLabel(extension);
   }
   return sourceScopeLabel(extension.sourceInfo.scope);
@@ -60,13 +60,13 @@ function sourceScopeLabel(scope: RuntimeSourceScope): string {
 }
 
 export function extensionGroupKey(extension: RuntimeExtensionRecord): ExtensionGroupKey {
-  if (isPiGuiBuiltinExtension(extension)) return "pi-gui-tools";
+  if (isFxagentBuiltinExtension(extension)) return "fxagent-tools";
   if (isPiAddonExtension(extension)) return "pi-addons";
   return extension.sourceInfo.scope;
 }
 
 export function extensionGroupKeyLabel(key: ExtensionGroupKey): string {
-  if (key === "pi-gui-tools") return t("extensions.display.piGuiTools");
+  if (key === "fxagent-tools") return t("extensions.display.fxagentTools");
   if (key === "pi-addons") return t("extensions.display.piAddons");
   return sourceScopeGroupLabel(key);
 }

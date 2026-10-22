@@ -11,7 +11,7 @@ import {
 } from "../helpers/electron-app";
 import { appendMessagesToSessionFile, sessionFilePathFromCatalog } from "../helpers/session-file";
 
-const proofDir = process.env.PI_APP_THREAD_MENU_PROOF_DIR;
+const proofDir = process.env.FXAGENT_THREAD_MENU_PROOF_DIR;
 
 async function menuItemTitles(menu: Locator): Promise<string[]> {
   return menu

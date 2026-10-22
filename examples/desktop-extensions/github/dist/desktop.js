@@ -35,7 +35,7 @@ function defineService(id, options) {
 // examples/desktop-extensions/github/contract.ts
 var GH_MISSING = "This view reads GitHub through the GitHub CLI. Install gh, run gh auth login, then refresh.";
 var GH_INSTALL_URL = "https://cli.github.com/";
-var GitHub = defineService("pi-gui.example.github.v1");
+var GitHub = defineService("fxagent.example.github.v1");
 function initialState() {
   return {
     status: "loading",

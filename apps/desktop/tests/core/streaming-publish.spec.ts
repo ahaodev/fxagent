@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import type { SessionDriverEvent, SessionRef } from "@pi-gui/session-driver";
+import type { SessionDriverEvent, SessionRef } from "@fxagent/session-driver";
 import {
   createSessionViaIpc,
   emitTestSessionEvent,
@@ -71,9 +71,9 @@ async function startCountingPublishes(window: Page): Promise<void> {
       __streamingPublish?: { state: number; transcript: number; stop: () => void };
     };
     g.__streamingPublish?.stop();
-    const api = globalThis.window.piApp;
+    const api = globalThis.window.fxagentApp;
     if (!api) {
-      throw new Error("piApp IPC bridge is unavailable");
+      throw new Error("fxagentApp IPC bridge is unavailable");
     }
     const counts = { state: 0, transcript: 0 };
     const stopState = api.onStateChanged(() => {

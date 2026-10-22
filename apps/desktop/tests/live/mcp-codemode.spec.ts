@@ -21,8 +21,8 @@ test("a real model calls an MCP tool added in Settings, through code mode", asyn
   const realAuth = getRealAuthConfig();
   test.skip(!realAuth.enabled, realAuth.skipReason);
 
-  const provider = process.env.PI_GUI_PROVIDER?.trim() || "openai-codex";
-  const model = process.env.PI_GUI_MODEL?.trim() || "gpt-5.6-luna";
+  const provider = process.env.FXAGENT_PROVIDER?.trim() || "openai-codex";
+  const model = process.env.FXAGENT_MODEL?.trim() || "gpt-5.6-luna";
   const userDataDir = await makeUserDataDir();
   const workspacePath = await makeWorkspace("live-mcp-codemode");
   const markerDir = join(userDataDir, "mcp-markers");

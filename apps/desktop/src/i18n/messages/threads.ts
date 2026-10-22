@@ -35,7 +35,7 @@ export const enMessages = {
   "threads.workspaceMenu.editName": "Edit name",
   "threads.workspaceMenu.remove": "Remove",
   "threads.workspaceMenu.confirmRemove":
-    "Remove {workspace} from pi-gui? This will not delete any files.",
+    "Remove {workspace} from fxagent? This will not delete any files.",
   "threads.workspaceMenu.confirmRemoveWorktree":
     "Remove worktree {worktree}? This removes the git worktree from disk.",
 
@@ -130,7 +130,7 @@ export const zhMessages: Record<keyof typeof enMessages, string> = {
   "threads.workspaceMenu.createWorktree": "创建永久工作树",
   "threads.workspaceMenu.editName": "编辑名称",
   "threads.workspaceMenu.remove": "移除",
-  "threads.workspaceMenu.confirmRemove": "要从 pi-gui 中移除 {workspace} 吗？这不会删除任何文件。",
+  "threads.workspaceMenu.confirmRemove": "要从 fxagent 中移除 {workspace} 吗？这不会删除任何文件。",
   "threads.workspaceMenu.confirmRemoveWorktree":
     "要移除工作树 {worktree} 吗？这会从磁盘上删除该 git 工作树。",
 

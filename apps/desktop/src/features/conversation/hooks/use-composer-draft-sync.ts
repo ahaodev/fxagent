@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type SetStateAction } from "react";
-import type { SessionRef } from "@pi-gui/session-driver/types";
+import type { SessionRef } from "@fxagent/session-driver/types";
 import type { ComposerDraftSyncSource, DesktopAppState } from "../../../../contracts/desktop-state";
-import type { PiDesktopApi } from "../../../../contracts/ipc";
+import type { FxagentDesktopApi } from "../../../../contracts/ipc";
 
 /** Persist/state/command restore saved or submitted text. They must not overwrite a newer local edit. */
 export function shouldAdoptComposerSnapshot(
@@ -15,7 +15,7 @@ export function shouldAdoptComposerSnapshot(
 }
 
 interface UseComposerDraftSyncParams {
-  readonly api: PiDesktopApi | undefined;
+  readonly api: FxagentDesktopApi | undefined;
   readonly snapshot: DesktopAppState | null;
   /** The task whose draft the composer shows. */
   readonly selectedSession: SessionRef | null;

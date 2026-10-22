@@ -59,7 +59,7 @@ function assistantMessage(
  * current turn's gate, and a builtin extension that counts how often it is loaded.
  */
 async function startHarness(t: test.TestContext) {
-  const root = await mkdtemp(join(tmpdir(), "pi-gui-deferred-reload-"));
+  const root = await mkdtemp(join(tmpdir(), "fxagent-deferred-reload-"));
   const agentDir = join(root, "agent");
   const cwd = join(root, "workspace");
   await mkdir(agentDir);
@@ -131,7 +131,7 @@ async function startHarness(t: test.TestContext) {
     catalogFilePath: join(root, "catalogs.json"),
     builtinExtensions: [
       {
-        name: "pi-gui-load-counter",
+        name: "fxagent-load-counter",
         displayName: "Load counter",
         factory: async (pi) => {
           state.loads += 1;

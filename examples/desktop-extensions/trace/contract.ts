@@ -80,4 +80,4 @@ export interface TraceService {
   state: ReplicatedState<TraceState>;
 }
 
-export const Trace = defineService<TraceService>("pi-gui.example.trace.v1");
+export const Trace = defineService<TraceService>("fxagent.example.trace.v1");

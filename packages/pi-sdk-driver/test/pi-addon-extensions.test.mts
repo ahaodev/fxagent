@@ -15,7 +15,7 @@ const MCP_SERVER_FIXTURE = fileURLToPath(
 );
 
 async function setup(t: test.TestContext, settings: Record<string, unknown> = {}) {
-  const root = await mkdtemp(join(tmpdir(), "pi-gui-addons-"));
+  const root = await mkdtemp(join(tmpdir(), "fxagent-addons-"));
   const agentDir = join(root, "agent");
   const workspacePath = join(root, "workspace");
   await mkdir(agentDir, { recursive: true });

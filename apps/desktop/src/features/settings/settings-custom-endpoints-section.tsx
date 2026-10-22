@@ -2,7 +2,7 @@ import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react"
 import {
   CUSTOM_PROVIDER_ID_PATTERN,
   isValidHttpBaseUrl,
-} from "@pi-gui/pi-sdk-driver/custom-provider-types";
+} from "@fxagent/pi-sdk-driver/custom-provider-types";
 import { t, useI18n } from "../../i18n";
 import { trapDialogFocus } from "../../ui/dialog-focus";
 import type { CustomProviderConfig, CustomProviderModelConfig } from "../../../contracts/ipc";
@@ -29,7 +29,7 @@ export function SettingsCustomEndpointsSection({
   const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
-    const api = window.piApp;
+    const api = window.fxagentApp;
     if (!api) {
       return;
     }
@@ -217,7 +217,7 @@ function CustomEndpointDialog({
   }, [probePending]);
 
   const handleProbe = async () => {
-    const api = window.piApp;
+    const api = window.fxagentApp;
     if (!api) {
       setProbeError(t("settings.customEndpoints.dialog.bridgeUnavailable"));
       return;

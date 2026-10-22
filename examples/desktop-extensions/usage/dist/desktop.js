@@ -33,7 +33,7 @@ function defineService(id, options) {
 }
 
 // examples/desktop-extensions/usage/contract.ts
-var Usage = defineService("pi-gui.example.usage.v1");
+var Usage = defineService("fxagent.example.usage.v1");
 
 // examples/desktop-extensions/usage/model.ts
 var CONTEXT_KINDS = [

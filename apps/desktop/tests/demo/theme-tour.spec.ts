@@ -19,10 +19,10 @@ import {
 
 // Walks every theme preset across the main surfaces (sidebar, New thread,
 // timeline, composer, Review, terminal, settings) for screenshots and screen
-// recordings. Set PI_APP_THEME_TOUR_DIR to keep screenshots; PI_APP_THEME_TOUR_PACE
+// recordings. Set FXAGENT_THEME_TOUR_DIR to keep screenshots; FXAGENT_THEME_TOUR_PACE
 // slows it down for video.
-const shotDir = process.env.PI_APP_THEME_TOUR_DIR?.trim();
-const pace = Number(process.env.PI_APP_THEME_TOUR_PACE ?? "0");
+const shotDir = process.env.FXAGENT_THEME_TOUR_DIR?.trim();
+const pace = Number(process.env.FXAGENT_THEME_TOUR_PACE ?? "0");
 
 test("tours every theme preset", async () => {
   test.setTimeout(600_000);

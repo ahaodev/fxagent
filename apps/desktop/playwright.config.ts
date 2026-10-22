@@ -12,15 +12,15 @@ export default defineConfig({
   expect: { timeout: process.env.CI ? 15_000 : 5_000 },
   // Foreground Electron tests need one app to own the OS input loop, and CI sizes its own
   // shards. Local Linux background runs keep windows hidden, so three apps run side by side.
-  // PI_APP_TEST_WORKERS overrides either default.
+  // FXAGENT_TEST_WORKERS overrides either default.
   workers:
-    Number(process.env.PI_APP_TEST_WORKERS) ||
+    Number(process.env.FXAGENT_TEST_WORKERS) ||
     (process.platform === "linux" &&
-    process.env.PI_APP_TEST_MODE === "background" &&
+    process.env.FXAGENT_TEST_MODE === "background" &&
     !process.env.CI
       ? 3
       : 1),
-  retries: process.env.PI_APP_TEST_MODE === "foreground" ? 1 : 0,
+  retries: process.env.FXAGENT_TEST_MODE === "foreground" ? 1 : 0,
   use: {
     trace: "retain-on-failure",
     screenshot: "only-on-failure",

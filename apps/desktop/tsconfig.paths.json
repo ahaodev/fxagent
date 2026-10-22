@@ -2,24 +2,24 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@pi-gui/pi-sdk-driver": ["../../packages/pi-sdk-driver/src/index.ts"],
-      "@pi-gui/pi-sdk-driver/custom-provider-types": [
+      "@fxagent/pi-sdk-driver": ["../../packages/pi-sdk-driver/src/index.ts"],
+      "@fxagent/pi-sdk-driver/custom-provider-types": [
         "../../packages/pi-sdk-driver/src/custom-provider-types.ts"
       ],
-      "@pi-gui/pi-sdk-driver/dev-reload-probe": [
+      "@fxagent/pi-sdk-driver/dev-reload-probe": [
         "../../packages/pi-sdk-driver/src/dev-reload-probe.ts"
       ],
-      "@pi-gui/catalogs": ["../../packages/catalogs/src/index.ts"],
-      "@pi-gui/catalogs/dev-reload-probe": ["../../packages/catalogs/src/dev-reload-probe.ts"],
-      "@pi-gui/session-driver": ["../../packages/session-driver/src/index.ts"],
-      "@pi-gui/session-driver/runtime-types": [
+      "@fxagent/catalogs": ["../../packages/catalogs/src/index.ts"],
+      "@fxagent/catalogs/dev-reload-probe": ["../../packages/catalogs/src/dev-reload-probe.ts"],
+      "@fxagent/session-driver": ["../../packages/session-driver/src/index.ts"],
+      "@fxagent/session-driver/runtime-types": [
         "../../packages/session-driver/src/runtime-types.ts"
       ],
-      "@pi-gui/session-driver/dev-reload-probe": [
+      "@fxagent/session-driver/dev-reload-probe": [
         "../../packages/session-driver/src/dev-reload-probe.ts"
       ],
-      "@pi-gui/catalogs/node": ["../../packages/catalogs/src/node/index.ts"],
-      "@pi-gui/catalogs/node/atomic-write": ["../../packages/catalogs/src/node/atomic-write.ts"]
+      "@fxagent/catalogs/node": ["../../packages/catalogs/src/node/index.ts"],
+      "@fxagent/catalogs/node/atomic-write": ["../../packages/catalogs/src/node/atomic-write.ts"]
     }
   }
 }

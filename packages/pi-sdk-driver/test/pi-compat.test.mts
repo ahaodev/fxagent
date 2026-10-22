@@ -38,7 +38,7 @@ await test("forced Pi persistence does not rewrite a file Pi already writes", ()
 });
 
 await test("forced Pi persistence keeps turns another Pi process appended", () => {
-  const directory = mkdtempSync(path.join(tmpdir(), "pi-gui-compat-"));
+  const directory = mkdtempSync(path.join(tmpdir(), "fxagent-compat-"));
   try {
     const desktop = SessionManager.create(directory, directory);
     desktop.appendMessage({ role: "user", content: "hi", timestamp: Date.now() });
@@ -108,7 +108,7 @@ await test("project settings compatibility fails clearly when upstream hooks cha
 });
 
 await test("compatibility hooks match the bundled Pi runtime", async () => {
-  const sessionManager = SessionManager.inMemory("/tmp/pi-gui-compat-fixture");
+  const sessionManager = SessionManager.inMemory("/tmp/fxagent-compat-fixture");
   sessionManager.appendSessionInfo("Compatibility fixture");
   forcePersistPiSession(sessionManager);
   const compatibleSessionManager = sessionManager as unknown as { flushed: boolean };
@@ -129,7 +129,7 @@ await test("global setting compatibility fails clearly when upstream hooks chang
 });
 
 await test("global setting compatibility writes one field through the bundled Pi runtime", async () => {
-  const directory = mkdtempSync(path.join(tmpdir(), "pi-gui-compat-global-"));
+  const directory = mkdtempSync(path.join(tmpdir(), "fxagent-compat-global-"));
   const agentDir = path.join(directory, "agent");
   mkdirSync(agentDir, { recursive: true });
   writeFileSync(

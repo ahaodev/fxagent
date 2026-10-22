@@ -1,10 +1,10 @@
 {
-  "name": "@pi-gui/extension-ui",
+  "name": "@fxagent/extension-ui",
   "private": true,
   "type": "module",
   "version": "0.0.0",
   "license": "MIT",
-  "description": "Author helpers and scoped Chord transport for Pi desktop extension views.",
+  "description": "Author helpers and scoped Chord transport for fxagent desktop extension views.",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",

@@ -37,7 +37,7 @@ export const TitleCard: React.FC = () => {
           letterSpacing: -1,
         }}
       >
-        pi desktop
+        fxagent
       </div>
       <div
         style={{

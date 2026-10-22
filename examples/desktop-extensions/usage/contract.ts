@@ -73,4 +73,4 @@ export interface UsageService {
   refresh(request: Record<string, never>, context: Context): Promise<void>;
 }
 
-export const Usage = defineService<UsageService>("pi-gui.example.usage.v1");
+export const Usage = defineService<UsageService>("fxagent.example.usage.v1");

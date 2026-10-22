@@ -40,7 +40,7 @@ test("shows workspace file mentions from the composer and inserts the selected f
       "Extensions",
       "Files",
     ]);
-    // pi-gui's two tools, pi's three add-ons (MCP, code mode, tool search) and two files.
+    // fxagent's two tools, pi's three add-ons (MCP, code mode, tool search) and two files.
     await expect(mentionMenu.locator(".mention-menu__item")).toHaveCount(7);
     await expect(mentionMenu).toContainText("MCP servers");
     await expect(mentionMenu).toContainText("Thread orchestration");

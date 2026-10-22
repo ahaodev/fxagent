@@ -1,4 +1,4 @@
-import type { RuntimeSnapshot } from "@pi-gui/session-driver/runtime-types";
+import type { RuntimeSnapshot } from "@fxagent/session-driver/runtime-types";
 
 /** Tool name → the label its extension registered, for one folder's loaded extensions. */
 export type ExtensionToolLabels = ReadonlyMap<string, string>;
@@ -6,8 +6,8 @@ export type ExtensionToolLabels = ReadonlyMap<string, string>;
 const NO_LABELS: ExtensionToolLabels = new Map();
 
 /**
- * Labels of the tools a folder's own extensions registered. A tool keeps pi-gui's own wording
- * when it replaces one of pi's tools, comes from pi-gui's built-in extensions, or is registered by
+ * Labels of the tools a folder's own extensions registered. A tool keeps fxagent's own wording
+ * when it replaces one of pi's tools, comes from fxagent's built-in extensions, or is registered by
  * more than one extension (the label shown could be another extension's than the one pi runs).
  */
 export function extensionToolLabels(runtime: RuntimeSnapshot | undefined): ExtensionToolLabels {
@@ -36,7 +36,7 @@ export function extensionToolLabels(runtime: RuntimeSnapshot | undefined): Exten
 
 /**
  * "Read GitHub issue or PR: pr 223": the extension's label, then the call's main argument, or
- * else its plain values in order, since an extension's parameters have no names pi-gui knows.
+ * else its plain values in order, since an extension's parameters have no names fxagent knows.
  */
 export function extensionToolRowLabel(label: string, input: unknown): string {
   const detail = toolInputSummary(input) ?? scalarValues(input);

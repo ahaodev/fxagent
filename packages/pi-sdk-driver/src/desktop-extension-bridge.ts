@@ -10,23 +10,23 @@ import {
   DESKTOP_VIEW_UNREGISTER,
   type DesktopViewDeclaration,
   type DesktopViewRegistrationEvent,
-} from "@pi-gui/extension-ui";
-import type { SessionRef, WorkspaceRef } from "@pi-gui/session-driver";
+} from "@fxagent/extension-ui";
+import type { SessionRef, WorkspaceRef } from "@fxagent/session-driver";
 
 type ResourceLoaderOptions = NonNullable<
   CreateAgentSessionServicesOptions["resourceLoaderOptions"]
 >;
 
-export interface PiDesktopExtensionRuntime {
+export interface FxagentDesktopExtensionRuntime {
   readonly target: SessionRef;
   readonly generation: string;
   readonly extensions: readonly { readonly resolvedPath: string }[];
   readonly declarations: readonly DesktopViewDeclaration[];
 }
 
-export interface PiDesktopExtensionObserver {
+export interface FxagentDesktopExtensionObserver {
   /** Invoked immediately; asynchronous UI work must not delay ordinary Pi lifecycle events. */
-  onChanged(runtime: PiDesktopExtensionRuntime): void | Promise<void>;
+  onChanged(runtime: FxagentDesktopExtensionRuntime): void | Promise<void>;
   /** Revoke capabilities before awaiting cleanup; Pi does not wait for authored view code. */
   onInvalidated(runtime: {
     readonly target: SessionRef;
@@ -37,7 +37,7 @@ export interface PiDesktopExtensionObserver {
 /** A discovery adapter around stable Pi extension APIs; Chord hosts stay with the caller. */
 export function createDesktopExtensionBridge(options: {
   readonly workspace: WorkspaceRef;
-  readonly observer: PiDesktopExtensionObserver;
+  readonly observer: FxagentDesktopExtensionObserver;
 }): {
   mergeResourceLoaderOptions(existing: ResourceLoaderOptions): ResourceLoaderOptions;
 } {
@@ -60,7 +60,7 @@ export function createDesktopExtensionBridge(options: {
   const publish = (): void => {
     const epoch = active;
     if (!epoch || discovering) return;
-    const snapshot: PiDesktopExtensionRuntime = {
+    const snapshot: FxagentDesktopExtensionRuntime = {
       ...epoch,
       extensions: loadedExtensions.map((extension) => ({ ...extension })),
       declarations: [...declarations],
@@ -114,7 +114,7 @@ export function createDesktopExtensionBridge(options: {
         eventBus,
         extensionFactories: [
           ...(existing.extensionFactories ?? []),
-          { name: "pi-gui-desktop-views", hidden: true, factory: lifecycle },
+          { name: "fxagent-desktop-views", hidden: true, factory: lifecycle },
         ],
         extensionsOverride(result) {
           const selected = existing.extensionsOverride?.(result) ?? result;

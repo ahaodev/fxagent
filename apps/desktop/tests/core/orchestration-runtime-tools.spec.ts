@@ -3,7 +3,7 @@ import type { AddressInfo } from "node:net";
 import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { expect, test } from "@playwright/test";
-import type { SessionRef } from "@pi-gui/session-driver";
+import type { SessionRef } from "@fxagent/session-driver";
 import {
   createNamedThread,
   getDesktopState,
@@ -66,7 +66,7 @@ async function selectedSessionRef(
 
 test("create_child_thread returns after a slow worker starts, before its turn completes", async () => {
   test.setTimeout(60_000);
-  const proofDir = process.env.PI_APP_ORCHESTRATION_PROOF_DIR?.trim();
+  const proofDir = process.env.FXAGENT_ORCHESTRATION_PROOF_DIR?.trim();
   if (proofDir) {
     await mkdir(proofDir, { recursive: true });
   }

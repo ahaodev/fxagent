@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState, type SetStateAction } from "react";
-import type { SessionRef } from "@pi-gui/session-driver/types";
-import type { PiDesktopApi } from "../../../contracts/ipc";
+import type { SessionRef } from "@fxagent/session-driver/types";
+import type { FxagentDesktopApi } from "../../../contracts/ipc";
 import type { TaskWorkbenchTemplate, ToolRef } from "../../../contracts/workbench";
 import { t } from "../../i18n";
 import type { FileWorkbenchTabs } from "./file-workbench-state";
@@ -23,7 +23,7 @@ interface WorkbenchEntry {
 }
 
 interface UseWorkbenchOptions {
-  readonly api: PiDesktopApi | undefined;
+  readonly api: FxagentDesktopApi | undefined;
   readonly target: SessionRef | null;
 }
 

@@ -262,12 +262,12 @@ test("choosing another review checkout preserves the task and terminal checkout"
   await writeFile(join(workspacePath, "root-only.txt"), "root changes\n");
   await writeFile(join(workspacePath, "shared.txt"), "root version\n");
   let linked: WorkspaceRecord | undefined;
-  // Only worktrees pi-gui created are offered as other checkouts of this folder.
+  // Only worktrees fxagent created are offered as other checkouts of this folder.
   const { harness, window, panel, workspace } = await openReview(
     workspacePath,
     async (window, root) => {
       const state = await window.evaluate(
-        (workspaceId) => globalThis.window.piApp.createWorktree({ workspaceId }),
+        (workspaceId) => globalThis.window.fxagentApp.createWorktree({ workspaceId }),
         root.id,
       );
       linked = state.workspaces.find((candidate) => candidate.id === state.selectedWorkspaceId);
@@ -276,13 +276,13 @@ test("choosing another review checkout preserves the task and terminal checkout"
       await writeFile(join(linked.path, "linked-only.txt"), "linked changes\n");
       await writeFile(join(linked.path, "shared.txt"), "linked version\n");
       await window.evaluate(
-        (workspaceId) => globalThis.window.piApp.selectWorkspace(workspaceId),
+        (workspaceId) => globalThis.window.fxagentApp.selectWorkspace(workspaceId),
         root.id,
       );
     },
   );
   try {
-    assertExists(linked, "Expected a pi-gui worktree");
+    assertExists(linked, "Expected a fxagent worktree");
     await window.getByTestId("composer").fill("Draft belongs to the original task");
     await expect(fileRow(panel, "root-only.txt")).toBeVisible();
     await expect(fileRow(panel, "linked-only.txt")).toHaveCount(0);

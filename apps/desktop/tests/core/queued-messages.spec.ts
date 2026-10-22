@@ -8,7 +8,7 @@ import type {
   SessionQueuedMessage,
   SessionRef,
   WorkspaceRef,
-} from "@pi-gui/session-driver";
+} from "@fxagent/session-driver";
 import {
   TINY_PNG_BASE64,
   createNamedThread,

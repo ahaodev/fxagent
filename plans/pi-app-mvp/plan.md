@@ -35,7 +35,7 @@ Build a macOS-first Electron desktop MVP for `pi` with a Codex-style UX, while k
 
 ## Recommendation
 
-- Create a separate `pi-app` repo
+- Create a separate `fxagent` repo
 - Build the desktop app in Electron
 - Do not build a large custom permanent server before the official `pi` server exists
 - Keep the durable client boundary shaped like current RPC and the maintainer's future WebSocket command/event model
@@ -111,13 +111,13 @@ For MVP, keep app-specific state and UI models in the desktop app unless they ar
 
 ### Default
 
-- Separate `pi-app` repo
+- Separate `fxagent` repo
 - Depend on published `pi-mono` packages by exact version
 - Allow only backend-driver packages to depend directly on `@mariozechner/pi-coding-agent`
 
 ### Avoid
 
-- No vendoring broad `pi-mono` source into `pi-app`
+- No vendoring broad `pi-mono` source into `fxagent`
 - No git submodule as the primary integration path
 - No broad app-wide imports from `pi-mono` internals
 - No backend-specific types leaking into the Electron app outside driver packages
@@ -266,7 +266,7 @@ Required proof:
 
 ### P0
 
-- Scaffold `pi-app` repo and Electron shell
+- Scaffold `fxagent` repo and Electron shell
 - Define `session-driver`
 - Define thin `WorkspaceCatalog` and `SessionCatalog`
 - Build the Codex-style sidebar with folders and grouped sessions
@@ -374,7 +374,7 @@ Output:
 
 ### Milestone 1: Repo Scaffold
 
-- create `pi-app` workspace
+- create `fxagent` workspace
 - add Electron app shell
 - add package boundaries
 - wire build, typecheck, lint, and test commands
@@ -455,7 +455,7 @@ Done when:
 ## Initial Repo Scaffold
 
 ```text
-pi-app/
+fxagent/
   package.json
   pnpm-workspace.yaml
   tsconfig.base.json
@@ -496,7 +496,7 @@ pi-app/
 
 ## First Tickets
 
-1. Scaffold `pi-app` repo with Electron + React + Playwright.
+1. Scaffold `fxagent` repo with Electron + React + Playwright.
 2. Define `session-driver` types and event model.
 3. Implement a single-session `pi-sdk-driver` spike using exported `pi-mono` APIs.
 4. Define thin `WorkspaceCatalog` and `SessionCatalog` schemas.

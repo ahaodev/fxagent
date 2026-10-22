@@ -3,7 +3,7 @@ import type {
   RuntimeExtensionFlag,
   RuntimeExtensionRecord,
   RuntimeSnapshot,
-} from "@pi-gui/session-driver/runtime-types";
+} from "@fxagent/session-driver/runtime-types";
 import { resolveExtensionFlags } from "../../electron/workspace/extension-flags";
 
 function runtimeWith(

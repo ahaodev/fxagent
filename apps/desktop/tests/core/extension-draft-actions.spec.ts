@@ -1,8 +1,8 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { expect, test } from "@playwright/test";
-import type { PiSdkDriver } from "@pi-gui/pi-sdk-driver";
-import type { SessionDriverEvent, SessionRef } from "@pi-gui/session-driver";
+import type { PiSdkDriver } from "@fxagent/pi-sdk-driver";
+import type { SessionDriverEvent, SessionRef } from "@fxagent/session-driver";
 import { desktopIpc } from "../../contracts/ipc";
 import {
   createNamedThread,
@@ -20,7 +20,7 @@ test("Stop remains available while an extension saves the running task's protect
   await mkdir(join(extension, "dist"), { recursive: true });
   await writeFile(
     join(extension, "index.ts"),
-    `import { registerDesktopView } from ${JSON.stringify(require.resolve("@pi-gui/extension-ui"))};
+    `import { registerDesktopView } from ${JSON.stringify(require.resolve("@fxagent/extension-ui"))};
 export default function extension(pi) {
   registerDesktopView(pi, {
     id: "draft-actions", title: "Draft actions", source: import.meta.url,
@@ -89,14 +89,14 @@ export default function extension(pi) {
         });
         const { createRequire } = process.getBuiltinModule("module");
         const load = createRequire(input.entry);
-        const { PiSdkDriver: Driver } = load("@pi-gui/pi-sdk-driver") as {
+        const { PiSdkDriver: Driver } = load("@fxagent/pi-sdk-driver") as {
           PiSdkDriver: typeof PiSdkDriver;
         };
         const hooks = (
           globalThis as {
-            __PI_APP_TEST_HOOKS?: { emitSessionEvent(event: SessionDriverEvent): Promise<void> };
+            __FXAGENT_TEST_HOOKS?: { emitSessionEvent(event: SessionDriverEvent): Promise<void> };
           }
-        ).__PI_APP_TEST_HOOKS;
+        ).__FXAGENT_TEST_HOOKS;
         if (!hooks) throw new Error("Test event hook unavailable");
         let releaseRun = () => {};
         const emit = (ref: SessionRef, status: "running" | "idle") =>

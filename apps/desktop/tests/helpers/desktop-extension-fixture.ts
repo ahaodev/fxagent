@@ -5,7 +5,7 @@ import { expect, type Page } from "@playwright/test";
 export async function installDesktopExtensionFixture(
   workspace: string,
   attackUrl: string,
-  helperModulePath = require.resolve("@pi-gui/extension-ui"),
+  helperModulePath = require.resolve("@fxagent/extension-ui"),
 ): Promise<void> {
   const directory = join(workspace, ".pi", "extensions", "desktop-security");
   await mkdir(join(directory, "dist"), { recursive: true });
@@ -49,7 +49,7 @@ export async function mount(root, host) {
   const unsubscribe = service.state.subscribe(render);
   let parentAccess = 'allowed';
   try { void parent.document.body; } catch { parentAccess = 'blocked'; }
-  root.querySelector('#boundary').textContent = JSON.stringify({ preload: typeof window.piApp, process: typeof process, require: typeof require, parentAccess, origin: self.origin });
+  root.querySelector('#boundary').textContent = JSON.stringify({ preload: typeof window.fxagentApp, process: typeof process, require: typeof require, parentAccess, origin: self.origin });
   // Record delivery and failure so a missing increment says whether the click or the call was lost.
   root.querySelector('#increment').onclick = event => {
     const button = event.currentTarget;

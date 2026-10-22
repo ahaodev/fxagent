@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
-import type { HostUiResponse } from "@pi-gui/session-driver";
+import type { HostUiResponse } from "@fxagent/session-driver";
 import { t, useI18n } from "../../i18n";
 import { trapDialogFocus } from "../../ui/dialog-focus";
 import { focusComposerAfter } from "./focus-composer";

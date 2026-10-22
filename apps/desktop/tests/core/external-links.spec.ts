@@ -14,18 +14,18 @@ async function captureOpenedExternalUrls(
   harness: DesktopHarness,
 ): Promise<() => Promise<readonly string[]>> {
   await harness.electronApp.evaluate(({ shell }) => {
-    const globals = globalThis as typeof globalThis & { __piGuiOpenedExternalUrls?: string[] };
-    globals.__piGuiOpenedExternalUrls = [];
+    const globals = globalThis as typeof globalThis & { __fxagentOpenedExternalUrls?: string[] };
+    globals.__fxagentOpenedExternalUrls = [];
     shell.openExternal = async (url: string) => {
-      globals.__piGuiOpenedExternalUrls?.push(url);
+      globals.__fxagentOpenedExternalUrls?.push(url);
     };
   });
 
   return () =>
     harness.electronApp.evaluate(
       () =>
-        (globalThis as typeof globalThis & { __piGuiOpenedExternalUrls?: string[] })
-          .__piGuiOpenedExternalUrls ?? [],
+        (globalThis as typeof globalThis & { __fxagentOpenedExternalUrls?: string[] })
+          .__fxagentOpenedExternalUrls ?? [],
     );
 }
 

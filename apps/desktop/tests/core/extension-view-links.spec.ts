@@ -17,7 +17,7 @@ async function installLinksView(workspacePath: string): Promise<void> {
   await mkdir(join(extension, "dist"), { recursive: true });
   await writeFile(
     join(extension, "index.ts"),
-    `import { registerDesktopView } from ${JSON.stringify(require.resolve("@pi-gui/extension-ui"))};
+    `import { registerDesktopView } from ${JSON.stringify(require.resolve("@fxagent/extension-ui"))};
 export default function extension(pi) {
   registerDesktopView(pi, {
     id: "links", title: "Links", source: import.meta.url,
@@ -107,9 +107,7 @@ test("an extension view opens https links and threads beside its own", async () 
     const status = frame.getByRole("status");
 
     await frame.getByRole("button", { name: "Open pull request" }).click();
-    await expect
-      .poll(openedLinks)
-      .toEqual(["https://github.com/ahaodev/fxagent/pull/220"]);
+    await expect.poll(openedLinks).toEqual(["https://github.com/ahaodev/fxagent/pull/220"]);
     await frame.getByRole("button", { name: "Open plain link" }).click();
     await expect(status).toHaveText("Extensions can only open https links");
     expect(await openedLinks()).toHaveLength(1);

@@ -167,7 +167,7 @@ function validateBuilderConfig(config, desktopPackage, afterRemoveSource) {
     "pnpm Windows packaging must keep the canonical Windows packager",
   );
 
-  assert(config.linux?.executableName === "pi-gui", "Linux executable name must remain pi-gui");
+  assert(config.linux?.executableName === "fxagent", "Linux executable name must remain fxagent");
   assert(
     config.linux?.maintainer === "Matthew Lam <minghinmatthew.lam@gmail.com>",
     "Linux package maintainer must include an email address",
@@ -189,7 +189,7 @@ function validateBuilderConfig(config, desktopPackage, afterRemoveSource) {
     config.deb?.artifactName === "${productName}_${version}_${arch}.${ext}",
     "Debian artifact naming must remain deterministic",
   );
-  assert(config.deb?.packageName === "pi-gui", "Debian package name must remain pi-gui");
+  assert(config.deb?.packageName === "fxagent", "Debian package name must remain fxagent");
   assert(config.deb?.packageCategory === "devel", "Debian Section must remain devel");
   assert(config.deb?.priority === "optional", "Debian Priority must remain optional");
   assert(
@@ -340,7 +340,7 @@ function validateWorkflow(workflow, finalizerSource, linuxVerifierSource, window
   for (const marker of [
     "--appimage-extract",
     '"$extracted/AppRun"',
-    '"$extracted/pi-gui"',
+    '"$extracted/fxagent"',
     "resources/app.asar",
     "dpkg-deb --info",
     "dpkg-deb --contents",

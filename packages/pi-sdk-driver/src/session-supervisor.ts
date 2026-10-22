@@ -15,7 +15,7 @@ import {
   type ExtensionWidgetOptions,
   type SessionInfo,
 } from "@earendil-works/pi-coding-agent";
-import type { SessionCatalogSnapshot, WorkspaceCatalogSnapshot } from "@pi-gui/catalogs";
+import type { SessionCatalogSnapshot, WorkspaceCatalogSnapshot } from "@fxagent/catalogs";
 import type {
   NavigateSessionTreeOptions,
   NavigateSessionTreeResult,
@@ -24,7 +24,7 @@ import type {
   SessionQueuedMessage,
   SessionTreeNodeSnapshot,
   SessionTreeSnapshot,
-} from "@pi-gui/session-driver/types";
+} from "@fxagent/session-driver/types";
 import type {
   CreateSessionOptions,
   ExtensionFlagValues,
@@ -48,11 +48,11 @@ import type {
   Unsubscribe,
   WorkspaceId,
   WorkspaceRef,
-} from "@pi-gui/session-driver";
-import type { RuntimeCommandRecord } from "@pi-gui/session-driver/runtime-types";
-import { isMissingFileError, JsonCatalogStore } from "@pi-gui/catalogs/node";
-import type { SessionFileCatalogStorage } from "@pi-gui/catalogs";
-import { sessionKey } from "@pi-gui/session-driver";
+} from "@fxagent/session-driver";
+import type { RuntimeCommandRecord } from "@fxagent/session-driver/runtime-types";
+import { isMissingFileError, JsonCatalogStore } from "@fxagent/catalogs/node";
+import type { SessionFileCatalogStorage } from "@fxagent/catalogs";
+import { sessionKey } from "@fxagent/session-driver";
 import { buildSessionSchemaInfo, readSessionFileSchemaVersion } from "./session-schema.js";
 import {
   gatedBuiltinExtensions,
@@ -120,7 +120,7 @@ import { createTranscriptIdentityExtension } from "./transcript-identity.js";
 import { createPlanLimitsExtension, readSessionUsage } from "./session-usage.js";
 import {
   createDesktopExtensionBridge,
-  type PiDesktopExtensionObserver,
+  type FxagentDesktopExtensionObserver,
 } from "./desktop-extension-bridge.js";
 import {
   createAgentSessionRuntimeWithNpmFallback,
@@ -180,8 +180,8 @@ export interface PiSdkDriverOptions {
   readonly extensionFlagValuesForSession?: (
     sessionRef: SessionRef,
   ) => ExtensionFlagValues | undefined;
-  readonly desktopExtensions?: PiDesktopExtensionObserver;
-  readonly onTurnCaptureBoundary?: import("@pi-gui/session-driver").TurnCaptureObserver;
+  readonly desktopExtensions?: FxagentDesktopExtensionObserver;
+  readonly onTurnCaptureBoundary?: import("@fxagent/session-driver").TurnCaptureObserver;
   readonly turnCaptureTimeoutMs?: number;
   readonly generateThreadTitleOverride?: (
     workspace: WorkspaceRef,
@@ -298,7 +298,7 @@ export class SessionSupervisor {
   private readonly agentDir: string | undefined;
   private readonly builtinExtensions: readonly InlineExtension[];
   private readonly piAddons: readonly InlineExtension[];
-  private readonly desktopExtensions: PiDesktopExtensionObserver | undefined;
+  private readonly desktopExtensions: FxagentDesktopExtensionObserver | undefined;
   private readonly extensionFlagValuesForSession: PiSdkDriverOptions["extensionFlagValuesForSession"];
   private readonly onTurnCaptureBoundary: PiSdkDriverOptions["onTurnCaptureBoundary"];
   private readonly turnCaptureTimeoutMs: number | undefined;
@@ -357,14 +357,14 @@ export class SessionSupervisor {
           ...this.piAddons,
           ...this.builtinExtensions,
           {
-            name: "pi-gui-plan-limits",
+            name: "fxagent-plan-limits",
             hidden: true,
             factory: createPlanLimitsExtension({
               onPlanLimits: (limits) => this.planLimitsByProvider.set(limits.provider, limits),
             }),
           },
           {
-            name: "pi-gui-transcript-identity",
+            name: "fxagent-transcript-identity",
             hidden: true,
             factory: createTranscriptIdentityExtension({
               workspace,
@@ -390,7 +390,7 @@ export class SessionSupervisor {
           ...(this.onTurnCaptureBoundary
             ? [
                 {
-                  name: "pi-gui-turn-capture",
+                  name: "fxagent-turn-capture",
                   hidden: true,
                   factory: createTurnCaptureExtension({
                     workspace,
@@ -1645,7 +1645,7 @@ export class SessionSupervisor {
     }
 
     // Claim the lease before opening a writable runtime. A live foreign holder
-    // or a lease we cannot write both refuse the reopen, so two pi-gui
+    // or a lease we cannot write both refuse the reopen, so two fxagent
     // processes never write the same file.
     const leasePath = await this.claimSessionLease(sessionFile);
 
@@ -2221,7 +2221,7 @@ export class SessionSupervisor {
           title,
         });
       },
-      // pi-gui does not render arbitrary TUI custom components. Throwing a
+      // fxagent does not render arbitrary TUI custom components. Throwing a
       // typed unsupported-host error allows extensions to catch and degrade,
       // while uncaught command paths fail fast and are surfaced cleanly by
       // the desktop host.
@@ -2270,7 +2270,7 @@ export class SessionSupervisor {
       getTheme: () => undefined,
       setTheme: () => ({
         success: false,
-        error: "Theme switching not supported in pi-gui host UI",
+        error: "Theme switching not supported in fxagent host UI",
       }),
       getToolsExpanded: () => false,
       setToolsExpanded: () => {},

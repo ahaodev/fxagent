@@ -888,7 +888,7 @@
       "comments": 1,
       "createdAt": "2026-09-26T00:26:42Z",
       "updatedAt": "2026-09-27T08:38:02Z",
-      "body": "I define some providers in `~/.pi/agent/models.json` with `\"apiKey\": \"$MY_API_KEY\"`, where the variable is exported in my zsh config. The pi CLI can use them, but when I open pi-gui from Spotlight or the Dock, all of those models show up under Settings \u2192 Models \u2192 Not connected, with no explanation. Launching the pi-gui binary from a terminal fixes it.\n\npi-gui already works around this for PATH (augmentPosixPath in main.ts). Could it load the login shell's environment at startup instead, the way VS Code does? Failing that, it would help if Settings showed which variable is missing.",
+      "body": "I define some providers in `~/.pi/agent/models.json` with `\"apiKey\": \"$MY_API_KEY\"`, where the variable is exported in my zsh config. The pi CLI can use them, but when I open fxagent from Spotlight or the Dock, all of those models show up under Settings \u2192 Models \u2192 Not connected, with no explanation. Launching the fxagent binary from a terminal fixes it.\n\nfxagent already works around this for PATH (augmentPosixPath in main.ts). Could it load the login shell's environment at startup instead, the way VS Code does? Failing that, it would help if Settings showed which variable is missing.",
       "url": "https://github.com/ahaodev/fxagent/issues/200"
     }
   ],
@@ -904,7 +904,7 @@
       "comments": 0,
       "createdAt": "2026-09-24T23:21:47Z",
       "updatedAt": "2026-09-30T20:27:51Z",
-      "body": "Add an option in pi-gui to start an ephemeral thread backed by pi's --no-session mode (or an in-memory/scratch session that is not persisted to disk).",
+      "body": "Add an option in fxagent to start an ephemeral thread backed by pi's --no-session mode (or an in-memory/scratch session that is not persisted to disk).",
       "url": "https://github.com/ahaodev/fxagent/issues/186"
     },
     {
@@ -1020,7 +1020,7 @@
         "author": {
           "login": "example-maintainer"
         },
-        "body": "Thanks for the report. Which pi-gui version, and can you share models.json?",
+        "body": "Thanks for the report. Which fxagent version, and can you share models.json?",
         "createdAt": "2026-09-30T18:00:00Z"
       },
       {
@@ -1118,7 +1118,7 @@
     "reviewDecision": "",
     "url": "https://github.com/ahaodev/fxagent/pull/222",
     "labels": [],
-    "body": "Loads pi's MCP servers into pi-gui threads.\n\n<!-- template comment -->\nAdds code mode and tool search settings.",
+    "body": "Loads pi's MCP servers into fxagent threads.\n\n<!-- template comment -->\nAdds code mode and tool search settings.",
     "comments": [],
     "baseRefName": "main",
     "files": [

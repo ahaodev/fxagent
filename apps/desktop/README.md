@@ -16,13 +16,13 @@ pnpm install
 Build the desktop app:
 
 ```bash
-pnpm --filter @pi-gui/desktop build
+pnpm --filter @fxagent/desktop build
 ```
 
 Run the app in development:
 
 ```bash
-pnpm --filter @pi-gui/desktop dev
+pnpm --filter @fxagent/desktop dev
 ```
 
 `dev` now runs through `electron-vite`, so renderer edits hot-update in place and Electron `main` / `preload` changes trigger the appropriate reload or restart behavior automatically. The desktop dev launcher also rebuilds the shared workspace packages up front and keeps them in watch mode so Node-side package changes can be picked up without manual rebuilds.
@@ -30,25 +30,25 @@ pnpm --filter @pi-gui/desktop dev
 Run the built app locally without packaging:
 
 ```bash
-pnpm --filter @pi-gui/desktop preview
+pnpm --filter @fxagent/desktop preview
 ```
 
 Package a Linux AppImage locally:
 
 ```bash
-pnpm --filter @pi-gui/desktop run package:linux
+pnpm --filter @fxagent/desktop run package:linux
 ```
 
 Package Windows installers locally:
 
 ```bash
-pnpm --filter @pi-gui/desktop run package:win
+pnpm --filter @fxagent/desktop run package:win
 ```
 
 Unpacked Windows build (faster iteration):
 
 ```bash
-pnpm --filter @pi-gui/desktop run package:win:dir
+pnpm --filter @fxagent/desktop run package:win:dir
 ```
 
 On Windows, `package:win*` routes through `scripts/package-windows.mjs`, which prefers the ASCII repo-local `tools/pnpm.cmd` shim and redirects `ELECTRON_BUILDER_CACHE` / `LOCALAPPDATA` into `.cache/` under the repo. This avoids electron-builder failures when `pnpm` lives under a non-ASCII `%USERPROFILE%` or when Developer Mode / elevation is unavailable for winCodeSign symlink extraction. Linux and Windows packaging retry GitHub 502/503/504 downloads of Electron and electron-builder binaries (including winCodeSign) up to three times. Cached binaries stay in `ELECTRON_BUILDER_CACHE` (default `.cache/electron-builder` in the repo). CI runners do not keep that cache across jobs, so the retry covers a 504 on a cold runner. Set `ELECTRON_MIRROR` if Electron downloads are flaky in your region.
@@ -63,39 +63,39 @@ Use the smallest lane that matches the changed surface.
   Background-friendly Electron UI coverage. This is the default lane for renderer, sidebar, composer, persistence, settings, skills, and worktree UI behavior.
 
   ```bash
-  pnpm --filter @pi-gui/desktop run test:e2e
-  pnpm --filter @pi-gui/desktop run test:e2e:core
+  pnpm --filter @fxagent/desktop run test:e2e
+  pnpm --filter @fxagent/desktop run test:e2e:core
   ```
 
 - `live`
   Runtime integration coverage, including local extension fixtures and opt-in real-provider tests. Inspect the selected spec and report skips: a green lane without real requests does not prove a provider conversation.
 
   ```bash
-  pnpm --filter @pi-gui/desktop run test:e2e:live
+  pnpm --filter @fxagent/desktop run test:e2e:live
   ```
 
 - `native`
   macOS OS-surface coverage such as folder pickers, image pickers, and real clipboard paste. This lane is foreground-only and can take focus.
 
   ```bash
-  pnpm --filter @pi-gui/desktop run test:e2e:native
+  pnpm --filter @fxagent/desktop run test:e2e:native
   ```
 
 - `production`
   Opt-in higher-fidelity smokes that stay out of the default fast lanes. Use these for real-auth `live` checks, packaged `.app` launch, and real macOS open-panel coverage.
 
   ```bash
-  pnpm --filter @pi-gui/desktop run test:core:auth-contract
-  pnpm --filter @pi-gui/desktop run test:prod:packaged-smoke
-  pnpm --filter @pi-gui/desktop run test:prod:applications-relaunch
-  pnpm --filter @pi-gui/desktop run test:prod:release-zip-smoke
-  pnpm --filter @pi-gui/desktop run test:prod:open-folder-real
+  pnpm --filter @fxagent/desktop run test:core:auth-contract
+  pnpm --filter @fxagent/desktop run test:prod:packaged-smoke
+  pnpm --filter @fxagent/desktop run test:prod:applications-relaunch
+  pnpm --filter @fxagent/desktop run test:prod:release-zip-smoke
+  pnpm --filter @fxagent/desktop run test:prod:open-folder-real
   ```
 
 Run core, live, and native together (production, dev, and demo are separate):
 
 ```bash
-pnpm --filter @pi-gui/desktop run test:e2e:all
+pnpm --filter @fxagent/desktop run test:e2e:all
 ```
 
 ## Marketing media
@@ -107,7 +107,7 @@ The root commands own published marketing outputs:
   list, review, terminal and command palette. It runs
   [`scripts/product-media/capture.media.ts`](scripts/product-media/capture.media.ts), which drives
   a real agent run on Linux in its own 2x Xvfb display and records it with ffmpeg. The run
-  needs `PI_GUI_MARKETING_PROVIDER`, `PI_GUI_MARKETING_MODEL` and `PI_APP_REAL_AUTH_SOURCE_DIR` (the
+  needs `FXAGENT_MARKETING_PROVIDER`, `FXAGENT_MARKETING_MODEL` and `FXAGENT_REAL_AUTH_SOURCE_DIR` (the
   pi agent directory holding `auth.json`); only the selected provider's saved credentials are
   copied, into a private temporary directory, and that copy is deleted afterwards. If pi refreshes an OAuth
   token during the run, the refreshed token is not written back, so a provider that rotates refresh
@@ -117,13 +117,13 @@ The root commands own published marketing outputs:
   `video/public/captures/`. The parallel-session capture starts two threads with initial prompts and
   requires both sessions to report `running` before recording or publishing the clip. The command
   submits real prompts, so it fails unless
-  `PI_GUI_MARKETING_ALLOW_PROVIDER_ENV=1`, `PI_GUI_MARKETING_PROVIDER`, and
-  `PI_GUI_MARKETING_MODEL` explicitly select the provider environment to use.
+  `FXAGENT_MARKETING_ALLOW_PROVIDER_ENV=1`, `FXAGENT_MARKETING_PROVIDER`, and
+  `FXAGENT_MARKETING_MODEL` explicitly select the provider environment to use.
 - `pnpm marketing:render` consumes those clips and renders `video/out/pi-showcase.mp4`.
 
 [`scripts/marketing-assets.json`](../../scripts/marketing-assets.json) is the producer-to-consumer
 manifest. Preserve existing media and capture evidence. For a proof run, set
-`PI_GUI_MARKETING_STAGE_DIR` to an empty directory so capture commands write the same output tree
+`FXAGENT_MARKETING_STAGE_DIR` to an empty directory so capture commands write the same output tree
 there without replacing tracked media. The product media capture scrubs ambient provider
 credentials and retains its profile, workspaces and raw recording under
 `.artifacts/marketing/product-media/`.
@@ -133,20 +133,20 @@ synthetic profiles and frames under `.artifacts/marketing/showcase-captures/`.
 For the macOS Core run on `main`, use:
 
 ```bash
-pnpm --filter @pi-gui/desktop run test:e2e:ci:mac
+pnpm --filter @fxagent/desktop run test:e2e:ci:mac
 ```
 
 Linux CI also validates packaging via:
 
 ```bash
-pnpm --filter @pi-gui/desktop run package:linux
+pnpm --filter @fxagent/desktop run package:linux
 pnpm --dir apps/desktop run verify:packaged-runtime-deps:linux
 ```
 
 Windows release CI validates packaging via:
 
 ```bash
-pnpm --filter @pi-gui/desktop run package:win:dir
+pnpm --filter @fxagent/desktop run package:win:dir
 pnpm --dir apps/desktop run verify:packaged-runtime-deps:windows
 ```
 
@@ -158,8 +158,8 @@ For a visible send/stream/tool/restart journey without injected assistant events
 
 ## Focus And Foreground Rules
 
-- `core` and most `live` scripts set `PI_APP_TEST_MODE=background` for you. Agents normally should not set that env var manually.
-- `native` scripts set `PI_APP_TEST_MODE=foreground` for you and may steal focus.
+- `core` and most `live` scripts set `FXAGENT_TEST_MODE=background` for you. Agents normally should not set that env var manually.
+- `native` scripts set `FXAGENT_TEST_MODE=foreground` for you and may steal focus.
 - If a native test fails, rerun it with a clean foreground window before assuming the product is broken.
 - Picker tests rely on macOS Accessibility/UI scripting. If folder or image picker automation cannot type into the dialog, check system Accessibility permissions first.
 - `production` open-panel coverage also relies on macOS Accessibility/UI scripting and should be run with the app kept frontmost.
@@ -185,33 +185,35 @@ Rerun the matching lane before closing for `core` and `live`.
 For `native`, rerun the targeted native spec by default and expand to `test:e2e:native` only when the change touches shared native helpers, multiple native specs, or lane-wide native behavior.
 
 ```bash
-pnpm --filter @pi-gui/desktop run test:core:worktrees
-pnpm --filter @pi-gui/desktop run test:core:persistence
-pnpm --filter @pi-gui/desktop run test:live:tool-calls
-pnpm --filter @pi-gui/desktop run test:native:paste
-pnpm --filter @pi-gui/desktop run test:native:open-folder
-pnpm --filter @pi-gui/desktop run test:core:attach-image
-pnpm --filter @pi-gui/desktop run test:core:auth-contract
-pnpm --filter @pi-gui/desktop run test:prod:packaged-smoke
-pnpm --filter @pi-gui/desktop run test:prod:applications-relaunch
-pnpm --filter @pi-gui/desktop run test:prod:release-zip-smoke
-pnpm --filter @pi-gui/desktop run test:prod:open-folder-real
+pnpm --filter @fxagent/desktop run test:core:worktrees
+pnpm --filter @fxagent/desktop run test:core:persistence
+pnpm --filter @fxagent/desktop run test:live:tool-calls
+pnpm --filter @fxagent/desktop run test:native:paste
+pnpm --filter @fxagent/desktop run test:native:open-folder
+pnpm --filter @fxagent/desktop run test:core:attach-image
+pnpm --filter @fxagent/desktop run test:core:auth-contract
+pnpm --filter @fxagent/desktop run test:prod:packaged-smoke
+pnpm --filter @fxagent/desktop run test:prod:applications-relaunch
+pnpm --filter @fxagent/desktop run test:prod:release-zip-smoke
+pnpm --filter @fxagent/desktop run test:prod:open-folder-real
 ```
+
+Desktop environment variables are named `FXAGENT_*`. The older `PI_APP_*` names are still read by the app when the `FXAGENT_*` name is unset.
 
 For real-auth `live` specs, opt in explicitly:
 
 ```bash
-PI_APP_REAL_AUTH=1 PI_APP_REAL_AUTH_SOURCE_DIR=/absolute/path/to/agent \
-  pnpm --filter @pi-gui/desktop run test:e2e:runner -- apps/desktop/tests/live/submit-run.spec.ts
+FXAGENT_REAL_AUTH=1 FXAGENT_REAL_AUTH_SOURCE_DIR=/absolute/path/to/agent \
+  pnpm --filter @fxagent/desktop run test:e2e:runner -- apps/desktop/tests/live/submit-run.spec.ts
 
-PI_APP_REAL_AUTH=1 PI_APP_REAL_AUTH_SOURCE_DIR=/absolute/path/to/agent \
-  pnpm --filter @pi-gui/desktop run test:e2e:runner -- apps/desktop/tests/live/tool-calls.spec.ts
+FXAGENT_REAL_AUTH=1 FXAGENT_REAL_AUTH_SOURCE_DIR=/absolute/path/to/agent \
+  pnpm --filter @fxagent/desktop run test:e2e:runner -- apps/desktop/tests/live/tool-calls.spec.ts
 ```
 
 For dev-loop verification, use:
 
 ```bash
-pnpm --filter @pi-gui/desktop run test:dev:reload
+pnpm --filter @fxagent/desktop run test:dev:reload
 ```
 
 That spec launches the app in development mode, edits isolated probe modules for renderer/Electron/shared-package wiring, and proves the running window picks up the changes.

@@ -24,17 +24,19 @@ test("requests notification permission in the packaged app when active work move
     initialWorkspaces: [workspacePath],
     testMode: "background",
     envOverrides: {
-      PI_APP_TEST_NOTIFICATION_PERMISSION_HELPER_STATUS_FILE: helperStatusFilePath,
-      PI_APP_TEST_NOTIFICATION_PERMISSION_HELPER_FOLLOWS_REQUEST: "1",
-      PI_APP_TEST_NOTIFICATION_PERMISSION_REQUEST_RESULT: "granted",
-      PI_APP_TEST_NOTIFICATION_PERMISSION_REQUEST_LOG_PATH: requestLogPath,
+      FXAGENT_TEST_NOTIFICATION_PERMISSION_HELPER_STATUS_FILE: helperStatusFilePath,
+      FXAGENT_TEST_NOTIFICATION_PERMISSION_HELPER_FOLLOWS_REQUEST: "1",
+      FXAGENT_TEST_NOTIFICATION_PERMISSION_REQUEST_RESULT: "granted",
+      FXAGENT_TEST_NOTIFICATION_PERMISSION_REQUEST_LOG_PATH: requestLogPath,
     },
   });
 
   try {
     const window = await harness.firstWindow();
     await expect
-      .poll(() => window.evaluate(() => globalThis.window.piApp.getNotificationPermissionStatus()))
+      .poll(() =>
+        window.evaluate(() => globalThis.window.fxagentApp.getNotificationPermissionStatus()),
+      )
       .toBe("default");
     const sessionA = await createThread(window, "Packaged Session A");
     await createThread(window, "Packaged Session B");

@@ -1,4 +1,4 @@
-import type { RuntimeExtensionRecord } from "@pi-gui/session-driver/runtime-types";
+import type { RuntimeExtensionRecord } from "@fxagent/session-driver/runtime-types";
 import type {
   ExtensionCommandCompatibilityRecord,
   WorkspaceRecord,
@@ -11,7 +11,7 @@ import {
   extensionGroupKeyLabel,
   extensionGroupLabel,
   isPiAddonExtension,
-  isPiGuiBuiltinExtension,
+  isFxagentBuiltinExtension,
   type ExtensionGroupKey,
 } from "./extension-display";
 import { displayPath, ResourceDetail } from "./resource-detail";
@@ -22,7 +22,7 @@ const GROUP_ORDER: readonly ExtensionGroupKey[] = [
   "user",
   "temporary",
   "pi-addons",
-  "pi-gui-tools",
+  "fxagent-tools",
 ];
 
 interface ExtensionsTabProps {
@@ -140,7 +140,7 @@ function ExtensionDetail({
         >
           <span className="settings-row__value">{extensionGroupLabel(selected)}</span>
         </SettingsRow>
-        {isPiGuiBuiltinExtension(selected) || isPiAddonExtension(selected) ? null : (
+        {isFxagentBuiltinExtension(selected) || isPiAddonExtension(selected) ? null : (
           <SettingsRow title={t("extensions.detail.location")}>
             <code className="resource-detail__code" title={selected.path}>
               {displayPath(selected.path, workspace.path)}
@@ -219,7 +219,7 @@ function isToggleableExtension(extension: RuntimeExtensionRecord): boolean {
   return (
     isFolderExtension(extension) ||
     isPiAddonExtension(extension) ||
-    isPiGuiBuiltinExtension(extension)
+    isFxagentBuiltinExtension(extension)
   );
 }
 

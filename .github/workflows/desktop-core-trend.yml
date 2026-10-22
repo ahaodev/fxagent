@@ -32,10 +32,10 @@ jobs:
 
       - name: Run desktop core once
         env:
-          PI_APP_TEST_MODE: background
+          FXAGENT_TEST_MODE: background
           PLAYWRIGHT_JSON_OUTPUT_NAME: ${{ github.workspace }}/apps/desktop/test-results/desktop-core-trend.json
         run: >-
-          pnpm --filter @pi-gui/desktop run test:e2e:core
+          pnpm --filter @fxagent/desktop run test:e2e:core
           --workers=1
           --retries=0
           --reporter=line,json

@@ -212,9 +212,9 @@ async function expectNoTimelineCollapseWindow(
 
 async function setDesktopActiveView(window: Page, view: "threads" | "settings"): Promise<void> {
   await window.evaluate(async (nextView) => {
-    const app = globalThis.window.piApp;
+    const app = globalThis.window.fxagentApp;
     if (!app) {
-      throw new Error("piApp IPC bridge is unavailable");
+      throw new Error("fxagentApp IPC bridge is unavailable");
     }
     await app.setActiveView(nextView);
   }, view);
@@ -232,9 +232,9 @@ async function createTimelineSession(
 
   await window.evaluate(
     async ({ targetTitle, targetWorkspaceId }) => {
-      const app = globalThis.window.piApp;
+      const app = globalThis.window.fxagentApp;
       if (!app) {
-        throw new Error("piApp IPC bridge is unavailable");
+        throw new Error("fxagentApp IPC bridge is unavailable");
       }
 
       const beforeState = await app.getState();

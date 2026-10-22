@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState, type Dispatch, type SetStateAction } from "react";
-import type { RuntimeSnapshot } from "@pi-gui/session-driver/runtime-types";
+import type { RuntimeSnapshot } from "@fxagent/session-driver/runtime-types";
 import type {
   LanguagePreference,
   AppView,
@@ -25,7 +25,7 @@ import { useI18n } from "../i18n";
 import { SecondarySurface } from "./secondary-surface";
 
 interface SecondarySurfacesProps {
-  readonly api: NonNullable<typeof window.piApp>;
+  readonly api: NonNullable<typeof window.fxagentApp>;
   readonly snapshot: DesktopAppState;
   readonly setSnapshot: Dispatch<SetStateAction<DesktopAppState | null>>;
   readonly activeView: Extract<AppView, "settings" | "skills" | "extensions">;
@@ -91,7 +91,7 @@ export function SecondarySurfaces({
     : [];
 
   useEffect(() => {
-    const piApi = window.piApp;
+    const piApi = window.fxagentApp;
     if (!piApi?.onNotificationPermissionStatusChanged) {
       return;
     }

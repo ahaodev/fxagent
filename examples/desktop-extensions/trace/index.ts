@@ -1,7 +1,7 @@
 import { defineFacet } from "@earendil-works/chord";
 import { BACKGROUND_CONTEXT } from "@earendil-works/chord/context";
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
-import { registerDesktopView } from "@pi-gui/extension-ui";
+import { registerDesktopView } from "@fxagent/extension-ui";
 import { Trace, type TraceState } from "./contract.ts";
 import { outline } from "./format.ts";
 import { TraceRecorder, type TraceEvent } from "./trace.ts";
@@ -109,7 +109,7 @@ export default function traceExtension(pi: ExtensionAPI): void {
     frontend: new URL("./dist/desktop.js", import.meta.url),
     backend: () =>
       defineFacet({
-        id: "pi-gui.example.trace.backend",
+        id: "fxagent.example.trace.backend",
         setup(env) {
           const replicated = env.replicatedState(recorder.snapshot());
           const listener = (next: TraceState) => replicated.replace(BACKGROUND_CONTEXT, next);

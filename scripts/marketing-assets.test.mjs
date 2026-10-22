@@ -38,10 +38,10 @@ test("every published marketing asset has one runnable producer and live consume
 
 test("product build excludes media rendering and marketing commands are explicit", async () => {
   const rootPackage = await readJson("package.json");
-  assert.match(rootPackage.scripts.build, /--filter @pi-gui\/desktop run build/);
-  assert.match(rootPackage.scripts.build, /--filter @pi-gui\/website run build/);
+  assert.match(rootPackage.scripts.build, /--filter @fxagent\/desktop run build/);
+  assert.match(rootPackage.scripts.build, /--filter @fxagent\/website run build/);
   assert.doesNotMatch(rootPackage.scripts.build, /video|render|recursive| -r(?:\s|$)/);
-  assert.match(rootPackage.scripts["marketing:render"], /@pi-app\/video run render/);
+  assert.match(rootPackage.scripts["marketing:render"], /@fxagent\/video run render/);
 });
 
 test("marketing commands delegate to scripts owned by their producer workspace", async () => {
@@ -80,10 +80,10 @@ test("marketing producers support staged proof and pass credentials only explici
     path.join(root, "apps/desktop/scripts/product-media/capture.media.ts"),
     "utf8",
   );
-  assert.match(source, /PI_GUI_MARKETING_STAGE_DIR/);
-  assert.match(source, /PI_GUI_MARKETING_PROVIDER/);
-  assert.match(source, /PI_GUI_MARKETING_MODEL/);
-  assert.match(source, /PI_APP_REAL_AUTH_SOURCE_DIR/);
+  assert.match(source, /FXAGENT_MARKETING_STAGE_DIR/);
+  assert.match(source, /FXAGENT_MARKETING_PROVIDER/);
+  assert.match(source, /FXAGENT_MARKETING_MODEL/);
+  assert.match(source, /FXAGENT_REAL_AUTH_SOURCE_DIR/);
   assert.match(source, /scrubProviderEnv: true/);
   assert.match(source, /\{ \[provider\]: auth\[provider\] \}/);
   // The only removal is the private credential copy; media and evidence are never deleted.
@@ -95,10 +95,10 @@ test("marketing producers support staged proof and pass credentials only explici
     path.join(root, "apps/desktop/scripts/capture-showcase.mts"),
     "utf8",
   );
-  assert.match(showcaseSource, /PI_GUI_MARKETING_STAGE_DIR/);
-  assert.match(showcaseSource, /PI_GUI_MARKETING_ALLOW_PROVIDER_ENV/);
-  assert.match(showcaseSource, /PI_GUI_MARKETING_PROVIDER/);
-  assert.match(showcaseSource, /PI_GUI_MARKETING_MODEL/);
+  assert.match(showcaseSource, /FXAGENT_MARKETING_STAGE_DIR/);
+  assert.match(showcaseSource, /FXAGENT_MARKETING_ALLOW_PROVIDER_ENV/);
+  assert.match(showcaseSource, /FXAGENT_MARKETING_PROVIDER/);
+  assert.match(showcaseSource, /FXAGENT_MARKETING_MODEL/);
   assert.match(showcaseSource, /"auth\.json"\), "\{\}\\n"/);
   assert.doesNotMatch(showcaseSource, /realAuthSourceDir/);
   assert.doesNotMatch(showcaseSource, /\brm\(/);
@@ -110,7 +110,7 @@ test("failed media generation preserves the published file and partial evidence"
   const { replaceFileAtomically } = await jiti.import(
     path.join(root, "apps/desktop/scripts/atomic-output.mts"),
   );
-  const fixtureDir = await mkdtemp(path.join(tmpdir(), "pi-gui-marketing-output-"));
+  const fixtureDir = await mkdtemp(path.join(tmpdir(), "fxagent-marketing-output-"));
   const outputPath = path.join(fixtureDir, "published.mp4");
   await writeFile(outputPath, "existing published media");
 

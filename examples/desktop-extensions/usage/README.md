@@ -10,18 +10,18 @@ context. It reads Pi's own session data; nothing is sent anywhere.
   reply), and on `agent_settled` sums the assistant messages and writes one
   `pi-gui.card` entry with the reply's
   time, model calls, tool calls, tokens (in, out, % cached), cost (or
-  **Subscription**) and context used (`ctx.getContextUsage()`). pi-gui draws the
+  **Subscription**) and context used (`ctx.getContextUsage()`). fxagent draws the
   card below the reply; terminal Pi ignores it, and it never enters the model's
   context. The card appears when the reply finishes rather than updating live,
   because a card that updates stays where it first appeared.
 
 - **Usage**: `SessionManager.list(cwd)` finds the folder's sessions (newest 200;
   older ones are counted, not read). Each file is summed the way Pi's
-  `getSessionStats()` sums it (the numbers pi-gui's usage footer shows): assistant,
+  `getSessionStats()` sums it (the numbers fxagent's usage footer shows): assistant,
   tool-result, usage-entry and compaction/branch-summary usage, all branches. Usage
   is bucketed by local day so the view can filter Today / 7 days / 30 days / All
   time. Cache hit is `cacheRead / (input + cacheRead + cacheWrite)`. Replies from a
-  subscription provider (OAuth with a subscription plan, or Kimi Coding, as pi-gui's
+  subscription provider (OAuth with a subscription plan, or Kimi Coding, as fxagent's
   footer decides) count tokens but no cost; a period whose replies all cost zero
   shows **Subscription**.
 - **What fills context (estimated)**: Pi's `buildSessionProjection` gives each
@@ -37,7 +37,7 @@ The view recomputes when opened, on **Refresh**, after each agent run in this
 thread (`agent_end`), and updates just this thread after each turn (`turn_end`).
 Terminal Pi gets `/usage`, a short text summary.
 
-A thread row expands in place; **Open thread** switches pi-gui to that thread
+A thread row expands in place; **Open thread** switches fxagent to that thread
 (`host.actions.openThread`), which closes the view.
 
 ```sh

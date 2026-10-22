@@ -1,5 +1,5 @@
 import { expect } from "@playwright/test";
-import type { SessionRef } from "@pi-gui/session-driver";
+import type { SessionRef } from "@fxagent/session-driver";
 import { getDesktopState, launchDesktop } from "./electron-app";
 
 type DesktopTestApi = {
@@ -32,12 +32,12 @@ export async function setSessionVisibilityOverride(
   mode: "active" | "inactive" | null,
 ): Promise<void> {
   await harness.electronApp.evaluate((_, nextMode) => {
-    const globals = globalThis as { __PI_APP_TEST_SESSION_VISIBILITY__?: "active" | "inactive" };
+    const globals = globalThis as { __FXAGENT_TEST_SESSION_VISIBILITY__?: "active" | "inactive" };
     if (!nextMode) {
-      delete globals.__PI_APP_TEST_SESSION_VISIBILITY__;
+      delete globals.__FXAGENT_TEST_SESSION_VISIBILITY__;
       return;
     }
-    globals.__PI_APP_TEST_SESSION_VISIBILITY__ = nextMode;
+    globals.__FXAGENT_TEST_SESSION_VISIBILITY__ = nextMode;
   }, mode);
 }
 
@@ -47,9 +47,9 @@ export async function createThread(
 ): Promise<SessionContext> {
   await window.evaluate(
     async ({ targetTitle }) => {
-      const app = (window as Window & { piApp?: DesktopTestApi }).piApp;
+      const app = (window as Window & { fxagentApp?: DesktopTestApi }).fxagentApp;
       if (!app) {
-        throw new Error("piApp IPC bridge is unavailable");
+        throw new Error("fxagentApp IPC bridge is unavailable");
       }
       const state = await app.getState();
       const workspaceId = state.selectedWorkspaceId ?? state.workspaces[0]?.id;
@@ -72,9 +72,9 @@ export async function selectSessionByTitle(
 ): Promise<void> {
   await window.evaluate(
     async ({ targetTitle }) => {
-      const app = (window as Window & { piApp?: DesktopTestApi }).piApp;
+      const app = (window as Window & { fxagentApp?: DesktopTestApi }).fxagentApp;
       if (!app) {
-        throw new Error("piApp IPC bridge is unavailable");
+        throw new Error("fxagentApp IPC bridge is unavailable");
       }
 
       const state = await app.getState();

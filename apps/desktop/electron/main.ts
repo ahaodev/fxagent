@@ -12,7 +12,7 @@ import {
   type MenuItemConstructorOptions,
   type MessageBoxOptions,
 } from "electron";
-import { isValidHttpBaseUrl } from "@pi-gui/pi-sdk-driver";
+import { isValidHttpBaseUrl } from "@fxagent/pi-sdk-driver";
 import { createRequire } from "node:module";
 import { randomUUID } from "node:crypto";
 import type {
@@ -81,9 +81,10 @@ import type {
   ComposerFileAttachment,
   ComposerImageAttachment,
 } from "../contracts/desktop-state";
-import type { SessionDriverEvent } from "@pi-gui/session-driver";
-import type { GenerateThreadTitleOptions } from "@pi-gui/pi-sdk-driver";
-import type { SessionRef, WorkspaceRef } from "@pi-gui/session-driver";
+import type { SessionDriverEvent } from "@fxagent/session-driver";
+import type { GenerateThreadTitleOptions } from "@fxagent/pi-sdk-driver";
+import type { SessionRef, WorkspaceRef } from "@fxagent/session-driver";
+import { readAppEnv } from "./app-env";
 
 protocol.registerSchemesAsPrivileged([
   {
@@ -93,9 +94,9 @@ protocol.registerSchemesAsPrivileged([
 ]);
 
 const isDev = Boolean(process.env.ELECTRON_RENDERER_URL);
-const appTestMode = resolveAppTestMode(process.env.PI_APP_TEST_MODE);
+const appTestMode = resolveAppTestMode(readAppEnv("TEST_MODE"));
 const windowTestMode = appTestMode ?? "foreground";
-const devReloadMarkersEnabled = process.env.PI_APP_DEV_RELOAD_MARKERS === "1";
+const devReloadMarkersEnabled = readAppEnv("DEV_RELOAD_MARKERS") === "1";
 const TURN_CAPTURE_BACKSTOP_MS = 10_000;
 let store: DesktopAppStore;
 let extensionViewOwner: DesktopExtensionViewOwner | undefined;
@@ -656,7 +657,7 @@ function createWindow(): BrowserWindow {
     void window.loadURL(process.env.ELECTRON_RENDERER_URL as string).catch((error: unknown) => {
       console.error("[main] loadURL failed", error);
     });
-    if (process.env.PI_APP_OPEN_DEVTOOLS !== "0") {
+    if (readAppEnv("OPEN_DEVTOOLS") !== "0") {
       window.webContents.openDevTools({ mode: "detach" });
     }
   } else {
@@ -933,17 +934,17 @@ function installApplicationMenu(language: AppLanguage): void {
 }
 
 // Ensure npm (and other Homebrew/npm-global binaries) are available even when
-// pi-gui is launched via Finder/Dock (which hands the process a minimal PATH).
+// fxagent is launched via Finder/Dock (which hands the process a minimal PATH).
 // POSIX-only; on Windows the PATH is left untouched (see augmentPosixPath).
 // Tests that need an exact PATH (no gh, say, on a Mac runner whose Homebrew has one) opt out.
 const augmentedPath = augmentPosixPath();
-if (augmentedPath.changed && !(appTestMode && process.env.PI_APP_TEST_EXACT_PATH === "1")) {
+if (augmentedPath.changed && !(appTestMode && readAppEnv("TEST_EXACT_PATH") === "1")) {
   process.env.PATH = augmentedPath.path;
 }
 
-app.setName("FxAgent");
+app.setName("fxagent");
 
-const configuredUserDataDir = process.env.PI_APP_USER_DATA_DIR?.trim() || app.getPath("userData");
+const configuredUserDataDir = readAppEnv("USER_DATA_DIR")?.trim() || app.getPath("userData");
 app.setPath("userData", configuredUserDataDir);
 
 const hasSingleInstanceLock = app.requestSingleInstanceLock();
@@ -999,7 +1000,7 @@ app
       hostAssets: {
         "frame-bridge.js": {
           body: await readFile(
-            createRequire(__filename).resolve("@pi-gui/extension-ui/frame-bridge"),
+            createRequire(__filename).resolve("@fxagent/extension-ui/frame-bridge"),
             "utf8",
           ),
           contentType: "text/javascript; charset=utf-8",
@@ -1066,8 +1067,8 @@ app
       driverOptions,
       generateThreadTitleOverride: async (workspace, options) =>
         generateThreadTitleOverride?.(workspace, options),
-      // PI_APP_TEST_LOCALE pins the system language in tests; the real locale is never used there.
-      getSystemLocale: () => process.env.PI_APP_TEST_LOCALE || app.getLocale(),
+      // FXAGENT_TEST_LOCALE pins the system language in tests; the real locale is never used there.
+      getSystemLocale: () => readAppEnv("TEST_LOCALE") || app.getLocale(),
     });
     windowOwner = new WindowOwner(store, {
       onActiveWindowChanged: (window) => {
@@ -1101,9 +1102,9 @@ app
       }
     });
     installApplicationMenu(applicationMenuLanguage);
-    if (process.env.PI_APP_TEST_MODE) {
+    if (readAppEnv("TEST_MODE")) {
       Object.assign(globalThis, {
-        __PI_APP_TEST_HOOKS: {
+        __FXAGENT_TEST_HOOKS: {
           emitSessionEvent: (event: SessionDriverEvent) => store.emitTestSessionEvent(event),
           handleWindowActivation: () => {
             if (mainWindow) {
@@ -1197,8 +1198,8 @@ app
       capabilities: {
         ping: () =>
           devReloadMarkersEnabled
-            ? `pi desktop ready:${MAIN_DEV_RELOAD_MARKER}`
-            : "pi desktop ready",
+            ? `fxagent desktop ready:${MAIN_DEV_RELOAD_MARKER}`
+            : "fxagent desktop ready",
         theme: themeManager,
         openExternal: openExternalLink,
         pickWorkspace: (window) => pickWorkspaceViaDialog(window),
@@ -1351,7 +1352,7 @@ app.on("before-quit", (event) => {
 });
 
 function resolveInitialWorkspacePaths(): readonly string[] {
-  const raw = process.env.PI_APP_INITIAL_WORKSPACES;
+  const raw = readAppEnv("INITIAL_WORKSPACES");
   if (raw !== undefined) {
     return raw
       .split(path.delimiter)
@@ -1530,7 +1531,7 @@ async function promptForText(
     maximizable: false,
     fullscreenable: false,
     autoHideMenuBar: process.platform !== "darwin",
-    title: "FxAgent",
+    title: "fxagent",
     webPreferences: { sandbox: true, contextIsolation: true, nodeIntegration: false },
   });
 

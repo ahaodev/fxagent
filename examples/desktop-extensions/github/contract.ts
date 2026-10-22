@@ -66,7 +66,7 @@ export const GH_MISSING =
   "This view reads GitHub through the GitHub CLI. Install gh, run gh auth login, then refresh.";
 export const GH_INSTALL_URL = "https://cli.github.com/";
 
-export const GitHub = defineService<GitHubService>("pi-gui.example.github.v1");
+export const GitHub = defineService<GitHubService>("fxagent.example.github.v1");
 
 export function initialState(): GitHubState {
   return {

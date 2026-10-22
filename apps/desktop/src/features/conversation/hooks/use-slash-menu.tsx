@@ -1,5 +1,5 @@
 import { useEffect, useState, type Dispatch, type KeyboardEvent, type SetStateAction } from "react";
-import type { RuntimeCommandRecord, RuntimeSnapshot } from "@pi-gui/session-driver/runtime-types";
+import type { RuntimeCommandRecord, RuntimeSnapshot } from "@fxagent/session-driver/runtime-types";
 import type {
   DesktopAppState,
   ExtensionCommandCompatibilityRecord,
@@ -18,7 +18,7 @@ import {
   type ComposerSlashOptionEmptyState,
   type ComposerSlashOption,
 } from "../composer-commands";
-import type { PiDesktopApi } from "../../../../contracts/ipc";
+import type { FxagentDesktopApi } from "../../../../contracts/ipc";
 import { deriveModelOnboardingState } from "../../settings/model-onboarding";
 import type { SettingsSection } from "../../settings/settings-view";
 
@@ -68,7 +68,7 @@ interface UseSlashMenuParams {
   readonly selectedSession: SessionRecord | undefined;
   readonly selectedWorkspace: WorkspaceRecord | undefined;
   readonly isRunning: boolean;
-  readonly api: PiDesktopApi | undefined;
+  readonly api: FxagentDesktopApi | undefined;
   readonly setSnapshot: Dispatch<SetStateAction<DesktopAppState | null>>;
   readonly focusComposer: () => void;
   readonly openSettings: (workspaceId?: string, section?: SettingsSection) => void;

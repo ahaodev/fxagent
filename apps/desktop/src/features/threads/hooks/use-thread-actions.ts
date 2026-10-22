@@ -7,7 +7,7 @@ import {
   type SetStateAction,
 } from "react";
 import type { DesktopAppState, WorkspaceSessionTarget } from "../../../../contracts/desktop-state";
-import type { PiDesktopApi } from "../../../../contracts/ipc";
+import type { FxagentDesktopApi } from "../../../../contracts/ipc";
 import {
   nonCompletedBindingForSession,
   type ScheduledTaskRecord,
@@ -21,7 +21,7 @@ import {
 } from "../thread-actions";
 
 interface UseThreadActionsParams {
-  readonly api: PiDesktopApi | undefined;
+  readonly api: FxagentDesktopApi | undefined;
   readonly setSnapshot: Dispatch<SetStateAction<DesktopAppState | null>>;
   readonly updateSnapshot: (
     setSnapshot: Dispatch<SetStateAction<DesktopAppState | null>>,
@@ -102,7 +102,7 @@ export function useThreadActions({
     workspaceId: subject.workspaceId,
     sessionId: subject.session.id,
   });
-  const mutate = (action: (desktopApi: PiDesktopApi) => Promise<DesktopAppState>) => {
+  const mutate = (action: (desktopApi: FxagentDesktopApi) => Promise<DesktopAppState>) => {
     if (!api) return;
     void updateSnapshot(setSnapshot, () => action(api)).catch((error: unknown) => {
       console.error("[renderer] updateSnapshot failed", error);

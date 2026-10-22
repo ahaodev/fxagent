@@ -66,7 +66,7 @@ export interface RuntimeExtensionTool {
   readonly name: string;
   /** Empty when the extension gave none. */
   readonly label: string;
-  /** It replaces one of pi's own tools (read, bash, edit, ...), which keep pi-gui's handling. */
+  /** It replaces one of pi's own tools (read, bash, edit, ...), which keep fxagent's handling. */
   readonly replacesPiTool: boolean;
 }
 

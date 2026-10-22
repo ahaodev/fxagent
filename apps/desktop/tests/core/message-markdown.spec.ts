@@ -38,13 +38,13 @@ const tableResponse = [
   "",
   "| Package | Platform | Architecture | Artifact | Checksum | Distribution channel |",
   "| --- | --- | --- | --- | --- | --- |",
-  `| desktop | macOS | arm64 | ${"pi-gui-release-artifact-".repeat(4)}.dmg | ${"abcdef0123456789".repeat(4)} | GitHub prerelease with automatic updates |`,
+  `| desktop | macOS | arm64 | ${"fxagent-release-artifact-".repeat(4)}.dmg | ${"abcdef0123456789".repeat(4)} | GitHub prerelease with automatic updates |`,
 ].join("\n");
 
 test("renders markdown formatting in assistant responses", async () => {
   test.setTimeout(60_000);
   const userDataDir = await makeUserDataDir();
-  const proofDir = process.env.PI_APP_MARKDOWN_RENDERING_PROOF_DIR?.trim();
+  const proofDir = process.env.FXAGENT_MARKDOWN_RENDERING_PROOF_DIR?.trim();
   if (proofDir) {
     await mkdir(proofDir, { recursive: true });
   }
@@ -100,10 +100,7 @@ test("renders markdown formatting in assistant responses", async () => {
     );
 
     const issueLink = messageRow.getByRole("link", { name: "issue" });
-    await expect(issueLink).toHaveAttribute(
-      "href",
-      "https://github.com/ahaodev/fxagent/issues/19",
-    );
+    await expect(issueLink).toHaveAttribute("href", "https://github.com/ahaodev/fxagent/issues/19");
     await expect(messageRow).not.toContainText("## Markdown rendering proof");
     await expect(messageRow).not.toContainText("```ts");
 

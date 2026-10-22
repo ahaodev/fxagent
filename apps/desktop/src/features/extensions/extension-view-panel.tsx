@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import type { SessionRef } from "@pi-gui/session-driver/types";
-import type { PiDesktopApi } from "../../../contracts/ipc";
+import type { SessionRef } from "@fxagent/session-driver/types";
+import type { FxagentDesktopApi } from "../../../contracts/ipc";
 import type {
   DesktopExtensionViewInfo,
   ExtensionViewConnection,
@@ -34,7 +34,7 @@ export function ExtensionViewPanel({
   onBeforePrepareTaskDraft,
   onPrepareTaskDraftPendingChange,
 }: {
-  readonly api: PiDesktopApi;
+  readonly api: FxagentDesktopApi;
   readonly target: SessionRef;
   readonly view: DesktopExtensionViewInfo;
   readonly theme: ExtensionViewTheme;
@@ -138,12 +138,12 @@ export function ExtensionViewPanel({
       channel.port1.onmessage = (event: MessageEvent<unknown>) => {
         if (!isCurrentMount()) return;
         const message = event.data;
-        if (isFrameMessage(message, "pi-gui:frame-ready")) {
+        if (isFrameMessage(message, "fxagent:frame-ready")) {
           if (readyTimer !== undefined) window.clearTimeout(readyTimer);
           setState({ kind: "ready", connection: opened });
           return;
         }
-        if (isFrameMessage(message, "pi-gui:frame-error")) {
+        if (isFrameMessage(message, "fxagent:frame-error")) {
           fail(
             typeof message.message === "string"
               ? message.message.slice(0, 4096)
@@ -200,7 +200,7 @@ export function ExtensionViewPanel({
       // transferred capability is a dedicated port, never a broadcast window-message channel.
       frame.contentWindow.postMessage(
         {
-          type: "pi-gui:extension-connect",
+          type: "fxagent:extension-connect",
           connectionId: opened.connectionId,
           theme: themeRef.current,
         },
@@ -265,7 +265,7 @@ export function ExtensionViewPanel({
   ]);
 
   useEffect(() => {
-    portRef.current?.postMessage({ type: "pi-gui:theme-changed", theme });
+    portRef.current?.postMessage({ type: "fxagent:theme-changed", theme });
   }, [theme.mode, theme.background, theme.foreground, theme.accent]);
 
   const connection = state.kind === "mounting" || state.kind === "ready" ? state.connection : null;

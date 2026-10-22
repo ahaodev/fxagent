@@ -1,7 +1,7 @@
 import { mkdir } from "node:fs/promises";
 import { join } from "node:path";
 import { expect, test, type Page, type Video } from "@playwright/test";
-import type { SessionDriverEvent, SessionRef } from "@pi-gui/session-driver";
+import type { SessionDriverEvent, SessionRef } from "@fxagent/session-driver";
 import {
   createNamedThread,
   emitTestSessionEvent,
@@ -223,7 +223,7 @@ async function saveProofVideo(video: Video | null, proofDir: string | undefined)
 
 test("keeps long tool metadata and user rows inside the transcript at wide and narrow widths", async () => {
   test.setTimeout(90_000);
-  const proofDir = process.env.PI_APP_TIMELINE_OVERFLOW_PROOF_DIR?.trim();
+  const proofDir = process.env.FXAGENT_TIMELINE_OVERFLOW_PROOF_DIR?.trim();
   if (proofDir) {
     await mkdir(proofDir, { recursive: true });
   }

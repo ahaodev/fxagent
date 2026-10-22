@@ -1,4 +1,4 @@
-# pi-gui verification map
+# fxagent verification map
 
 Choose proof by product importance and affected behavior. Core conversation coverage comes first; opening peripheral screens is not sufficient proof of this app.
 

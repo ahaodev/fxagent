@@ -14,7 +14,7 @@ import {
   writeFile,
 } from "node:fs/promises";
 import { dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
-import type { SessionRef, TurnCaptureBoundary } from "@pi-gui/session-driver";
+import type { SessionRef, TurnCaptureBoundary } from "@fxagent/session-driver";
 import type { ReviewCoverage, ReviewIssue } from "../../contracts/review";
 import { readJsonWithBackup, writeFileAtomicQueued } from "../persistence/atomic-file-write";
 import { isolatedGitEnvironment } from "../platform/files/git-environment";

@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { sessionKey } from "@pi-gui/session-driver";
+import { sessionKey } from "@fxagent/session-driver";
 import type { TranscriptMessage } from "../../contracts/timeline-types";
 import { applyTimelineEvent } from "../../electron/conversation/app-store-timeline";
 import {

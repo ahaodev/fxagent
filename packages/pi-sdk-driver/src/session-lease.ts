@@ -1,14 +1,14 @@
 import { randomBytes, randomUUID } from "node:crypto";
 import { link, open, readFile, rm, stat, utimes } from "node:fs/promises";
 import { hostname } from "node:os";
-import { writeJsonFileAtomic } from "@pi-gui/catalogs/node/atomic-write";
-import { isMissingFileError } from "@pi-gui/catalogs/node";
+import { writeJsonFileAtomic } from "@fxagent/catalogs/node/atomic-write";
+import { isMissingFileError } from "@fxagent/catalogs/node";
 
 /**
  * Single-writer lease convention for pi session files.
  *
- * When pi-gui binds a live runtime to a session's JSONL, it claims a sibling
- * `<sessionFile>.lease` file recording who holds it. Between pi-gui processes
+ * When fxagent binds a live runtime to a session's JSONL, it claims a sibling
+ * `<sessionFile>.lease` file recording who holds it. Between fxagent processes
  * the lease is exclusive: it is created with an atomic exclusive link, kept
  * fresh by a heartbeat while the holder lives, and removed only by its owner.
  * The pi CLI knows nothing about it, so its presence must never block reading
@@ -33,7 +33,7 @@ export const DEFAULT_LEASE_TTL_MS = 5 * 60_000;
 export const DEFAULT_LEASE_HEARTBEAT_MS = DEFAULT_LEASE_TTL_MS / 5;
 
 /** Surface tag written into leases held by this app. */
-export const PI_GUI_LEASE_SURFACE = "pi-gui";
+export const FXAGENT_LEASE_SURFACE = "fxagent";
 
 export interface LeaseInfo {
   readonly pid: number;
@@ -174,7 +174,7 @@ export function buildOwnLease(self: LeaseIdentity, now: number): LeaseInfo {
     pid: self.pid,
     hostname: self.hostname,
     startedAt: new Date(now).toISOString(),
-    surface: PI_GUI_LEASE_SURFACE,
+    surface: FXAGENT_LEASE_SURFACE,
     ...(self.token ? { token: self.token } : {}),
   };
 }

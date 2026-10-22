@@ -91,9 +91,9 @@ test("rejects oversized drag-drop, picker, and forged IPC images with a composer
 
     await window.evaluate(
       async (data) => {
-        const app = globalThis.window.piApp;
+        const app = globalThis.window.fxagentApp;
         if (!app) {
-          throw new Error("piApp IPC bridge is unavailable");
+          throw new Error("fxagentApp IPC bridge is unavailable");
         }
         await app.addComposerAttachments([
           {
@@ -363,9 +363,9 @@ test("startThread rejects oversize-pixel images without clearing the new-thread 
     const before = await getDesktopState(window);
 
     const result = await window.evaluate(async (data) => {
-      const app = globalThis.window.piApp;
+      const app = globalThis.window.fxagentApp;
       if (!app) {
-        throw new Error("piApp IPC bridge is unavailable");
+        throw new Error("fxagentApp IPC bridge is unavailable");
       }
       const state = await app.getState();
       const workspace =
@@ -450,7 +450,7 @@ async function attachTinyAndClear(
 
 async function captureComposerProof(window: Page, fileName: string): Promise<void> {
   const captureDir =
-    process.env.PI_APP_CAPTURE_ARTIFACTS ??
+    process.env.FXAGENT_CAPTURE_ARTIFACTS ??
     (existsSync("/opt/cursor/artifacts") ? "/opt/cursor/artifacts" : undefined);
   if (!captureDir) {
     return;

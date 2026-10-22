@@ -49,14 +49,14 @@ mac:
       arch: arm64
   darkModeSupport: true
   extraFiles:
-    - from: build/native/pi-gui-notification-status-helper
-      to: MacOS/pi-gui-notification-status-helper
+    - from: build/native/fxagent-notification-status-helper
+      to: MacOS/fxagent-notification-status-helper
 
 linux:
   category: Development
-  executableName: pi-gui
+  executableName: fxagent
   maintainer: Matthew Lam <minghinmatthew.lam@gmail.com>
-  vendor: pi-gui
+  vendor: fxagent
   synopsis: Codex-style desktop app for the pi coding agent
   description: A native desktop interface for pi coding agent sessions, workspaces, and tools.
   target:
@@ -69,7 +69,7 @@ linux:
 
 deb:
   artifactName: ${productName}_${version}_${arch}.${ext}
-  packageName: pi-gui
+  packageName: fxagent
   packageCategory: devel
   priority: optional
   afterRemove: resources/linux/after-remove.sh
@@ -86,7 +86,7 @@ deb:
     - libgbm1
 
 win:
-  executableName: pi-gui
+  executableName: fxagent
   # Keep icon/version metadata editing; signing is optional without credentials.
   signAndEditExecutable: true
   target:

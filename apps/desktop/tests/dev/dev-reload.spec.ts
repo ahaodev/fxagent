@@ -77,7 +77,7 @@ class DevDesktopHarness {
     const readMarker = async (page: Page) =>
       page.evaluate(async (markerName) => {
         if (markerName === "main") {
-          const pingValue = await globalThis.window.piApp?.ping();
+          const pingValue = await globalThis.window.fxagentApp?.ping();
           return pingValue?.split(":")[1] ?? null;
         }
         return (
@@ -147,7 +147,7 @@ class DevDesktopHarness {
         }
         await this.page.waitForLoadState("domcontentloaded", { timeout: 1_500 });
         await this.page.waitForFunction(
-          () => Boolean((window as Window & { piApp?: unknown }).piApp),
+          () => Boolean((window as Window & { fxagentApp?: unknown }).fxagentApp),
           undefined,
           {
             timeout: 1_500,
@@ -195,17 +195,17 @@ function buildProbeSource(probe: ProbeRecord, value: string): string {
 }
 
 async function startDesktopDev(): Promise<DevDesktopHarness> {
-  const userDataDir = await makeUserDataDir("pi-gui-dev-reload-");
+  const userDataDir = await makeUserDataDir("fxagent-dev-reload-");
   const child = spawn("pnpm", ["dev", "--", "--remoteDebuggingPort", String(cdpPort)], {
     cwd: desktopDir,
     env: {
       ...process.env,
-      PI_APP_DEV_RELOAD_MARKERS: "1",
-      PI_APP_DEV_PORT: String(devPort),
-      PI_APP_OPEN_DEVTOOLS: "0",
-      PI_APP_TEST_MODE: "background",
-      PI_APP_USER_DATA_DIR: userDataDir,
-      VITE_PI_APP_DEV_RELOAD_MARKERS: "1",
+      FXAGENT_DEV_RELOAD_MARKERS: "1",
+      FXAGENT_DEV_PORT: String(devPort),
+      FXAGENT_OPEN_DEVTOOLS: "0",
+      FXAGENT_TEST_MODE: "background",
+      FXAGENT_USER_DATA_DIR: userDataDir,
+      VITE_FXAGENT_DEV_RELOAD_MARKERS: "1",
     },
     detached: true,
     stdio: ["ignore", "pipe", "pipe"],

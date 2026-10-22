@@ -8,7 +8,7 @@ import {
 } from "../helpers/electron-app";
 
 test("archives a hovered thread into a restorable sidebar section", async () => {
-  const userDataDir = await makeUserDataDir("pi-app-user-data-");
+  const userDataDir = await makeUserDataDir("fxagent-user-data-");
   const workspacePath = await makeWorkspace("archive-sidebar-workspace");
   const harness = await launchDesktop(userDataDir, {
     initialWorkspaces: [workspacePath],

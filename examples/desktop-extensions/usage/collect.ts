@@ -130,7 +130,7 @@ async function readEntries(path: string): Promise<SessionEntry[] | undefined> {
   }
 }
 
-/** Matches pi-gui's `titleFromSessionInfo`: the session name, else the first user message. */
+/** Matches fxagent's `titleFromSessionInfo`: the session name, else the first user message. */
 export function titleFromSessionInfo(info: SessionInfo): string {
   const name = info.name?.trim();
   if (name) return name;
@@ -156,9 +156,9 @@ interface ReduceInput {
 
 /**
  * Usage sums every entry of the session file, all branches included, exactly as pi's
- * `getSessionStats()` (which pi-gui's usage footer shows): assistant and tool-result usage,
+ * `getSessionStats()` (which fxagent's usage footer shows): assistant and tool-result usage,
  * usage entries such as cache warming, and compaction/branch-summary calls. Replies from a
- * subscription-backed provider keep their tokens but not pi's list-price cost, as pi-gui's
+ * subscription-backed provider keep their tokens but not pi's list-price cost, as fxagent's
  * footer treats them.
  */
 export function reduceThread(input: ReduceInput): ThreadUsage {

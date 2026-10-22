@@ -9,11 +9,11 @@ import { issueDraft, pullRequestDraft } from "../drafts.ts";
 import { loadRepository, readItem, summarizeChecks } from "../source.ts";
 
 const gh = fileURLToPath(new URL("./fake-gh.mjs", import.meta.url));
-const piGuiResponses = fileURLToPath(new URL("./fixtures/pi-gui.json", import.meta.url));
+const fxagentResponses = fileURLToPath(new URL("./fixtures/fxagent.json", import.meta.url));
 const signal = new AbortController().signal;
 
 async function responsesFile(responses: Record<string, unknown>) {
-  const directory = await mkdtemp(join(tmpdir(), "pi-gui-github-"));
+  const directory = await mkdtemp(join(tmpdir(), "fxagent-github-"));
   const path = join(directory, "responses.json");
   await writeFile(path, JSON.stringify(responses));
   return { path, log: join(directory, "calls.log") };
@@ -164,13 +164,13 @@ await test("drafts reference the issue or PR and never ask to post to GitHub", a
   const loaded = await loadRepository({
     cwd: tmpdir(),
     signal,
-    env: { PATH: process.env.PATH, FAKE_GH_RESPONSES: piGuiResponses },
+    env: { PATH: process.env.PATH, FAKE_GH_RESPONSES: fxagentResponses },
     gh,
   });
   const issue = loaded.issues.find((candidate) => candidate.number === 216)!;
   const fix = issueDraft(loaded.repo, issue);
   assert.equal(fix.title, "Fix #216: Model name change randomly");
-  assert.match(fix.prompt, /https:\/\/github\.com\/minghinmatthewlam\/pi-gui\/issues\/216/);
+  assert.match(fix.prompt, /https:\/\/github\.com\/minghinmatthewlam\/fxagent\/issues\/216/);
   assert.match(fix.prompt, /> After sending a couple of prompts/);
   const failing = loaded.pullRequests.find((candidate) => candidate.number === 223)!;
   const ci = pullRequestDraft(loaded.repo, failing);

@@ -3,7 +3,7 @@ import type {
   RuntimeModelRecord,
   RuntimeSettingsSnapshot,
   RuntimeSnapshot,
-} from "@pi-gui/session-driver/runtime-types";
+} from "@fxagent/session-driver/runtime-types";
 import { SearchIcon } from "../../ui/icons";
 import { useI18n } from "../../i18n";
 import { SettingsSelect, SettingsSwitch } from "./settings-controls";

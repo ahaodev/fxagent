@@ -3,7 +3,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { promisify } from "node:util";
 import { join } from "node:path";
 import { expect, test, type Page } from "@playwright/test";
-import type { SessionDriverEvent, SessionRef } from "@pi-gui/session-driver";
+import type { SessionDriverEvent, SessionRef } from "@fxagent/session-driver";
 import {
   commitAllInGitRepo,
   createNamedThread,
@@ -333,7 +333,7 @@ test("highlighting follows the theme when light or dark changes", async () => {
     const colorBefore = await token.evaluate((el) => getComputedStyle(el).color);
 
     await window.evaluate(async (wasDark) => {
-      await globalThis.window.piApp?.setThemeMode(wasDark ? "light" : "dark");
+      await globalThis.window.fxagentApp?.setThemeMode(wasDark ? "light" : "dark");
     }, initiallyDark);
 
     await expect

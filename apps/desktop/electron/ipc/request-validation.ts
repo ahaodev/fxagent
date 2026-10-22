@@ -2,10 +2,10 @@ import {
   parseExtensionAction,
   type ExtensionFlagValues,
   type HostUiResponse,
-} from "@pi-gui/session-driver";
+} from "@fxagent/session-driver";
 import type { ExtensionActionRequest } from "../../contracts/extension-actions";
-import type { NavigateSessionTreeOptions } from "@pi-gui/session-driver/types";
-import type { RuntimeSettingsSnapshot } from "@pi-gui/session-driver/runtime-types";
+import type { NavigateSessionTreeOptions } from "@fxagent/session-driver/types";
+import type { RuntimeSettingsSnapshot } from "@fxagent/session-driver/runtime-types";
 import {
   isLanguagePreference,
   isThemeMode,
@@ -552,6 +552,6 @@ export function expectUpdateScheduledTaskInput(value: unknown): UpdateScheduledT
 export function expectExtensionActionRequest(raw: unknown): ExtensionActionRequest {
   const input = expectRecord(raw, "extension action request");
   const action = parseExtensionAction(input.action);
-  if (!action) throw new Error("pi-gui does not support this button's action");
+  if (!action) throw new Error("fxagent does not support this button's action");
   return { target: expectSessionTarget(input.target), action };
 }

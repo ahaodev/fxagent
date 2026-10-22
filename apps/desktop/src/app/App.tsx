@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { RuntimeSnapshot } from "@pi-gui/session-driver/runtime-types";
+import type { RuntimeSnapshot } from "@fxagent/session-driver/runtime-types";
 import {
   getSelectedSession,
   getSelectedWorkspace,
@@ -120,10 +120,10 @@ export default function App({ desktop }: { readonly desktop: DesktopAppSession }
     readonly request: DiffPanelFileRequest;
   } | null>(null);
   const [scheduledEditor, setScheduledEditor] = useState<ScheduledEditorState | null>(null);
-  const api = window.piApp;
+  const api = window.fxagentApp;
 
   useEffect(() => {
-    const piApi = window.piApp;
+    const piApi = window.fxagentApp;
     if (!piApi) return;
 
     void piApi
@@ -725,11 +725,11 @@ export default function App({ desktop }: { readonly desktop: DesktopAppSession }
   });
 
   useEffect(() => {
-    const removeWorkspacePickedListener = window.piApp?.onWorkspacePicked?.((workspaceId) => {
+    const removeWorkspacePickedListener = window.fxagentApp?.onWorkspacePicked?.((workspaceId) => {
       newThread.setPendingWorkspaceId(workspaceId);
       newThread.resetSurface();
     });
-    const removeClipboardImageListener = window.piApp?.onClipboardImagePasted?.(
+    const removeClipboardImageListener = window.fxagentApp?.onClipboardImagePasted?.(
       handlePastedClipboardImage,
     );
     return () => {

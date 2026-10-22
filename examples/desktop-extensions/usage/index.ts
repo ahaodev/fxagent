@@ -1,7 +1,7 @@
 import { defineFacet } from "@earendil-works/chord";
 import { BACKGROUND_CONTEXT } from "@earendil-works/chord/context";
 import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-agent";
-import { registerDesktopView } from "@pi-gui/extension-ui";
+import { registerDesktopView } from "@fxagent/extension-ui";
 import { collectUsage, reduceThread, type CurrentThread } from "./collect.ts";
 import { Usage, type UsageState } from "./contract.ts";
 import { cacheHitRate, formatCost, formatPercent, formatTokens, summarize } from "./model.ts";
@@ -45,7 +45,7 @@ export default function usageExtension(pi: ExtensionAPI): void {
       .find(provider, modelId)
       ?.name.replace(/^Claude\s+/, "")
       .replace(/\s*\(latest\)$/, "");
-  // Mirrors pi-gui's footer: OAuth to a subscription provider (and Kimi Coding) has no per-token cost.
+  // Mirrors fxagent's footer: OAuth to a subscription provider (and Kimi Coding) has no per-token cost.
   const isSubscription = (ctx: ExtensionContext) => (provider: string, modelId: string) => {
     if (provider === "kimi-coding") return true;
     const model = ctx.modelRegistry.find(provider, modelId);
@@ -140,7 +140,7 @@ export default function usageExtension(pi: ExtensionAPI): void {
   pi.on("agent_end", refreshInBackground);
 
   // A card after each reply: how long it took, what it cost and how full the context is now.
-  // pi-gui draws it; terminal pi ignores it, and it never reaches the model's context.
+  // fxagent draws it; terminal pi ignores it, and it never reaches the model's context.
   // One reply can be several passes of pi's loop (a retry, a continuation), each with its own
   // agent_start/agent_end, so the card sums every pass and is written once the reply settles.
   let reply: { startedAt: number; messages: unknown[] } | null = null;
@@ -198,7 +198,7 @@ export default function usageExtension(pi: ExtensionAPI): void {
     frontend: new URL("./dist/desktop.js", import.meta.url),
     backend: () =>
       defineFacet({
-        id: "pi-gui.example.usage.backend",
+        id: "fxagent.example.usage.backend",
         setup(env) {
           const replicated = env.replicatedState(state);
           const listener = (next: UsageState) => replicated.replace(BACKGROUND_CONTEXT, next);

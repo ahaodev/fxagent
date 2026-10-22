@@ -1,6 +1,6 @@
-import { sessionKey } from "@pi-gui/session-driver";
-import type { PiSdkDriver } from "@pi-gui/pi-sdk-driver";
-import type { JsonCatalogStore } from "@pi-gui/catalogs/node";
+import { sessionKey } from "@fxagent/session-driver";
+import type { PiSdkDriver } from "@fxagent/pi-sdk-driver";
+import type { JsonCatalogStore } from "@fxagent/catalogs/node";
 import type {
   CreateSessionOptions,
   ExtensionFlagValues,
@@ -8,8 +8,8 @@ import type {
   SessionRef,
   SessionSnapshot,
   WorkspaceRef,
-} from "@pi-gui/session-driver";
-import type { RuntimeSnapshot } from "@pi-gui/session-driver/runtime-types";
+} from "@fxagent/session-driver";
+import type { RuntimeSnapshot } from "@fxagent/session-driver/runtime-types";
 import type {
   CreateSessionInput,
   CreateWorktreeInput,

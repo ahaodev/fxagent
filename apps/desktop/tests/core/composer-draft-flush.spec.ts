@@ -59,7 +59,7 @@ async function keepRealClock(window: Page): Promise<void> {
   });
 }
 
-const rendererBusy = "pi-gui test: renderer busy";
+const rendererBusy = "fxagent test: renderer busy";
 
 /**
  * Blocks the renderer for a second and returns once that task has started, so main's flush
@@ -231,7 +231,7 @@ test("keeps the drafts of every window when quitting straight after typing", asy
     });
   }, nativeModifier);
   const secondWindow = await opened;
-  await secondWindow.waitForFunction(() => Boolean(globalThis.window.piApp));
+  await secondWindow.waitForFunction(() => Boolean(globalThis.window.fxagentApp));
   await selectSession(secondWindow, "Second");
 
   await pauseRendererTimers(secondWindow);
@@ -258,7 +258,7 @@ async function installThreadLinks(workspacePath: string): Promise<void> {
   await mkdir(join(extension, "dist"), { recursive: true });
   await writeFile(
     join(extension, "index.ts"),
-    `import { registerDesktopView } from ${JSON.stringify(require.resolve("@pi-gui/extension-ui"))};
+    `import { registerDesktopView } from ${JSON.stringify(require.resolve("@fxagent/extension-ui"))};
 export default function extension(pi) {
   registerDesktopView(pi, {
     id: "thread-links", title: "Thread links", source: import.meta.url,

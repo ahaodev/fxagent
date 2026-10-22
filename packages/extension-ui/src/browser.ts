@@ -34,7 +34,7 @@ export interface DesktopViewContext {
     /** Opens an https link in the user's browser. */
     openUrl(url: string): Promise<void>;
     /**
-     * Opens another thread of this folder or its pi-gui worktrees, by pi session id. Resolves
+     * Opens another thread of this folder or its fxagent worktrees, by pi session id. Resolves
      * once the thread is found; the app then switches to it, which closes this view.
      */
     openThread(sessionId: string): Promise<void>;

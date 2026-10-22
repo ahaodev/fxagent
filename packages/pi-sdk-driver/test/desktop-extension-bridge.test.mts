@@ -5,7 +5,7 @@ import { join } from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 import { PiSdkDriver } from "../dist/pi-sdk-driver.js";
-import type { PiDesktopExtensionRuntime } from "../dist/desktop-extension-bridge.js";
+import type { FxagentDesktopExtensionRuntime } from "../dist/desktop-extension-bridge.js";
 
 await test(
   "installed Pi discovers one loaded closure per runtime without waiting for stalled desktop work",
@@ -47,7 +47,7 @@ await test(
     t.after(() => assert.equal(network.mock.callCount(), 0));
     const extensionPath = join(extensionDirectory, "index.ts");
     const factoryLog = join(root, "factory.log");
-    const helperPath = fileURLToPath(import.meta.resolve("@pi-gui/extension-ui"));
+    const helperPath = fileURLToPath(import.meta.resolve("@fxagent/extension-ui"));
     await writeFile(
       extensionPath,
       `
@@ -65,7 +65,7 @@ export default function extension(pi) {
 }
 `,
     );
-    const changed: PiDesktopExtensionRuntime[] = [];
+    const changed: FxagentDesktopExtensionRuntime[] = [];
     const invalidated: Array<{ generation: string; sessionId: string }> = [];
     const stalledDesktopWork = new Promise<void>(() => {});
     let externalFactoryCalls = 0;

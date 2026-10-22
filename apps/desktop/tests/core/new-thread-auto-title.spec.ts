@@ -20,7 +20,7 @@ import {
 } from "../helpers/electron-app";
 
 test("auto-titles a brand-new local thread after showing the placeholder first", async () => {
-  const userDataDir = await makeUserDataDir("pi-app-user-data-");
+  const userDataDir = await makeUserDataDir("fxagent-user-data-");
   const workspacePath = await makeWorkspace("auto-title-local-workspace");
   const harness = await launchDesktop(userDataDir, {
     initialWorkspaces: [workspacePath],
@@ -55,7 +55,7 @@ test("auto-titles a brand-new local thread after showing the placeholder first",
 
 test("auto-titles a brand-new worktree thread after showing the placeholder first", async () => {
   test.setTimeout(90_000);
-  const userDataDir = await makeUserDataDir("pi-app-user-data-");
+  const userDataDir = await makeUserDataDir("fxagent-user-data-");
   const workspacePath = await makeGitWorkspace("auto-title-worktree-workspace");
   const harness = await launchDesktop(userDataDir, {
     initialWorkspaces: [workspacePath],
@@ -100,7 +100,7 @@ test("auto-titles a brand-new worktree thread after showing the placeholder firs
 });
 
 test("switching away does not cancel a pending auto-title", async () => {
-  const userDataDir = await makeUserDataDir("pi-app-user-data-");
+  const userDataDir = await makeUserDataDir("fxagent-user-data-");
   const workspacePath = await makeWorkspace("auto-title-navigation-workspace");
   const harness = await launchDesktop(userDataDir, {
     initialWorkspaces: [workspacePath],
@@ -139,7 +139,7 @@ test("switching away does not cancel a pending auto-title", async () => {
 });
 
 test("manual rename beats a delayed auto-title result", async () => {
-  const userDataDir = await makeUserDataDir("pi-app-user-data-");
+  const userDataDir = await makeUserDataDir("fxagent-user-data-");
   const workspacePath = await makeWorkspace("auto-title-manual-rename-workspace");
   const harness = await launchDesktop(userDataDir, {
     initialWorkspaces: [workspacePath],
@@ -186,7 +186,7 @@ test("manual rename beats a delayed auto-title result", async () => {
 });
 
 test("manual rename applies after the run is aborted via Stop", async () => {
-  const userDataDir = await makeUserDataDir("pi-app-user-data-");
+  const userDataDir = await makeUserDataDir("fxagent-user-data-");
   const workspacePath = await makeWorkspace("auto-title-abort-rename-workspace");
   const harness = await launchDesktop(userDataDir, {
     initialWorkspaces: [workspacePath],
@@ -233,7 +233,7 @@ test("manual rename applies after the run is aborted via Stop", async () => {
 });
 
 test("later sends do not retrigger auto-title generation", async () => {
-  const userDataDir = await makeUserDataDir("pi-app-user-data-");
+  const userDataDir = await makeUserDataDir("fxagent-user-data-");
   const workspacePath = await makeWorkspace("auto-title-no-retrigger-workspace");
   const harness = await launchDesktop(userDataDir, {
     initialWorkspaces: [workspacePath],
@@ -273,7 +273,7 @@ test("later sends do not retrigger auto-title generation", async () => {
 });
 
 test("reopen heals a stale placeholder catalog title after auto-title finished", async () => {
-  const userDataDir = await makeUserDataDir("pi-app-user-data-");
+  const userDataDir = await makeUserDataDir("fxagent-user-data-");
   const workspacePath = await makeWorkspace("auto-title-reopen-heal-workspace");
   const harness = await launchDesktop(userDataDir, {
     initialWorkspaces: [workspacePath],

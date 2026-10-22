@@ -228,7 +228,7 @@ function resolveFilePath(file: FileWithPath): string | null {
     return directPath;
   }
 
-  const bridgePath = window.piApp?.getPathForFile?.(file)?.trim();
+  const bridgePath = window.fxagentApp?.getPathForFile?.(file)?.trim();
   return bridgePath || null;
 }
 

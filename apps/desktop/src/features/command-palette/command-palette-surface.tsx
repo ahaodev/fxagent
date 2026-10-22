@@ -1,6 +1,6 @@
 import { useDeferredValue, useEffect, useMemo, useState } from "react";
 import type { WorkspaceRecord, WorkspaceSessionTarget } from "../../../contracts/desktop-state";
-import type { PiDesktopApi } from "../../../contracts/ipc";
+import type { FxagentDesktopApi } from "../../../contracts/ipc";
 import { sessionLastInteractedAt } from "../../../contracts/thread-recency";
 import { formatRelativeTime } from "../../lib/string-utils";
 import { useI18n } from "../../i18n";
@@ -35,7 +35,7 @@ export interface PaletteModelScope {
 
 /** Mount one per mode (key it by mode) so each list starts with an empty query. */
 interface CommandPaletteSurfaceProps {
-  readonly api: PiDesktopApi;
+  readonly api: FxagentDesktopApi;
   readonly mode: PaletteMode;
   readonly onModeChange: (mode: PaletteMode) => void;
   readonly onClose: () => void;

@@ -3,14 +3,14 @@ import type {
   SessionCatalogEntry,
   WorkspaceCatalogEntry,
   WorktreeCatalogEntry,
-} from "@pi-gui/catalogs";
-import { sessionKey } from "@pi-gui/session-driver";
+} from "@fxagent/catalogs";
+import { sessionKey } from "@fxagent/session-driver";
 import type {
   SessionAttachment,
   SessionConfig,
   SessionQueuedMessage,
   SessionRef,
-} from "@pi-gui/session-driver";
+} from "@fxagent/session-driver";
 import type {
   ComposerAttachment,
   QueuedComposerMessage,

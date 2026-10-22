@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { RuntimeSnapshot } from "@pi-gui/session-driver/runtime-types";
+import type { RuntimeSnapshot } from "@fxagent/session-driver/runtime-types";
 import { buildModelOptions, thinkingOptions, type ComposerModelOption } from "./composer-commands";
 import { useI18n } from "../../i18n";
 

@@ -55,7 +55,7 @@ import {
 import {
   getDesktopShortcutLabel,
   THREAD_SHORTCUT_SLOT_COUNT,
-  type PiDesktopApi,
+  type FxagentDesktopApi,
 } from "../../../contracts/ipc";
 import { formatRelativeTime } from "../../lib/string-utils";
 import { useI18n, type MessageKey } from "../../i18n";
@@ -91,7 +91,7 @@ interface SidebarProps {
   readonly linkedWorktreeByWorkspaceId: ReadonlyMap<string, WorktreeRecord>;
   readonly wsMenu: WorkspaceMenuState;
   readonly threadMenu: ThreadMenuState;
-  readonly api: PiDesktopApi;
+  readonly api: FxagentDesktopApi;
   readonly setSnapshot: Dispatch<SetStateAction<DesktopAppState | null>>;
   readonly updateSnapshot: (
     setSnapshot: Dispatch<SetStateAction<DesktopAppState | null>>,
@@ -697,7 +697,7 @@ interface WorkspaceFolderProps {
   readonly selectedSession?: SessionRecord;
   readonly linkedWorktreeByWorkspaceId: ReadonlyMap<string, WorktreeRecord>;
   readonly wsMenu: WorkspaceMenuState;
-  readonly api: PiDesktopApi;
+  readonly api: FxagentDesktopApi;
   readonly threadMenu?: ThreadMenuState;
   readonly onNewThread?: (workspaceId: string) => void;
   readonly onArchiveSession?: (target: { workspaceId: string; sessionId: string }) => void;

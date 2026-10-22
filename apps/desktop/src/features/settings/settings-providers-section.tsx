@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import type { RuntimeProviderRecord, RuntimeSnapshot } from "@pi-gui/session-driver/runtime-types";
+import type { RuntimeProviderRecord, RuntimeSnapshot } from "@fxagent/session-driver/runtime-types";
 import { SearchIcon } from "../../ui/icons";
 import { useI18n } from "../../i18n";
 import type { CustomProviderConfig } from "../../../contracts/ipc";

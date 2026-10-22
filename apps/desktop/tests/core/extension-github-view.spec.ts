@@ -19,18 +19,18 @@ import { expectExtensionViewReady } from "../helpers/desktop-extension-fixture";
 import { desktopExtensionExamplesDirectory as examples } from "../helpers/desktop-extension-examples";
 
 const example = join(examples, "github");
-const piGuiResponses = join(example, "test", "fixtures", "pi-gui.json");
+const fxagentResponses = join(example, "test", "fixtures", "fxagent.json");
 
-/** A PATH whose `gh` answers from the pi-gui fixture and logs every call. */
+/** A PATH whose `gh` answers from the fxagent fixture and logs every call. */
 async function fakeGhPath(): Promise<{ readonly path: string; readonly log: string }> {
-  const directory = await mkdtemp(join(tmpdir(), "pi-gui-fake-gh-"));
+  const directory = await mkdtemp(join(tmpdir(), "fxagent-fake-gh-"));
   await symlink(join(example, "test", "fake-gh.mjs"), join(directory, "gh"));
   return { path: `${directory}:${process.env.PATH ?? ""}`, log: join(directory, "calls.log") };
 }
 
 /** A PATH with only the tools the app needs, so no `gh` is found even where CI installs one. */
 async function pathWithoutGh(): Promise<string> {
-  const directory = await mkdtemp(join(tmpdir(), "pi-gui-no-gh-"));
+  const directory = await mkdtemp(join(tmpdir(), "fxagent-no-gh-"));
   const searched = (process.env.PATH ?? "").split(delimiter).filter(Boolean);
   for (const tool of ["git", "node", "sh"]) {
     for (const folder of searched) {
@@ -103,7 +103,7 @@ test("the GitHub example reads gh only when opened, opens links and drafts a fix
     initialWorkspaces: [await makeWorkspace("github-example")],
     scrubProviderEnv: true,
     testMode: "background",
-    envOverrides: { PATH: gh.path, FAKE_GH_RESPONSES: piGuiResponses, FAKE_GH_LOG: gh.log },
+    envOverrides: { PATH: gh.path, FAKE_GH_RESPONSES: fxagentResponses, FAKE_GH_LOG: gh.log },
   });
   try {
     const window = await harness.firstWindow();
@@ -130,9 +130,7 @@ test("the GitHub example reads gh only when opened, opens links and drafts a fix
       await expect(frame.getByText(check, { exact: true })).toBeVisible();
 
     await frame.getByRole("button", { name: "Open on GitHub" }).click();
-    await expect
-      .poll(openedLinks)
-      .toEqual(["https://github.com/ahaodev/fxagent/pull/223"]);
+    await expect.poll(openedLinks).toEqual(["https://github.com/ahaodev/fxagent/pull/223"]);
 
     // Start thread opens an editable draft in a new thread, never a sent message.
     await frame.getByRole("button", { name: "Start thread", exact: true }).click();
@@ -159,7 +157,7 @@ test("without gh the GitHub example says how to get it", async () => {
     testMode: "background",
     // No gh anywhere on this PATH (GitHub's runners install one in /usr/bin, and on a Mac in
     // /opt/homebrew/bin, which the app would otherwise add back).
-    envOverrides: { PATH: await pathWithoutGh(), PI_APP_TEST_EXACT_PATH: "1" },
+    envOverrides: { PATH: await pathWithoutGh(), FXAGENT_TEST_EXACT_PATH: "1" },
   });
   try {
     const window = await harness.firstWindow();

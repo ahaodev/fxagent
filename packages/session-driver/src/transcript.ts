@@ -57,7 +57,7 @@ export interface SessionTranscriptCustomMessage {
   readonly text: string;
 }
 
-/** The custom entry type an extension writes with `pi.appendEntry` to show a card in pi-gui. */
+/** The custom entry type an extension writes with `pi.appendEntry` to show a card in fxagent. */
 export const EXTENSION_CARD_CUSTOM_TYPE = "pi-gui.card";
 
 export type ExtensionCardTone = "neutral" | "success" | "warning" | "error";
@@ -69,7 +69,7 @@ export interface ExtensionCardRow {
 
 /**
  * A card an extension declares as data with `pi.appendEntry("pi-gui.card", card)`.
- * pi-gui draws it with its own component; there are no styling knobs.
+ * fxagent draws it with its own component; there are no styling knobs.
  */
 export interface ExtensionCard {
   /**

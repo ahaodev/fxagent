@@ -1,5 +1,5 @@
-import type { SessionConfig } from "@pi-gui/session-driver";
-import type { RuntimeCommandRecord, RuntimeSnapshot } from "@pi-gui/session-driver/runtime-types";
+import type { SessionConfig } from "@fxagent/session-driver";
+import type { RuntimeCommandRecord, RuntimeSnapshot } from "@fxagent/session-driver/runtime-types";
 
 export type ParsedComposerCommand =
   | { type: "model"; provider: string; modelId: string }

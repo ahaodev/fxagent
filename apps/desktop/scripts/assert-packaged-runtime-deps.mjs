@@ -13,7 +13,7 @@ const requiredPackages = [
   // can omit hoisted pnpm dependencies even when local development resolves them.
   "@anthropic-ai/sdk",
   "@earendil-works/chord",
-  "@pi-gui/extension-ui",
+  "@fxagent/extension-ui",
   "@aws-crypto/sha256-browser",
   "@aws-crypto/sha256-js",
   "@aws-sdk/client-bedrock-runtime",
@@ -87,20 +87,20 @@ const requiredPackages = [
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const desktopDir = path.resolve(scriptDir, "..");
-const packagePlatform = (process.env.PI_APP_PACKAGE_PLATFORM ?? process.platform)
+const packagePlatform = (process.env.FXAGENT_PACKAGE_PLATFORM ?? process.platform)
   .trim()
   .toLowerCase();
-const releaseDir = path.resolve(desktopDir, process.env.PI_APP_TEST_RELEASE_DIR ?? "release");
+const releaseDir = path.resolve(desktopDir, process.env.FXAGENT_TEST_RELEASE_DIR ?? "release");
 const asarPath = resolveAsarPath(releaseDir, packagePlatform);
 const notificationHelperPath =
   packagePlatform === "darwin"
     ? path.join(
         releaseDir,
         "mac-arm64",
-        "pi-gui.app",
+        "fxagent.app",
         "Contents",
         "MacOS",
-        "pi-gui-notification-status-helper",
+        "fxagent-notification-status-helper",
       )
     : undefined;
 const pnpmBinary = process.platform === "win32" ? "pnpm.cmd" : "pnpm";
@@ -149,8 +149,8 @@ const modelChecks = [
   },
 ];
 const packagedRuntimeImportChecks = [
-  ["@pi-gui", "extension-ui", "dist", "transport.js"],
-  ["@pi-gui", "extension-ui", "dist", "frame-bridge.js"],
+  ["@fxagent", "extension-ui", "dist", "transport.js"],
+  ["@fxagent", "extension-ui", "dist", "frame-bridge.js"],
   // Import implementations: provider descriptors can defer loading their SDKs.
   ["@earendil-works", "pi-ai", "dist", "api", "google-generative-ai.js"],
   ["@earendil-works", "pi-ai", "dist", "api", "anthropic-messages.js"],
@@ -170,7 +170,7 @@ if (notificationHelperPath && !existsSync(notificationHelperPath)) {
   throw new Error(`Packaged app is missing notification helper: ${notificationHelperPath}`);
 }
 
-const extractedDir = mkdtempSync(path.join(tmpdir(), "pi-gui-packaged-runtime-"));
+const extractedDir = mkdtempSync(path.join(tmpdir(), "fxagent-packaged-runtime-"));
 let cleanupError;
 try {
   execFileSync(pnpmBinary, ["exec", "asar", "extract", asarPath, extractedDir], {
@@ -208,7 +208,7 @@ console.log(`Verified packaged runtime dependencies in ${asarPath}`);
 
 function resolveAsarPath(releaseDir, packagePlatform) {
   if (packagePlatform === "darwin") {
-    return path.join(releaseDir, "mac-arm64", "pi-gui.app", "Contents", "Resources", "app.asar");
+    return path.join(releaseDir, "mac-arm64", "fxagent.app", "Contents", "Resources", "app.asar");
   }
 
   if (packagePlatform === "linux") {
@@ -312,7 +312,7 @@ async function verifyPackagedPiRuntime(extractedDir) {
     "index.js",
   );
   const { ModelRuntime } = await import(pathToFileURL(runtimeEntry).href);
-  const authDir = mkdtempSync(path.join(tmpdir(), "pi-gui-packaged-runtime-models-"));
+  const authDir = mkdtempSync(path.join(tmpdir(), "fxagent-packaged-runtime-models-"));
   const runtime = await ModelRuntime.create({
     authPath: path.join(authDir, "auth.json"),
     modelsPath: null,

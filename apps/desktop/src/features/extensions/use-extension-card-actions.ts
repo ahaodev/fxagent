@@ -1,6 +1,6 @@
 import { useCallback, useRef, type RefObject } from "react";
-import type { ExtensionAction, SessionRef } from "@pi-gui/session-driver";
-import type { PiDesktopApi } from "../../../contracts/ipc";
+import type { ExtensionAction, SessionRef } from "@fxagent/session-driver";
+import type { FxagentDesktopApi } from "../../../contracts/ipc";
 import type { RunExtensionAction } from "../conversation/extension-card";
 import type { WorkspaceFileLine } from "../conversation/workspace-file-line";
 
@@ -17,7 +17,7 @@ export function useExtensionCardActions({
   setComposerDraft,
   focusComposer,
 }: {
-  readonly api: PiDesktopApi | undefined;
+  readonly api: FxagentDesktopApi | undefined;
   readonly target: SessionRef | null;
   readonly openWorkspaceFileLine: (target: WorkspaceFileLine) => void;
   readonly composerDraftRef: RefObject<string>;

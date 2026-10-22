@@ -112,9 +112,9 @@ test("creates and selects a worktree-backed workspace from the desktop UI", asyn
 
 test("scopes worktree creation and startup collection to the active profile", async () => {
   test.setTimeout(180_000);
-  const profileA = await makeUserDataDir("pi-gui-profile-a-");
-  const profileB = await makeUserDataDir("pi-gui-profile-b-");
-  const fakeHome = await makeUserDataDir("pi-gui-fake-home-");
+  const profileA = await makeUserDataDir("fxagent-profile-a-");
+  const profileB = await makeUserDataDir("fxagent-profile-b-");
+  const fakeHome = await makeUserDataDir("fxagent-fake-home-");
   const workspacePath = await makeGitWorkspace("worktree-profile-isolation");
   const profileARoot = join(profileA, "worktrees");
   const profileBOrphan = join(profileB, "worktrees", "repo", "profile-b-orphan");
@@ -192,7 +192,7 @@ test("scopes worktree creation and startup collection to the active profile", as
       expect(await pathExists(rememberedProfileAWorktree.path)).toBe(true);
       expect(legacyWorkspace.kind).toBe("worktree");
       await window.evaluate(async (workspaceId) => {
-        await globalThis.window.piApp.selectWorkspace(workspaceId);
+        await globalThis.window.fxagentApp.selectWorkspace(workspaceId);
       }, legacyWorkspace.id);
       const state = await getDesktopState(window);
       expect(state.selectedWorkspaceId).toBe(legacyWorkspace.id);

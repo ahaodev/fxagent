@@ -1,5 +1,5 @@
 {
-  "name": "@pi-gui/example-github",
+  "name": "@fxagent/example-github",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -18,6 +18,6 @@
     "@earendil-works/chord": "^1.0.0",
     "@earendil-works/pi-ai": "^1.3.0",
     "@earendil-works/pi-coding-agent": "^1.3.0",
-    "@pi-gui/extension-ui": "*"
+    "@fxagent/extension-ui": "*"
   }
 }

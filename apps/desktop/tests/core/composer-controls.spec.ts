@@ -137,9 +137,9 @@ test("supports keyboard shortcuts, slash menus, and topbar controls through the 
     expect(selectedWorkspaceId).toBeTruthy();
     await window.evaluate(
       async ({ workspaceId }) => {
-        const app = globalThis.window.piApp;
+        const app = globalThis.window.fxagentApp;
         if (!app) {
-          throw new Error("piApp IPC bridge is unavailable");
+          throw new Error("fxagentApp IPC bridge is unavailable");
         }
         await app.setScopedModelPatterns(workspaceId, ["fake-provider/fake-model"]);
       },

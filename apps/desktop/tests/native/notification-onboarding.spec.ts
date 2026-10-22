@@ -16,9 +16,9 @@ test("requests notification permission when the user minimizes a running session
     initialWorkspaces: [workspacePath],
     testMode: "foreground",
     envOverrides: {
-      PI_APP_TEST_NOTIFICATION_PERMISSION_STATUS: "default",
-      PI_APP_TEST_NOTIFICATION_PERMISSION_REQUEST_RESULT: "granted",
-      PI_APP_TEST_NOTIFICATION_PERMISSION_REQUEST_LOG_PATH: requestLogPath,
+      FXAGENT_TEST_NOTIFICATION_PERMISSION_STATUS: "default",
+      FXAGENT_TEST_NOTIFICATION_PERMISSION_REQUEST_RESULT: "granted",
+      FXAGENT_TEST_NOTIFICATION_PERMISSION_REQUEST_LOG_PATH: requestLogPath,
     },
   });
 

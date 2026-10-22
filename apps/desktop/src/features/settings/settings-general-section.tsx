@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { RuntimeSnapshot } from "@pi-gui/session-driver/runtime-types";
+import type { RuntimeSnapshot } from "@fxagent/session-driver/runtime-types";
 import type { LanguagePreference, ModelSettingsScopeMode } from "../../../contracts/desktop-state";
 import { useI18n, languageNames } from "../../i18n";
 import { SettingsSegmented, SettingsSwitch } from "./settings-controls";
