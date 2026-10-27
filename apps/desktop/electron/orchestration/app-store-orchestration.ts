@@ -26,6 +26,10 @@ import type {
   TimelineToolCall,
   TranscriptMessage,
 } from "../../contracts/desktop-state";
+import {
+  formatCrossProjectMessage,
+  parseCrossProjectMessage,
+} from "../../contracts/thread-message";
 import { latestSessionActivityAt, previewFromTranscript } from "../application/app-store-utils";
 import type { RefreshStateOptions } from "../application/refresh-state-options";
 import {
@@ -55,6 +59,8 @@ import type {
 const CHILD_TITLE_LIMIT = 56;
 const MAX_CHILD_TRANSCRIPT_MESSAGES = 40;
 const MAX_READ_THREAD_MESSAGES = 60;
+/** How many threads list_threads returns for `workspace: "*"`, most relevant first. */
+export const MAX_ALL_PROJECT_THREADS = 200;
 const MAX_EVIDENCE_RECORDS_PER_CHILD = 80;
 const DEFAULT_SUPERVISION_INTERVAL_MS = 60_000;
 const MIN_SUPERVISION_INTERVAL_MS = 250;
@@ -122,6 +128,12 @@ interface OrchestrationOwnerHost {
     attachments: readonly import("../../contracts/desktop-state").ComposerAttachment[],
     options?: { readonly deliverAs?: "steer" | "followUp"; readonly allowCommands?: boolean },
   ): Promise<DesktopAppState>;
+  /** Sends or queues text without touching the receiving thread's draft or queue edit. */
+  deliverBackgroundInstruction(
+    sessionRef: SessionRef,
+    text: string,
+    options: { readonly rollbackOnError: true },
+  ): Promise<string | undefined>;
 }
 
 export interface OrchestrationOwner {
@@ -150,7 +162,10 @@ export interface OrchestrationOwner {
     parentRef: SessionRef,
     input: { readonly prompt: string; readonly toolCallId: string },
   ): Promise<AgentToolResult<CreateChildThreadToolDetails>>;
-  listThreadsToolResult(parentRef: SessionRef): AgentToolResult<ListThreadsToolDetails>;
+  listThreadsToolResult(
+    parentRef: SessionRef,
+    workspace?: string,
+  ): AgentToolResult<ListThreadsToolDetails>;
   readThreadToolResult(
     parentRef: SessionRef,
     threadId: string,
@@ -182,7 +197,8 @@ export function createOrchestrationOwner(store: OrchestrationOwnerHost): Orchest
       hasOrchestrationParentSession(store.orchestrationChildren(), sessionRef),
     createChildThreadToolResult: (parentRef, input) =>
       createChildThreadToolResult(store, parentRef, input),
-    listThreadsToolResult: (parentRef) => listThreadsToolResult(store, parentRef),
+    listThreadsToolResult: (parentRef, workspace) =>
+      listThreadsToolResult(store, parentRef, workspace),
     readThreadToolResult: (parentRef, threadId) => readThreadToolResult(store, parentRef, threadId),
     sendMessageToThreadToolResult: (parentRef, input) =>
       sendMessageToThreadToolResult(store, parentRef, input),
@@ -740,14 +756,31 @@ function unfinishedChildReason(store: OrchestrationOwnerHost, ref: SessionRef): 
 function listThreadsToolResult(
   store: OrchestrationOwnerHost,
   parentRef: SessionRef,
+  workspace?: string,
 ): AgentToolResult<ListThreadsToolDetails> {
   store.replaceOrchestrationChildren(projectOrchestrationChildren(store));
-  const threads = listThreadsForContext(store, parentRef);
+  const listed = workspace
+    ? listThreadsInWorkspaces(store, parentRef, workspace)
+    : listThreadsForContext(store, parentRef);
+  if (typeof listed === "string") {
+    return {
+      content: [{ type: "text", text: listed }],
+      details: { action: listThreadsAction, workspace, error: listed },
+    };
+  }
+  const capped = workspace?.trim() === "*" && listed.length > MAX_ALL_PROJECT_THREADS;
+  const threads = capped ? listed.slice(0, MAX_ALL_PROJECT_THREADS) : listed;
+  const omitted = listed.length - threads.length;
+  const text = capped
+    ? `${formatThreadList(threads)}\nShowing ${threads.length} of ${listed.length} threads: this project's first, then the most recently updated. ${omitted} more are not listed; pass workspace with a project name to list that project's threads.`
+    : formatThreadList(threads);
   return {
-    content: [{ type: "text", text: formatThreadList(threads) }],
+    content: [{ type: "text", text }],
     details: {
       action: listThreadsAction,
+      ...(workspace ? { workspace } : {}),
       threads,
+      ...(capped ? { omittedThreadCount: omitted } : {}),
     },
   };
 }
@@ -758,8 +791,8 @@ async function readThreadToolResult(
   threadId: string,
 ): Promise<AgentToolResult<ReadThreadToolDetails>> {
   const target = resolveThreadTarget(store, parentRef, threadId);
-  if (!target) {
-    return readThreadErrorResult(threadId, `Unknown thread: ${threadId}`);
+  if (typeof target === "string") {
+    return readThreadErrorResult(threadId, target);
   }
 
   await store.ensureSessionReady(target.sessionRef);
@@ -798,18 +831,45 @@ async function sendMessageToThreadToolResult(
   input: { readonly threadId: string; readonly message: string },
 ): Promise<AgentToolResult<SendMessageToThreadToolDetails>> {
   const target = resolveThreadTarget(store, parentRef, input.threadId);
-  if (!target) {
+  if (typeof target === "string") {
+    return sendMessageToThreadErrorResult(input.threadId, input.message, target);
+  }
+  if (parseCrossProjectMessage(input.message)) {
+    // Only the app writes this header, so the receiver's "From project" label is trustworthy.
     return sendMessageToThreadErrorResult(
       input.threadId,
       input.message,
-      `Unknown thread: ${input.threadId}`,
+      "The message cannot start with a [Message from project ...] header; send only the body.",
     );
   }
 
-  await store.submitComposerToSession(target.sessionRef, input.message, [], {
-    deliverAs: "followUp",
-    allowCommands: false,
-  });
+  const workspaces = store.orchestrationState().workspaces;
+  const senderProject = projectOf(workspaces, parentRef.workspaceId);
+  const targetProject = projectOf(workspaces, target.sessionRef.workspaceId);
+  const crossProject = senderProject?.id !== targetProject?.id;
+  if (crossProject) {
+    // Another project's thread may be mid-edit by the user; leave its composer alone.
+    try {
+      await store.deliverBackgroundInstruction(
+        target.sessionRef,
+        formatCrossProjectMessage(
+          {
+            project: senderProject?.name ?? parentRef.workspaceId,
+            threadId: sessionKey(parentRef),
+          },
+          input.message,
+        ),
+        { rollbackOnError: true },
+      );
+    } catch (error) {
+      return sendMessageToThreadErrorResult(input.threadId, input.message, errorMessage(error));
+    }
+  } else {
+    await store.submitComposerToSession(target.sessionRef, input.message, [], {
+      deliverAs: "followUp",
+      allowCommands: false,
+    });
+  }
   if (target.child) {
     updateChildSupervisionLoop(
       store,
@@ -830,6 +890,7 @@ async function sendMessageToThreadToolResult(
     status,
     queuedMessageCount: queuedMessages.length,
     message: input.message,
+    ...(crossProject && targetProject ? { project: targetProject.name } : {}),
   };
 
   return {
@@ -1683,16 +1744,110 @@ function listThreadsForContext(
     });
   }
 
-  return [...entries.values()].sort((left, right) => {
-    const rank = relationshipRank(left.relationship) - relationshipRank(right.relationship);
-    if (rank !== 0) {
-      return rank;
+  return [...entries.values()].sort(compareThreadListEntries);
+}
+
+/**
+ * Threads in the projects `workspace` names: a name, path or id, or `*` for all of them.
+ * The caller's own project lists exactly as {@link listThreadsForContext} does; other
+ * projects' threads use their unambiguous `workspaceId:sessionId` as the thread id.
+ */
+function listThreadsInWorkspaces(
+  store: OrchestrationOwnerHost,
+  parentRef: SessionRef,
+  workspace: string,
+): readonly ThreadListEntry[] | string {
+  const workspaces = store.orchestrationState().workspaces;
+  const wanted = workspace.trim();
+  const names = (entry: (typeof workspaces)[number] | undefined) =>
+    !!entry &&
+    (entry.id === wanted ||
+      entry.path === wanted ||
+      entry.name.toLowerCase() === wanted.toLowerCase());
+  // Naming a project lists its worktrees too; naming a worktree lists only that worktree.
+  const matches =
+    wanted === "*"
+      ? workspaces
+      : workspaces.filter((entry) => names(entry) || names(projectOf(workspaces, entry.id)));
+  if (matches.length === 0) {
+    const known = workspaces.map((entry) => entry.name).join(", ");
+    return `Unknown project: ${wanted}. Projects: ${known || "none"}.`;
+  }
+  const entries = new Map<string, ThreadListEntry>();
+  if (matches.some((entry) => entry.id === parentRef.workspaceId)) {
+    for (const thread of listThreadsForContext(store, parentRef)) {
+      entries.set(sessionKey(thread), thread);
     }
-    if (left.updatedAt !== right.updatedAt) {
-      return right.updatedAt.localeCompare(left.updatedAt);
+  }
+  const callerProject = projectOf(workspaces, parentRef.workspaceId);
+  for (const entry of matches) {
+    const project = projectOf(workspaces, entry.id);
+    // The caller's own project lists only what its default listing shows, as on main.
+    if (project?.id === callerProject?.id) continue;
+    for (const session of entry.sessions) {
+      const ref = { workspaceId: entry.id, sessionId: session.id };
+      const key = sessionKey(ref);
+      if (session.archivedAt || entries.has(key)) {
+        continue;
+      }
+      entries.set(key, {
+        threadId: key,
+        workspaceId: entry.id,
+        sessionId: session.id,
+        title: session.title,
+        status: session.status,
+        relationship: "other_project",
+        project: project?.name ?? entry.name,
+        updatedAt: session.updatedAt,
+        preview: session.preview ?? "",
+      });
     }
-    return left.title.localeCompare(right.title);
-  });
+  }
+  return [...entries.values()].sort(compareThreadListEntries);
+}
+
+/**
+ * A thread in another project, named by the `workspaceId:sessionId` id list_threads gives it.
+ * Threads of the caller's own project resolve only through its own listing, as before.
+ */
+function resolveOtherProjectThread(
+  store: OrchestrationOwnerHost,
+  parentRef: SessionRef,
+  threadId: string,
+): ResolvedThreadTarget | string {
+  const workspaces = store.orchestrationState().workspaces;
+  const callerProject = projectOf(workspaces, parentRef.workspaceId);
+  for (const workspace of workspaces) {
+    if (projectOf(workspaces, workspace.id)?.id === callerProject?.id) continue;
+    const session = workspace.sessions.find(
+      (entry) =>
+        !entry.archivedAt &&
+        sessionKey({ workspaceId: workspace.id, sessionId: entry.id }) === threadId,
+    );
+    if (session) return { sessionRef: { workspaceId: workspace.id, sessionId: session.id } };
+  }
+  return `Unknown thread: ${threadId}`;
+}
+
+/** The primary workspace a workspace belongs to; its worktrees share the project. */
+function projectOf(
+  workspaces: DesktopAppState["workspaces"],
+  workspaceId: string,
+): DesktopAppState["workspaces"][number] | undefined {
+  const workspace = workspaces.find((entry) => entry.id === workspaceId);
+  const rootId = workspace?.rootWorkspaceId ?? workspaceId;
+  return workspaces.find((entry) => entry.id === rootId) ?? workspace;
+}
+
+function compareThreadListEntries(left: ThreadListEntry, right: ThreadListEntry): number {
+  const rank = relationshipRank(left.relationship) - relationshipRank(right.relationship);
+  if (rank !== 0) {
+    return rank;
+  }
+  if (left.updatedAt !== right.updatedAt) {
+    return right.updatedAt.localeCompare(left.updatedAt);
+  }
+  return left.title.localeCompare(right.title);
 }
 
 function relationshipRank(relationship: ThreadListEntry["relationship"]): number {
@@ -1702,7 +1857,7 @@ function relationshipRank(relationship: ThreadListEntry["relationship"]): number
   if (relationship === "child") {
     return 1;
   }
-  return 2;
+  return relationship === "workspace" ? 2 : 3;
 }
 
 function threadListSupervisionFields(
@@ -1720,14 +1875,15 @@ function threadListSupervisionFields(
   };
 }
 
+/** The thread a tool call names, or the error to report. */
 function resolveThreadTarget(
   store: OrchestrationOwnerHost,
   parentRef: SessionRef,
   threadId: string,
-): ResolvedThreadTarget | undefined {
+): ResolvedThreadTarget | string {
   const normalized = threadId.trim();
   if (!normalized) {
-    return undefined;
+    return `Unknown thread: ${threadId}`;
   }
 
   const visibleThread = listThreadsForContext(store, parentRef).find(
@@ -1738,7 +1894,7 @@ function resolveThreadTarget(
       `${thread.workspaceId}:${thread.sessionId}` === normalized,
   );
   if (!visibleThread) {
-    return undefined;
+    return resolveOtherProjectThread(store, parentRef, normalized);
   }
 
   const child = visibleThread.childThreadId
@@ -1764,6 +1920,7 @@ function formatThreadList(threads: readonly ThreadListEntry[]): string {
     ...threads.map(
       (thread) =>
         `- ${thread.threadId} (${thread.relationship}, ${thread.status}): ${thread.title}` +
+        (thread.project ? ` [project: ${thread.project}]` : "") +
         (thread.supervisionGate
           ? ` [gate=${thread.supervisionGate}: ${thread.supervisionReason ?? "monitoring"}]`
           : "") +
@@ -1806,7 +1963,9 @@ function formatCreateChildThreadResult(result: CreateChildThreadToolDetails): st
 function formatSendMessageToThreadResult(result: SendMessageToThreadToolDetails): string {
   const verb = result.status === "queued" ? "Queued" : "Sent";
   return (
-    `${verb} message to thread ${result.threadId}.` +
+    `${verb} message to thread ${result.threadId}` +
+    (result.project ? ` in project ${result.project}` : "") +
+    "." +
     (result.queuedMessageCount && result.queuedMessageCount > 0
       ? ` Pending messages: ${result.queuedMessageCount}.`
       : "")

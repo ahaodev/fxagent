@@ -546,6 +546,8 @@ export class DesktopAppStore {
           attachments,
           submitOptions,
         ),
+      deliverBackgroundInstruction: (sessionRef, text, options) =>
+        this.conversationOwner.deliverBackgroundInstruction(sessionRef, text, options),
     });
 
     this.scheduledTaskOwner = createScheduledTaskOwner({
@@ -1269,8 +1271,8 @@ export class DesktopAppStore {
     return this.orchestrationOwner.createChildThreadToolResult(parentRef, input);
   }
 
-  listThreadsToolResult(parentRef: SessionRef) {
-    return this.orchestrationOwner.listThreadsToolResult(parentRef);
+  listThreadsToolResult(parentRef: SessionRef, workspace?: string) {
+    return this.orchestrationOwner.listThreadsToolResult(parentRef, workspace);
   }
 
   async archiveChildThreadsToolResult(parentRef: SessionRef, threadIds: readonly string[]) {
