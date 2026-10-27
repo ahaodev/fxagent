@@ -8,6 +8,7 @@ import type {
   SessionConfig,
   SessionDriverEvent,
   SessionRef,
+  SessionRunOutcome,
   SessionSnapshot,
   WorkspaceRef,
 } from "@pi-gui/session-driver";
@@ -28,6 +29,7 @@ import type {
 import { latestSessionActivityAt, previewFromTranscript } from "../application/app-store-utils";
 import type { RefreshStateOptions } from "../application/refresh-state-options";
 import {
+  archiveChildThreadsAction,
   createChildThreadAction,
   createChildThreadPromptFromToolOutput,
   createChildThreadToolName,
@@ -42,6 +44,7 @@ import {
   sendMessageToThreadToolName,
 } from "./orchestration-runtime";
 import type {
+  ArchiveChildThreadsToolDetails,
   CreateChildThreadToolDetails,
   ListThreadsToolDetails,
   OrchestrationThreadListEntry,
@@ -87,6 +90,16 @@ interface OrchestrationOwnerHost {
     | { archivedAt?: string; updatedAt: string; title: string; status: string; preview?: string }
     | undefined;
   ensureSessionReady(sessionRef: SessionRef): Promise<SessionSnapshot | undefined>;
+  /** The driver's report of how the session's newest assistant reply ended. */
+  lastRunOutcome(sessionRef: SessionRef): SessionRunOutcome | undefined;
+  /**
+   * Archives only if the driver confirms nothing is in flight and the last run outcome
+   * is still `expect.lastRunOutcome`; throws otherwise.
+   */
+  archiveIdleSession(
+    sessionRef: SessionRef,
+    expect: { readonly lastRunOutcome: SessionRunOutcome },
+  ): Promise<void>;
   ensureSessionSubscription(sessionRef: SessionRef): Promise<void>;
   subscribeToSessionEvents(
     listener: (event: SessionDriverEvent, state: DesktopAppState) => void | Promise<void>,
@@ -112,6 +125,10 @@ interface OrchestrationOwnerHost {
 }
 
 export interface OrchestrationOwner {
+  archiveChildThreadsToolResult(
+    parentRef: SessionRef,
+    threadIds: readonly string[],
+  ): Promise<AgentToolResult<ArchiveChildThreadsToolDetails>>;
   reconcileDueSupervisionLoops(): { readonly changed: boolean };
   cancelChildRunsForParent(parentRef: SessionRef): Promise<void>;
   sendChildThreadFollowUp(input: SendChildThreadFollowUpInput): Promise<DesktopAppState>;
@@ -146,6 +163,8 @@ export interface OrchestrationOwner {
 
 export function createOrchestrationOwner(store: OrchestrationOwnerHost): OrchestrationOwner {
   return {
+    archiveChildThreadsToolResult: (parentRef, threadIds) =>
+      archiveChildThreadsToolResult(store, parentRef, threadIds),
     reconcileDueSupervisionLoops: () => reconcileDueSupervisionLoops(store),
     cancelChildRunsForParent: (parentRef) => cancelChildRunsForParent(store, parentRef),
     sendChildThreadFollowUp: (input) => sendChildThreadFollowUp(store, input),
@@ -603,6 +622,119 @@ async function updateSendMessageToThreadToolOutput(
     event,
     projectionFromToolResult(await sendMessageToThreadToolResult(store, event.sessionRef, request)),
   );
+}
+
+async function archiveChildThreadsToolResult(
+  store: OrchestrationOwnerHost,
+  parentRef: SessionRef,
+  threadIds: readonly string[],
+): Promise<AgentToolResult<ArchiveChildThreadsToolDetails>> {
+  await store.initialize();
+  const archived: string[] = [];
+  const skipped: { threadId: string; reason: string }[] = [];
+  for (const threadId of new Set(threadIds)) {
+    try {
+      const child = ownDirectChild(store, parentRef, threadId);
+      await archiveFinishedChild(store, child);
+      updateChildSupervisionLoop(store, child.id, "stop", "Child thread archived.");
+      archived.push(child.id);
+    } catch (error) {
+      skipped.push({ threadId, reason: errorMessage(error) });
+    }
+  }
+  if (archived.length) {
+    await store.persistUiState();
+    store.emit();
+  }
+  return {
+    content: [
+      {
+        type: "text",
+        text: [
+          `Archived ${archived.length} child thread(s). History and drafts are kept; restore them from the sidebar.`,
+          ...archived.map((id) => `Archived: ${id}`),
+          ...skipped.map((item) => `Skipped ${item.threadId}: ${item.reason}`),
+        ].join("\n"),
+      },
+    ],
+    details: { action: archiveChildThreadsAction, archived, skipped },
+  };
+}
+
+/** Resolves an id only among the caller's own children, never the UI selection. */
+function ownDirectChild(
+  store: OrchestrationOwnerHost,
+  parentRef: SessionRef,
+  threadId: string,
+): OrchestrationChildThread {
+  const child = store
+    .orchestrationChildren()
+    .find(
+      (entry) =>
+        entry.parentWorkspaceId === parentRef.workspaceId &&
+        entry.parentSessionId === parentRef.sessionId &&
+        (entry.id === threadId ||
+          entry.childSessionId === threadId ||
+          sessionKey(childSessionRef(entry)) === threadId),
+    );
+  if (!child || sessionKey(childSessionRef(child)) === sessionKey(parentRef)) {
+    throw new Error("Only direct child threads of this thread can be archived.");
+  }
+  return child;
+}
+
+/**
+ * The app decides that a child's work is finished; the driver only guarantees that
+ * nothing is in flight and the run outcome it saw is unchanged at the moment of the
+ * write. A child that starts or stops a turn after the check is refused by the driver.
+ */
+async function archiveFinishedChild(
+  store: OrchestrationOwnerHost,
+  child: OrchestrationChildThread,
+): Promise<void> {
+  const ref = childSessionRef(child);
+  assertArchivableChild(store, ref);
+  await store.ensureSessionReady(ref);
+  // Opening a cold child awaits; the user may have restored a grandchild or archived the
+  // child meanwhile, so every check runs again once the session is ready.
+  assertArchivableChild(store, ref);
+  const unfinished = unfinishedChildReason(store, ref);
+  if (unfinished) throw new Error(`${unfinished}; it was not archived.`);
+  // The app's copy of the outcome can trail the runtime; the driver re-checks it at the write.
+  await store.archiveIdleSession(ref, { lastRunOutcome: "completed" });
+}
+
+function assertArchivableChild(store: OrchestrationOwnerHost, ref: SessionRef): void {
+  const session = store.sessionFromState(ref);
+  if (!session) throw new Error("Child thread was not found.");
+  if (session.archivedAt) throw new Error("Child thread is already archived.");
+  const openDescendant = store
+    .orchestrationChildren()
+    .some(
+      (entry) =>
+        entry.parentWorkspaceId === ref.workspaceId &&
+        entry.parentSessionId === ref.sessionId &&
+        !store.sessionFromState(childSessionRef(entry))?.archivedAt,
+    );
+  if (openDescendant) throw new Error("This child has its own unarchived child threads.");
+}
+
+/**
+ * Finished means idle with an empty queue, and the driver reports the newest reply
+ * completed normally: not stopped, failed, cut off, or followed by an unanswered message.
+ */
+function unfinishedChildReason(store: OrchestrationOwnerHost, ref: SessionRef): string | undefined {
+  const session = store.sessionFromState(ref);
+  const status = session ? toOrchestrationStatus(session.status, ref, store) : "failed";
+  if (status === "running" || status === "waiting")
+    return "Child thread is running or has queued messages";
+  if (status === "queued") return "Child thread has not started its work";
+  if (status === "failed") return "Child thread's last run failed";
+  const outcome = store.lastRunOutcome(ref);
+  if (outcome === "stopped") return "Child thread's last run was stopped before it finished";
+  if (outcome === "incomplete") return "Child thread's last turn did not end with a reply";
+  if (outcome !== "completed") return "Child thread's last run did not complete";
+  return undefined;
 }
 
 function listThreadsToolResult(
@@ -1534,7 +1666,7 @@ function listThreadsForContext(
 
   for (const child of parentChildren) {
     const key = sessionKey(childSessionRef(child));
-    if (entries.has(key)) {
+    if (entries.has(key) || store.sessionFromState(childSessionRef(child))?.archivedAt) {
       continue;
     }
     entries.set(key, {
