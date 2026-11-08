@@ -1,7 +1,7 @@
 {
   "name": "@fxagent/desktop",
   "private": true,
-  "version": "1.4.0",
+  "version": "1.5.0",
   "author": "Matthew Lam",
   "license": "MIT",
   "description": "Codex-style desktop shell for pi",
