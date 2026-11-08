@@ -170,7 +170,7 @@ await test("drafts reference the issue or PR and never ask to post to GitHub", a
   const issue = loaded.issues.find((candidate) => candidate.number === 216)!;
   const fix = issueDraft(loaded.repo, issue);
   assert.equal(fix.title, "Fix #216: Model name change randomly");
-  assert.match(fix.prompt, /https:\/\/github\.com\/minghinmatthewlam\/fxagent\/issues\/216/);
+  assert.match(fix.prompt, /https:\/\/github\.com\/ahaodev\/fxagent\/issues\/216/);
   assert.match(fix.prompt, /> After sending a couple of prompts/);
   const failing = loaded.pullRequests.find((candidate) => candidate.number === 223)!;
   const ci = pullRequestDraft(loaded.repo, failing);
