@@ -14,7 +14,8 @@ import type {
   WorkspaceRecord,
 } from "../../../contracts/desktop-state";
 import type { MentionOption } from "../conversation/hooks/use-mention-menu";
-import { ArrowUpIcon, PiLogoMark, PlusIcon } from "../../ui/icons";
+import { PiLogoMark } from "../../ui/app-logo";
+import { ArrowUpIcon, PlusIcon } from "../../ui/icons";
 import {
   type ComposerSlashCommand,
   type ComposerSlashCommandSection,

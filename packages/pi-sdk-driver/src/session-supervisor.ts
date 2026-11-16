@@ -956,6 +956,36 @@ export class SessionSupervisor {
     await this.updateArchivedState(sessionRef, undefined);
   }
 
+  async deleteSession(sessionRef: SessionRef): Promise<void> {
+    const key = sessionKey(sessionRef);
+    await this.runWorkspaceMutation(sessionRef.workspaceId, async () => {
+      const record = this.records.get(key);
+      if (record?.session?.isStreaming) {
+        throw new Error(`Session ${key} is running. Stop it before deleting it.`);
+      }
+
+      const sessionFile = record?.sessionFile ?? (await this.resolveSessionFilePath(sessionRef));
+      if (record) {
+        record.unsubscribeAgent?.();
+        record.unsubscribeAgent = undefined;
+        record.listeners.clear();
+        await this.disposeRecordRuntimeSafely(record);
+        this.records.delete(key);
+      }
+
+      if (sessionFile) {
+        try {
+          await unlink(sessionFile);
+        } catch (error) {
+          if (!isMissingFileError(error)) {
+            throw error;
+          }
+        }
+      }
+      await this.catalogs.sessions.deleteSession(sessionRef);
+    });
+  }
+
   async sendUserMessage(sessionRef: SessionRef, input: SessionMessageInput): Promise<void> {
     const record = await this.ensureRecord(sessionRef);
     await this.settleReloadsBeforeSend(record);

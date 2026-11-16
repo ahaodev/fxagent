@@ -140,6 +140,7 @@ export const desktopIpc = {
   renameSession: "fxagent:rename-session",
   archiveSession: "fxagent:archive-session",
   unarchiveSession: "fxagent:unarchive-session",
+  deleteSession: "fxagent:delete-session",
   markSessionRead: "fxagent:mark-session-read",
   setSessionPinned: "fxagent:set-session-pinned",
   createSession: "fxagent:create-session",
@@ -725,6 +726,7 @@ export interface FxagentDesktopApi {
   renameSession(target: WorkspaceSessionTarget, title: string): Promise<DesktopAppState>;
   archiveSession(target: WorkspaceSessionTarget): Promise<DesktopAppState>;
   unarchiveSession(target: WorkspaceSessionTarget): Promise<DesktopAppState>;
+  deleteSession(target: WorkspaceSessionTarget): Promise<DesktopAppState>;
   markSessionRead(target: WorkspaceSessionTarget): Promise<DesktopAppState>;
   setSessionPinned(target: WorkspaceSessionTarget, pinned: boolean): Promise<DesktopAppState>;
   createSession(input: CreateSessionInput): Promise<DesktopAppState>;

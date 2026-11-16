@@ -392,6 +392,7 @@ export interface SessionDriver {
   openSession(sessionRef: SessionRef): Promise<SessionSnapshot>;
   archiveSession(sessionRef: SessionRef): Promise<void>;
   unarchiveSession(sessionRef: SessionRef): Promise<void>;
+  deleteSession(sessionRef: SessionRef): Promise<void>;
   sendUserMessage(sessionRef: SessionRef, input: SessionMessageInput): Promise<void>;
   replaceQueuedMessages(
     sessionRef: SessionRef,

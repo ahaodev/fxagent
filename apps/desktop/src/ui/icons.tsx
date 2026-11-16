@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import appIconUrl from "../assets/app-icon.png";
 
 function Icon({ children }: { readonly children: ReactNode }) {
   return (
@@ -174,10 +173,6 @@ export function ArrowUpIcon() {
   );
 }
 
-export function PiLogoMark() {
-  return <img aria-hidden="true" alt="" draggable={false} src={appIconUrl} />;
-}
-
 export function StopSquareIcon() {
   return (
     <Icon>
@@ -249,6 +244,32 @@ export function RestoreIcon() {
       <path d="M3.4 5.15h13.2v2.1H3.4z" stroke="currentColor" strokeWidth="1.35" />
       <path
         d="M10 12.8V8.4m0 0L8.2 10.2M10 8.4l1.8 1.8"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeWidth="1.35"
+      />
+    </Icon>
+  );
+}
+
+export function TrashIcon() {
+  return (
+    <Icon>
+      <path
+        d="M4.4 6.15h11.2M8.15 6.15V4.6a.95.95 0 0 1 .95-.95h1.8a.95.95 0 0 1 .95.95v1.55"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.35"
+      />
+      <path
+        d="M5.5 6.15h9l-.7 9.25a1.2 1.2 0 0 1-1.2 1.1H7.4a1.2 1.2 0 0 1-1.2-1.1L5.5 6.15Z"
+        stroke="currentColor"
+        strokeLinejoin="round"
+        strokeWidth="1.35"
+      />
+      <path
+        d="M8.6 9.1v4.4M11.4 9.1v4.4"
         stroke="currentColor"
         strokeLinecap="round"
         strokeWidth="1.35"

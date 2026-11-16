@@ -982,6 +982,10 @@ export class DesktopAppStore {
     return this.workspaceOwner.unarchiveSession(target);
   }
 
+  async deleteSession(target: WorkspaceSessionTarget): Promise<DesktopAppState> {
+    return this.workspaceOwner.deleteSession(target);
+  }
+
   async markSessionRead(target: WorkspaceSessionTarget): Promise<DesktopAppState> {
     await this.initialize();
     const sessionRef = toSessionRef(target);

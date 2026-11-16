@@ -1,4 +1,5 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { expect, test, type Locator, type Page } from "@playwright/test";
 import {
@@ -164,6 +165,77 @@ test("right-click thread menu supports rename, archive/restore, mark read, and c
     ).toHaveCount(1);
   } finally {
     await harness.close();
+  }
+});
+
+test("archived thread menu permanently deletes the thread and its transcript", async () => {
+  test.setTimeout(120_000);
+  const userDataDir = await makeUserDataDir();
+  const workspacePath = await makeWorkspace("thread-delete-workspace");
+  const keptTitle = "Thread that stays";
+  const targetTitle = "Archived thread to delete";
+
+  const firstRun = await launchDesktop(userDataDir, {
+    initialWorkspaces: [workspacePath],
+    testMode: "background",
+  });
+  let target: { workspaceId: string; sessionId: string } | undefined;
+  try {
+    const window = await firstRun.firstWindow();
+    await createNamedThread(window, keptTitle);
+    await createNamedThread(window, targetTitle);
+    const state = await getDesktopState(window);
+    target = { workspaceId: state.selectedWorkspaceId, sessionId: state.selectedSessionId };
+  } finally {
+    await firstRun.close();
+  }
+
+  const sessionFile = await sessionFilePathFromCatalog(userDataDir, target!);
+  expect(existsSync(sessionFile)).toBe(true);
+
+  const harness = await launchDesktop(userDataDir, { testMode: "background" });
+  try {
+    const window = await harness.firstWindow();
+    const row = window.locator(".session-row", { hasText: targetTitle }).first();
+    await row.click({ button: "right" });
+    await row.getByRole("menu").getByRole("button", { name: "Archive thread" }).click();
+
+    const archivedToggle = window.locator(".archived-thread-group__toggle");
+    await archivedToggle.click();
+    const archivedRow = window.locator(".session-list--archived .session-row", {
+      hasText: targetTitle,
+    });
+    await archivedRow.click({ button: "right" });
+    const menu = archivedRow.getByRole("menu");
+    expect(await menuItemTitles(menu)).toContain("Delete permanently");
+    expect((await menuItemTitles(menu)).at(-1)).toBe("Delete permanently");
+    await expect(menu.getByRole("button", { name: "Delete permanently" })).toHaveClass(
+      /workspace-menu__item--danger/,
+    );
+
+    await menu.getByRole("button", { name: "Delete permanently" }).click();
+    await expect(archivedRow).toHaveCount(0);
+    await expect
+      .poll(async () => {
+        const state = await getDesktopState(window);
+        return state.workspaces.some((workspace) =>
+          workspace.sessions.some((session) => session.id === target!.sessionId),
+        );
+      })
+      .toBe(false);
+    expect(existsSync(sessionFile)).toBe(false);
+  } finally {
+    await harness.close();
+  }
+
+  const restart = await launchDesktop(userDataDir, { testMode: "background" });
+  try {
+    const window = await restart.firstWindow();
+    await expect(window.locator(".session-row", { hasText: keptTitle })).toHaveCount(1);
+    await expect(window.locator(".session-row", { hasText: targetTitle })).toHaveCount(0);
+    await expect(window.locator(".archived-thread-group__toggle")).toHaveCount(0);
+  } finally {
+    await restart.close();
   }
 });
 

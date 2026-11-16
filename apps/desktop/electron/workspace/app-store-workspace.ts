@@ -38,6 +38,7 @@ type WorkspaceDriver = Pick<
   PiSdkDriver,
   | "archiveSession"
   | "createSession"
+  | "deleteSession"
   | "forkSession"
   | "generateThreadTitle"
   | "removeWorkspace"
@@ -110,6 +111,7 @@ export interface WorkspaceOwner {
   renameSession(target: WorkspaceSessionTarget, title: string): Promise<DesktopAppState>;
   archiveSession(target: WorkspaceSessionTarget): Promise<DesktopAppState>;
   unarchiveSession(target: WorkspaceSessionTarget): Promise<DesktopAppState>;
+  deleteSession(target: WorkspaceSessionTarget): Promise<DesktopAppState>;
   createSession(input: CreateSessionInput): Promise<DesktopAppState>;
   syncCurrentWorkspace(): Promise<DesktopAppState>;
   createWorktree(input: CreateWorktreeInput): Promise<DesktopAppState>;
@@ -132,6 +134,7 @@ export function createWorkspaceOwner(store: WorkspaceOwnerHost): WorkspaceOwner 
     renameSession: (target, title) => renameSession(store, target, title),
     archiveSession: (target) => archiveSession(store, target),
     unarchiveSession: (target) => unarchiveSession(store, target),
+    deleteSession: (target) => deleteSession(store, target),
     createSession: (input) => createSession(store, input),
     syncCurrentWorkspace: () => syncCurrentWorkspace(store),
     createWorktree: (input) => worktree.createWorktree(store, input),
@@ -313,6 +316,28 @@ async function archiveSession(
     store.clearPendingAutoTitle(sessionRef);
     store.unpinSession(sessionRef);
     await store.driver.archiveSession(sessionRef);
+    return store.refreshState(selectionAfterArchiving(store.workspaceState(), target));
+  });
+}
+
+async function deleteSession(
+  store: WorkspaceOwnerHost,
+  target: WorkspaceSessionTarget,
+): Promise<DesktopAppState> {
+  await store.initialize();
+
+  return store.withErrorHandling(async () => {
+    const sessionRef = toSessionRef(target);
+    const session = store.sessionFromState(sessionRef);
+    if (!session) {
+      return store.withError(`Unknown session: ${target.workspaceId}:${target.sessionId}`);
+    }
+    if (!session.archivedAt) {
+      return store.withError("Only archived threads can be deleted permanently.");
+    }
+    store.clearPendingAutoTitle(sessionRef);
+    store.unpinSession(sessionRef);
+    await store.driver.deleteSession(sessionRef);
     return store.refreshState(selectionAfterArchiving(store.workspaceState(), target));
   });
 }

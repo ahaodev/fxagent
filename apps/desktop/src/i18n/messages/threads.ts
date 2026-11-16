@@ -63,6 +63,7 @@ export const enMessages = {
   "threads.actions.editScheduledTask": "Edit scheduled task…",
   "threads.actions.addScheduledTask": "Add scheduled task…",
   "threads.actions.copySessionId": "Copy session ID",
+  "threads.actions.deleteThread": "Delete permanently",
 
   "threads.switcher.title": "Switch thread",
   "threads.switcher.recentThreads": "Recent threads",
@@ -158,6 +159,7 @@ export const zhMessages: Record<keyof typeof enMessages, string> = {
   "threads.actions.editScheduledTask": "编辑定时任务…",
   "threads.actions.addScheduledTask": "添加定时任务…",
   "threads.actions.copySessionId": "复制会话 ID",
+  "threads.actions.deleteThread": "永久删除",
 
   "threads.switcher.title": "切换线程",
   "threads.switcher.recentThreads": "最近的线程",

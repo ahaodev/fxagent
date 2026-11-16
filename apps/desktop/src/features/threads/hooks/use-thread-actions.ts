@@ -115,6 +115,10 @@ export function useThreadActions({
   };
   const restore = (target: WorkspaceSessionTarget) =>
     mutate((desktopApi) => desktopApi.unarchiveSession(target));
+  const deletePermanently = (target: WorkspaceSessionTarget) => {
+    flushComposerDraft();
+    mutate((desktopApi) => desktopApi.deleteSession(target));
+  };
   const setPinned = (target: WorkspaceSessionTarget, pinned: boolean) =>
     mutate((desktopApi) => desktopApi.setSessionPinned(target, pinned));
 
@@ -155,6 +159,7 @@ export function useThreadActions({
         console.error("[renderer] navigator.clipboard.writeText failed", error);
       });
     },
+    deletePermanently: (subject) => deletePermanently(targetFor(subject)),
   };
 
   return {

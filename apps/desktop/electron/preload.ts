@@ -249,6 +249,8 @@ contextBridge.exposeInMainWorld("fxagentApp", {
     ipcRenderer.invoke(desktopIpc.archiveSession, target) as Promise<DesktopAppState>,
   unarchiveSession: (target: WorkspaceSessionTarget) =>
     ipcRenderer.invoke(desktopIpc.unarchiveSession, target) as Promise<DesktopAppState>,
+  deleteSession: (target: WorkspaceSessionTarget) =>
+    ipcRenderer.invoke(desktopIpc.deleteSession, target) as Promise<DesktopAppState>,
   markSessionRead: (target: WorkspaceSessionTarget) =>
     ipcRenderer.invoke(desktopIpc.markSessionRead, target) as Promise<DesktopAppState>,
   setSessionPinned: (target: WorkspaceSessionTarget, pinned: boolean) =>

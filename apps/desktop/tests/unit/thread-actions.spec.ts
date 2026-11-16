@@ -36,6 +36,7 @@ function handlers(
     markRead: record("mark-read"),
     openScheduledTask: record("scheduled"),
     copySessionId: record("copy"),
+    deletePermanently: record("delete"),
   };
 }
 
@@ -84,6 +85,23 @@ test("state changes the list: pinned, unseen, scheduled and archived threads", (
     "Restore thread",
     "Add scheduled task…",
     "Copy session ID",
+    "Delete permanently",
   ]);
   expect(archived.some((action) => action.id === "archive-thread")).toBe(false);
+});
+
+test("only an archived thread offers permanent deletion, as its last menu item", () => {
+  const live = buildThreadActions({ workspaceId: "ws", session: session() }, handlers("linux"));
+  expect(live.some((action) => action.id === "delete-thread")).toBe(false);
+
+  const recorder = handlers("linux");
+  const archived = buildThreadActions(
+    { workspaceId: "ws", session: session({ archivedAt: "x" }) },
+    recorder,
+  );
+  const last = archived.at(-1);
+  expect(last?.id).toBe("delete-thread");
+  expect(last?.danger).toBe(true);
+  last?.run();
+  expect(recorder.calls).toEqual(["delete"]);
 });

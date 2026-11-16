@@ -103,6 +103,7 @@ type ConversationOwner = Pick<
   | "renameSession"
   | "archiveSession"
   | "unarchiveSession"
+  | "deleteSession"
   | "markSessionRead"
   | "setSessionPinned"
   | "createSession"
@@ -392,6 +393,10 @@ export function registerDesktopIpc({
   ipcMain.handle(desktopIpc.unarchiveSession, (event, rawTarget: unknown) => {
     const target = expectSessionTarget(rawTarget);
     return run(event, () => owners.conversation.unarchiveSession(target));
+  });
+  ipcMain.handle(desktopIpc.deleteSession, (event, rawTarget: unknown) => {
+    const target = expectSessionTarget(rawTarget);
+    return run(event, () => owners.conversation.deleteSession(target));
   });
   ipcMain.handle(desktopIpc.markSessionRead, (event, rawTarget: unknown) => {
     const target = expectSessionTarget(rawTarget);

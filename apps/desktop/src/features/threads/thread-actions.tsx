@@ -10,6 +10,7 @@ import {
   PencilIcon,
   PinIcon,
   RestoreIcon,
+  TrashIcon,
 } from "../../ui/icons";
 
 /**
@@ -24,13 +25,15 @@ export type ThreadActionId =
   | "restore-thread"
   | "mark-read"
   | "scheduled-task"
-  | "copy-session-id";
+  | "copy-session-id"
+  | "delete-thread";
 
 export interface ThreadAction {
   readonly id: ThreadActionId;
   readonly title: string;
   readonly icon: ReactNode;
   readonly hint?: string;
+  readonly danger?: boolean;
   readonly run: () => void;
 }
 
@@ -50,6 +53,7 @@ export interface ThreadActionHandlers {
   readonly markRead: (subject: ThreadActionSubject) => void;
   readonly openScheduledTask: (subject: ThreadActionSubject) => void;
   readonly copySessionId: (subject: ThreadActionSubject) => void;
+  readonly deletePermanently: (subject: ThreadActionSubject) => void;
 }
 
 export function renameThreadShortcut(platform: NodeJS.Platform): string {
@@ -124,6 +128,15 @@ export function buildThreadActions(
       run: () => handlers.copySessionId(subject),
     },
   );
+  if (archived) {
+    actions.push({
+      id: "delete-thread",
+      title: t("threads.actions.deleteThread"),
+      icon: <TrashIcon />,
+      danger: true,
+      run: () => handlers.deletePermanently(subject),
+    });
+  }
   return actions;
 }
 
@@ -138,7 +151,7 @@ export function ThreadActionsMenu({ actions, className }: ThreadActionsMenuProps
       {actions.map((action) => (
         <button
           key={action.id}
-          className="workspace-menu__item"
+          className={`workspace-menu__item${action.danger ? " workspace-menu__item--danger" : ""}`}
           data-thread-action={action.id}
           type="button"
           onClick={(event) => {
