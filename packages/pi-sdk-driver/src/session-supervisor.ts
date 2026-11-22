@@ -2390,19 +2390,37 @@ export class SessionSupervisor {
   /**
    * pi returns what went wrong while loading a session (an unknown or valueless
    * extension flag, a provider an extension failed to register) instead of
-   * throwing; terminal pi prints these at startup, so show them as extension errors.
+   * throwing, and reports a session that opened on a fallback model separately;
+   * terminal pi prints all of these at startup, so show them as notices.
    */
   private reportLoadDiagnostics(record: ManagedSessionRecord, runtime: AgentSessionRuntime): void {
-    for (const diagnostic of runtime.diagnostics) {
-      const request: NotifyHostUiRequest = {
-        kind: "notify",
-        requestId: crypto.randomUUID(),
-        level: diagnostic.type,
-        message: diagnostic.message,
-      };
-      if (record.listeners.size > 0) this.emitHostUiRequest(record, request);
-      else record.undeliveredLoadNotices.push(request);
+    // pi hands each runtime's diagnostics to its host once, so a runtime that
+    // reports twice (a reopened record) does not repeat unchanged warnings.
+    for (const diagnostic of runtime.takeUnreportedDiagnostics()) {
+      this.reportLoadNotice(record, diagnostic.type, diagnostic.message);
     }
+    // A session whose stored model is gone opens on a fallback model instead of
+    // failing, and a session with no usable model gets login guidance; pi reports
+    // both to the host separately from loading diagnostics.
+    const fallbackMessage = runtime.modelFallbackMessage;
+    if (fallbackMessage) {
+      this.reportLoadNotice(record, "warning", fallbackMessage);
+    }
+  }
+
+  private reportLoadNotice(
+    record: ManagedSessionRecord,
+    level: NonNullable<NotifyHostUiRequest["level"]>,
+    message: string,
+  ): void {
+    const request: NotifyHostUiRequest = {
+      kind: "notify",
+      requestId: crypto.randomUUID(),
+      level,
+      message,
+    };
+    if (record.listeners.size > 0) this.emitHostUiRequest(record, request);
+    else record.undeliveredLoadNotices.push(request);
   }
 
   private emitExtensionError(

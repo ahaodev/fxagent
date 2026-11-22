@@ -30,6 +30,14 @@ const modelChecks = [
     requireImageInput: true,
     requireMaxThinking: true,
   })),
+  ...["openai", "openai-codex", "azure"].map((provider) => ({
+    provider,
+    id: "gpt-6.2-sol",
+    reason: "Pi 1.6.0 GPT-6.2 Sol support",
+    requireReasoning: true,
+    requireImageInput: true,
+    requireMaxThinking: true,
+  })),
   ...["luna", "sol", "terra"].map((variant) => ({
     provider: "openai-codex",
     id: `gpt-5.6-${variant}`,

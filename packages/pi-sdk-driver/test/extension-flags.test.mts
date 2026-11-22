@@ -16,6 +16,21 @@ async function setup(t: test.TestContext) {
   await mkdir(workspacePath, { recursive: true });
   await writeFile(join(agentDir, "auth.json"), "{}");
   await writeFile(join(agentDir, "settings.json"), JSON.stringify({ packages: [] }));
+  // A configured provider, so loading a session reports no model guidance next to
+  // the flag diagnostics these tests assert.
+  await writeFile(
+    join(agentDir, "models.json"),
+    JSON.stringify({
+      providers: {
+        "flags-test": {
+          baseUrl: "http://127.0.0.1:9/never-contact",
+          apiKey: "LOCAL_TEST_CANARY",
+          api: "openai-completions",
+          models: [{ id: "scripted", input: ["text"], contextWindow: 128000, maxTokens: 4096 }],
+        },
+      },
+    }),
+  );
   const previousAgentDir = process.env.PI_CODING_AGENT_DIR;
   process.env.PI_CODING_AGENT_DIR = agentDir;
   t.after(() => {

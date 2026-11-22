@@ -105,7 +105,7 @@ const notificationHelperPath =
     : undefined;
 const pnpmBinary = process.platform === "win32" ? "pnpm.cmd" : "pnpm";
 const piCodingAgentPackageName = "@earendil-works/pi-coding-agent";
-const requiredPiCodingAgentVersion = "1.5.2";
+const requiredPiCodingAgentVersion = "1.6.0";
 const modelChecks = [
   ...["openai", "openai-codex", "github-copilot"].flatMap((provider) =>
     ["sol", "luna"].map((variant) => ({
@@ -121,6 +121,14 @@ const modelChecks = [
     provider,
     id: "gpt-6.1-sol",
     reason: "Pi 0.99.1 GPT-6.1 Sol support",
+    requireReasoning: true,
+    requireImageInput: true,
+    requireMaxThinking: true,
+  })),
+  ...["openai", "openai-codex", "azure"].map((provider) => ({
+    provider,
+    id: "gpt-6.2-sol",
+    reason: "Pi 1.6.0 GPT-6.2 Sol support",
     requireReasoning: true,
     requireImageInput: true,
     requireMaxThinking: true,
